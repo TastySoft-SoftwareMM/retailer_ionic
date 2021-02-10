@@ -1,0 +1,18 @@
+.header {
+    --padding-start: 0;
+    // color: var(--ion-color-custom);
+}
+.wrapper {
+    border: 1px solid var(--ion-color-border);
+    border-radius: 5px;
+    box-shadow: 5px 6px 16px 10px whitesmoke;
+}
+ion-footer {
+    background-color: white !important;
+    .footer {
+        background-color: transparent !important;
+        display: flex;
+        justify-content: flex-end;
+        padding: 5px;
+    }
+}

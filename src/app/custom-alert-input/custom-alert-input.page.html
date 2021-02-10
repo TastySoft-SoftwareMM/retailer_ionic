@@ -1,0 +1,26 @@
+<ion-content class="ion-padding">
+  <!-- header -->
+  <ion-item class="header" lines="none">
+    <ion-label>{{productdesc}}</ion-label>
+  </ion-item>
+  <!-- body -->
+  <div class="wrapper">
+    <ion-input   [(ngModel)]="qty" value="qty" type="text" placeholder="Enter qty"
+      maxLength="4" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1');">
+    </ion-input>
+  </div>
+
+  
+</ion-content>
+
+
+<!-- footer -->
+<ion-footer class="ion-no-border">
+  <div class="footer">
+    <ion-buttons (click)="done()">
+      <ion-button color="primary">
+        <ion-label>Done</ion-label>
+      </ion-button>
+    </ion-buttons>
+  </div>
+</ion-footer>

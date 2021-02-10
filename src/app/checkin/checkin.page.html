@@ -1,0 +1,82 @@
+<ion-content (click)="checkNetwork()">
+  <h1>Check In</h1>
+  <ion-list>
+    <ion-row class="ion-no-padding">
+      <ion-col>
+        <div class="iconCheckin">
+          <ion-icon src="assets/shop.svg" class="icons"></ion-icon>
+        </div>
+        <div class="dataCheckin">
+          <ion-label class="myanmar headertitle">{{shopName}}</ion-label>
+        </div>
+      </ion-col>
+    </ion-row>
+    <ion-row class="ion-no-padding">
+      <ion-col>
+        <div class="iconCheckin">
+          <ion-icon src="assets/clock.svg" class="icons"></ion-icon>
+        </div>
+        <div class="dataCheckin">
+          <ion-label>{{datetime}}</ion-label>
+        </div>
+      </ion-col>
+    </ion-row>
+    <ion-row class="ion-no-padding">
+      <ion-col>
+        <div class="iconCheckin">
+          <ion-icon name="location-outline" class="icons"></ion-icon>
+        </div>
+        <div class="dataCheckin">
+          <ion-label class="location" *ngIf="isLoading"> {{lat}} <span *ngIf="lat"> / </span> {{long}}</ion-label>
+          <ion-spinner *ngIf="!isLoading"></ion-spinner>
+        </div>
+      </ion-col>
+    </ion-row>
+
+    <ion-row class="ion-no-padding">
+      <ion-col>
+        <div class="iconCheckin">
+          <ion-icon name="grid-outline" class="icons"></ion-icon>
+        </div>
+        <div class="dataCheckin">
+          <ion-select *ngIf="currentType == ''" interface="popover" [selectedText]="checkintype"
+            [(ngModel)]="checkintype" placeholder="Select Type" (ionChange)="checkAddress()">
+            <ion-select-option *ngFor="let data of checkintypes" value="{{data.name}}">{{data.name}}
+            </ion-select-option>
+          </ion-select>
+          <ion-label *ngIf="currentType == 'TEMPCHECKOUT' || currentType == 'CHECKIN' || currentType == 'STORECLOSED'">
+            Check in</ion-label>
+        </div>
+      </ion-col>
+    </ion-row>
+    <ion-row class="ion-no-padding">
+      <ion-col>
+        <div class="iconCheckin">
+          <ion-icon src="assets/address.svg" class="icons"></ion-icon>
+        </div>
+        <div class="dataCheckin">
+          <ion-label class="myanmar headertitle">{{address}}</ion-label>
+        </div>
+      </ion-col>
+    </ion-row>
+  </ion-list>
+  <div style="height: 35px;width: 100%;">
+  </div>
+  <div class="footer">
+    <ion-row>
+      <ion-col class="colFooter">
+        <ion-button fill="outline" size="small" color="custom" (click)="closeModal()">
+          Cancel
+          <!-- <ion-icon slot="start" name="close-circle"></ion-icon> -->
+        </ion-button>
+      </ion-col>
+      <ion-col class="colFooter">
+        <ion-button fill="outline" size="small" color="custom" (click)="saveData()">
+          <!-- [disabled]="checkinDisabled" -->
+          Next
+          <!-- <ion-icon name="location" slot="start"></ion-icon> -->
+        </ion-button>
+      </ion-col>
+    </ion-row>
+  </div>
+</ion-content>

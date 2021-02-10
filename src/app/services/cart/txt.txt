@@ -1,0 +1,6 @@
+# Compare Source 1
+
+
+1. Invoice , Volume (Decimal)
+2. AU-00589, 00580 , 00574 , 00575 , 00573
+3. Location error

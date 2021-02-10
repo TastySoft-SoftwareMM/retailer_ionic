@@ -1,0 +1,22 @@
+<!-- <ion-header class="ion-no-border">
+  <ion-toolbar>
+    <ion-title>Need to do</ion-title>
+  </ion-toolbar>
+</ion-header> -->
+
+<ion-content>
+  <ion-list>
+    <ion-item *ngFor="let t of tasks" button lines="none" (click)="selectVal(t)">
+      <ion-label> {{t}} </ion-label>
+    </ion-item>
+  </ion-list>
+</ion-content>
+
+<!-- 
+<ion-footer style="padding: 10px;">
+  <ion-buttons (click)="dismissModal()" style="float: right;">
+    <ion-button color="custom">
+      <ion-label>Ok</ion-label>
+    </ion-button>
+  </ion-buttons>
+</ion-footer> -->

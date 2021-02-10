@@ -1,0 +1,20 @@
+<ion-content>
+  <ion-toolbar>
+    <ion-buttons (click)="dismissModal()" slot="start">
+      <ion-button>
+        <ion-icon name="arrow-back-outline" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>{{taskCode}}</ion-title>
+  </ion-toolbar>
+  <div *ngIf="!isLoading" class="loading">
+    <ion-spinner color="primary" name="lines" class="loader_spinner"></ion-spinner>
+  </div>
+  <ion-slides [options]="sliderOpts" #slides *ngIf="isLoading" scrollbar="true">
+    <ion-slide>
+      <div class="swiper-zoom-container">
+        <img [src]="sanitizer.bypassSecurityTrustUrl(src)" alt="" (error)="handleImgError($event)">
+      </div>
+    </ion-slide>
+  </ion-slides>
+</ion-content>

@@ -1,0 +1,55 @@
+<ion-content [fullscreen]="true" [ngClass]="isToBack ? 'custom-ion-content' : 'black-ion-content'">
+
+  <!-- camera preview body -->
+
+  <ion-item class="zoom" *ngIf="!img">
+    <ion-range color="primary" min="1" max="30" snaps="true" [(ngModel)]="setZoom" (ionChange)="changeZoom()">
+      <ion-icon slot="start" size="small" name="search-outline"></ion-icon>
+      <ion-icon slot="end" name="search-outline"></ion-icon>
+    </ion-range>
+  </ion-item>
+
+
+  <!-- image preview -->
+  <div class="fadeIN image-preview">
+    <img [src]="img" alt="" id="image_1">
+  </div>
+
+</ion-content>
+
+<!-- camera preview footer -->
+<ion-footer *ngIf="!img" class="cm-footer">
+
+  <ion-buttons class="cm-falsh" (click)="changeFlashMode()">
+    <ion-button>
+      <ion-icon [name]="flashMode == 'on' ? 'flash' : 'flash-off'" slot="icon-only"></ion-icon>
+    </ion-button>
+  </ion-buttons>
+
+  <div class="cmt-container">
+    <div class="cmt-wrapper" *ngIf="!takepicturestatus" (click)="takePicture()"></div>
+  </div>
+
+
+  <ion-buttons class=" rotate" (click)="switchCamera()">
+    <ion-button>
+      <ion-icon src="assets/rotate.svg" slot="icon-only"></ion-icon>
+    </ion-button>
+  </ion-buttons>
+</ion-footer>
+
+
+<!-- image preview footer -->
+
+<ion-footer *ngIf="img" class="cm-confirm-footer">
+  <ion-row>
+    <ion-col size="6" (click)="retryCamera()" class="ion-activatable ripple-parent">
+      <ion-label>Retry</ion-label>
+      <ion-ripple-effect></ion-ripple-effect>
+    </ion-col>
+    <ion-col size="6" (click)="confirmImg()" class="ion-activatable ripple-parent">
+      <ion-label>OK</ion-label>
+      <ion-ripple-effect></ion-ripple-effect>
+    </ion-col>
+  </ion-row>
+</ion-footer>

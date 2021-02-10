@@ -1,7 +1,8 @@
 {
   "name": "Retailer",
   "integrations": {
-    "capacitor": {}
+    "capacitor": {},
+    "cordova": {}
   },
   "type": "angular"
 }

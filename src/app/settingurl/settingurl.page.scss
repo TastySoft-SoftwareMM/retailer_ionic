@@ -1,0 +1,23 @@
+ion-content{
+  --padding-top: 20px;
+  --padding-bottom: 20px;
+  --padding-start: 20px;
+  --padding-end: 20px;
+}
+
+ion-item{
+ --highlight-color-focused: none;
+ --highlight-color-valid: none;
+ --border-color: var(--ion-color-custom);
+ --color: #000;
+ --color-focused: #000;
+ --padding-start: 3px;
+}
+
+ion-label{
+  color: #000 !important;
+}
+
+ion-button{
+  text-transform: none;
+}

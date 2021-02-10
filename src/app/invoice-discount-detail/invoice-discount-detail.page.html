@@ -1,0 +1,130 @@
+<ion-header>
+  <ion-toolbar color="custom">
+    <ion-buttons (click)="dismissModal()" slot="start">
+      <ion-button color="light">
+        <ion-icon name="arrow-back-outline" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title class="headertitle">Invoice Discount</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content style="background-color: whitesmoke;">
+
+  <!-- -------------------- loading ---------------------->
+  <div *ngIf="isLoading" class="spinner-container">
+    <ion-spinner></ion-spinner>
+  </div>
+  <div *ngIf="!isLoading" class="fadeIN">
+
+    <!-- segment tabs -->
+    <!-- <ion-segment mode="ios" (ionChange)="slides.slideTo(segment)" [(ngModel)]="segment" scrollable color="custom">
+      <ion-segment-button value="0">
+        <ion-label>Multiple SKUs</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="1">
+        <ion-label>Invoice Discount</ion-label>
+      </ion-segment-button>
+    </ion-segment> -->
+
+
+    <ion-slides [options]="{autoHeight: true, resistanceRatio: 0.5, zoom: false , spaceBetween: 10}" #slides>
+      <!-- <ion-slide>
+        <ion-list class="slide-list">
+          <ion-card>
+          </ion-card>
+        </ion-list>
+      </ion-slide> -->
+
+      <ion-slide class="slide-list">
+        <ion-list>
+          <ion-list class="main-container" *ngFor="let cp of invoicedetails;let i = index;">
+            <!-- Expandable Header -->
+            <ion-item (click)="toggleBrandOwner(i)" button lines="none" detail="false"
+              class="required-stock re-item header-category-item">
+              <ion-label class="headertitle">{{cp.name}}</ion-label>
+              <ion-icon *ngIf="!cp.open" name="chevron-forward-outline" slot="end"></ion-icon>
+              <ion-icon *ngIf="cp.open" name="chevron-down-outline" slot="end"></ion-icon>
+            </ion-item>
+            <!-- Container -->
+            <ion-list class="content-container" *ngIf="cp.open">
+              <div *ngIf="!cp.checkavailableInvList" class="nodata headertitle">
+                <span>No Promotion</span>
+              </div>
+              <div *ngIf="cp.checkavailableInvList">
+                <ion-list class="header-container" *ngFor="let invheader of cp.availableInvList">
+                  <ion-item-divider (click)="toggleheaderClick(invheader)">
+                    {{invheader.HeaderDesc}}
+                    <ion-icon *ngIf="!invheader.open" name="chevron-forward-outline" slot="end"></ion-icon>
+                    <ion-icon *ngIf="invheader.open" name="chevron-down-outline" slot="end"></ion-icon>
+                  </ion-item-divider>
+
+                  <ul *ngIf="invheader.open" class="gift-list secondtitle">
+                    <li class="gift-list-item gift-list-item-buy-get">
+                      <ion-row>
+                        <ion-col class="header-list-promo with-border " size="6">
+                          <span>Buy</span>
+                        </ion-col>
+                        <ion-col class="header-list-promo" size="6">
+                          <span>Get</span>
+                        </ion-col>
+                      </ion-row>
+                    </li>
+
+
+                    <li class="gift-list-item" *ngFor="let availableInvList of invheader.Inv">
+                      <ion-row>
+                        <ion-col size="6" class="border-right-promo">
+                          <span style="font-weight: bold;">{{availableInvList.PromoAmount}}</span>&nbsp;Ks
+                          <!-- between -->
+                          <span *ngIf="availableInvList.Operator == 'between'" style="margin: 0 4px 0 4px;"> between
+                          </span>
+                          <span *ngIf="availableInvList.Operator == 'between'"
+                            style="margin: 0 4px 0 4px;font-weight: bold;">
+                            {{availableInvList.PromoAmount2}} </span>
+                          <span *ngIf="availableInvList.Operator == 'between'"> Ks </span>
+
+                          <!-- less than -->
+                          <span *ngIf="availableInvList.Operator == 'less than'" style="margin: 0 4px 0 4px;"> under
+                          </span>
+                          <!-- greater than -->
+                          <span *ngIf="availableInvList.Operator == 'equal and greater than'"
+                            style="margin: 0 4px 0 4px;">
+                            or
+                          </span>
+                          <span
+                            *ngIf="availableInvList.Operator == 'equal and greater than' || availableInvList.Operator == 'greater than'"
+                            style="margin: 0 4px 0 4px;"> above </span>
+
+
+                        </ion-col>
+                        <ion-col size="6"
+                          [ngClass]="availableInvList.DiscountType == 'Inkind' ? 'col-flex-between': ''">
+                          <span *ngIf="availableInvList.DiscountType == 'Price'" style="vertical-align: middle;
+                  font-weight: bold;
+                  font-size: 15px;">{{availableInvList.DiscountAmount}}</span>
+                          <span style="white-space: nowrap;"
+                            *ngIf="availableInvList.DiscountPriceType =='Percentage' && availableInvList.DiscountType == 'Price'">%
+                            off </span>
+
+                          <!-- Inkind Gift -->
+                          <!-- <span *ngIf="availableInvList.DiscountType == 'Inkind'" class="pro statuspro">Get</span> -->
+                          {{availableInvList.DiscountItemDesc}}
+                          <span *ngIf="availableInvList.DiscountType == 'Inkind'"
+                            class="qty-badge qty-badge-primary qty-badge-pill">{{availableInvList.DiscountItemQty}}</span>
+                        </ion-col>
+                      </ion-row>
+                    </li>
+                  </ul>
+                </ion-list>
+              </div>
+
+            </ion-list>
+          </ion-list>
+        </ion-list>
+      </ion-slide>
+    </ion-slides>
+
+  </div>
+
+</ion-content>

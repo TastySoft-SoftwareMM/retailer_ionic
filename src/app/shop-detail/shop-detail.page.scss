@@ -1,0 +1,17 @@
+ion-content {
+    --padding-top: 20px;
+    --padding-start: 20px;
+    --padding-end: 20px;
+    --background: whitesmoke;
+}
+ion-grid {
+    background: white;
+    // box-shadow: 1px 4px 7px 0px #9f9fa3;
+}
+span{
+    float: right;
+    margin-right: 10px;
+}
+.text {
+    padding-top: 0 !important;
+}

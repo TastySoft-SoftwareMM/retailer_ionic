@@ -1,0 +1,67 @@
+<ion-header class="ion-no-border" transparent>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/login_username"></ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content fullscreen (click)="checkNetwork()">
+  <h1>Create Account</h1>
+  <br>
+  <!-- <ion-item lines="full">
+    <ion-icon src="assets/id.svg" slot="start"></ion-icon>
+    <ion-input type="text"  placeholder="User ID" [(ngModel)]="userID"></ion-input>
+  </ion-item>
+  <br> -->
+  <ion-item lines="full">
+    <ion-icon name="person" slot="start"></ion-icon>
+    <ion-input type="text" placeholder="Name" [(ngModel)]="name"></ion-input>
+  </ion-item>
+  <br>
+  <ion-item lines="full">
+    <ion-icon src="assets/phoneNumber.svg" slot="start"></ion-icon>
+    <ion-input type="tel" placeholder="Phone number" [(ngModel)]="phoneNumber"></ion-input>
+  </ion-item>
+  <br>
+  <!-- <ion-item lines="full">
+    <ion-icon name="mail" slot="start"></ion-icon>
+    <ion-input type="email" placeholder="Email" [(ngModel)]="email"></ion-input>
+  </ion-item>
+  <br> -->
+  <ion-item lines="full">
+    <ion-icon name="lock-closed" slot="start"></ion-icon>
+    <ion-input type="password" placeholder="Password" [(ngModel)]="password"></ion-input>
+  </ion-item>
+  <br>
+  <ion-item lines="full">
+    <ion-icon name="lock-closed" slot="start"></ion-icon>
+    <ion-input type="password" placeholder="Confirm Password" [(ngModel)]="confirmPassword"></ion-input>
+  </ion-item>
+  <br>
+  <!-- <ion-item lines="full">
+    <ion-icon src="assets/code.svg" slot="start"></ion-icon>
+    <ion-input type="password"  placeholder="Passcode" [(ngModel)]="passcode"></ion-input>
+  </ion-item>
+  <br>
+  <ion-item lines="full">
+    <ion-icon src="assets/code.svg" slot="start"></ion-icon>
+    <ion-input type="password"  placeholder="Confirm Passcode" [(ngModel)]="confirmPasscode"></ion-input>
+  </ion-item>
+  <br>
+  <ion-item lines="none">
+   <ion-label>InActive</ion-label>
+   <ion-toggle color="custom" [(ngModel)]="active" (ngModelChange)="activeEvent($event)"></ion-toggle>
+ </ion-item>
+ <br> -->
+  <ion-button expand="block" color="custom" (click)="signUP()">SIGN UP</ion-button>
+  <br>
+  <ion-row class="ion-text-center">
+    <ion-col>
+      <p class="pStyle">
+        Already have an account?
+        <strong (click)="loginFun()">Login now</strong>
+      </p>
+    </ion-col>
+  </ion-row>
+</ion-content>

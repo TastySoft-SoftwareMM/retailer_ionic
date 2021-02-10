@@ -1,0 +1,191 @@
+<ion-toolbar class="cart-toolbar">
+  <ion-buttons (click)="navigateBack()" style="position: absolute;">
+    <ion-button color="dark">
+      <ion-icon name="arrow-back-outline" slot="icon-only"></ion-icon>
+    </ion-button>
+  </ion-buttons>
+  <ion-row *ngFor="let s of shopinfo" style="text-align: center;" class="sub-shop-info">
+    <ion-col size="12" style="padding-left: 30px;">
+      <ion-label class="shop-header headertitle myanmar">
+        {{s.shop_name}}
+      </ion-label>
+    </ion-col>
+    <ion-col size="12" *ngIf="s.address">
+      <ion-label class="myanmar secondtitle">
+        {{s.address}}
+      </ion-label>
+    </ion-col>
+    <ion-col size="12">
+      <ion-label class="secondtitle">
+        {{s.date}}
+      </ion-label>
+    </ion-col>
+  </ion-row>
+</ion-toolbar>
+<ion-content>
+  <div style="padding: 5px;" *ngIf="isLoading">
+    <!----------------- order cart [start] --------------->
+    <ion-item lines="none" detail="false" class="required-stock  stock-header">
+      <ion-label class="headertitle">Order Products</ion-label>
+    </ion-item>
+    <div class="required-stock-inner">
+      <ion-list class="sub-list-inner" *ngFor="let cp of cart;let i = index;">
+        <ion-item (click)="toggleOrder(i)" button lines="none" detail="false"
+          class="required-stock re-item header-category-item">
+          <ion-label class="headertitle">{{cp.name}}</ion-label>
+          <ion-icon *ngIf="!cp.open" name="chevron-forward-outline" slot="end"></ion-icon>
+          <ion-icon *ngIf="cp.open" name="chevron-down-outline" slot="end"></ion-icon>
+        </ion-item>
+        <div *ngIf="cp.open" class="required_stock_brand_inner">
+          <div class="card-wrapper" *ngFor="let p of cp.child;let index = index;">
+            <div class="custom-card">
+              <div class="custom-card-left">
+                <img [src]=" p.img ? p.img : 'assets/notfound.png' " alt="" (error)="handleImgError($event)"
+                  (click)="photoViewer(p.syskey)">
+              </div>
+              <div class="custom-card-right">
+                <ion-item lines="none" style="--inner-padding-end: 4px;">
+                  <p class="stockname secondtitle">
+                    {{p.desc}}
+                  </p>
+                </ion-item>
+                <ion-row style="margin-bottom: 10px;text-align: center;">
+                  <ion-col size="4">
+                    <ion-label class="secondtitle">{{p.amount}}</ion-label>
+                  </ion-col>
+                  <ion-col size="4" class="price secondtitle">
+                    <ion-label> {{p.price}}</ion-label>
+                  </ion-col>
+                  <ion-col size="4" class="price secondtitle">
+                    <ion-label> {{p.total}}</ion-label>
+                    <div *ngIf="p.discountPercent != 0 || p.discountPercent != ''" style="position: absolute;
+                  top: -8px;
+                  right: 5px;
+                  color: #ff000070;
+                  font-size: 11px !important;
+                  display: flex;">
+                      <span style="margin-right: 5px;text-decoration-line: line-through;
+                    color: grey;">{{p.price * p.amount}}</span>
+                      -{{p.discountPercent}}%</div>
+                  </ion-col>
+                </ion-row>
+              </div>
+            </div>
+
+            <ul class="gift-list" *ngIf="p.gifts && p.gifts.length > 0">
+              <li class="gift-list-item with-padding" *ngFor="let gift of p.gifts">
+                <span>
+                  {{gift.stockName}}
+                </span>
+                <span class="qty-badge qty-badge-primary qty-badge-pill">{{gift.qty}}</span>
+              </li>
+            </ul>
+          </div>
+
+
+          <!-- Promotion gifts-->
+          <ion-item *ngIf="cp.gift" button lines="none" detail="false" class="required-stock re-item custom-item">
+            <ion-label class="headertitle">Gifts</ion-label>
+          </ion-item>
+          <div *ngIf="cp.gift" class="gift-list-bd">
+            <ul class="gift-list">
+              <li class="gift-list-item with-padding" *ngFor="let gift of cp.gifts">
+                <span>
+                  {{gift.stockName}}
+                </span>
+                <span class="qty-badge qty-badge-primary qty-badge-pill">{{gift.qty}}</span>
+              </li>
+            </ul>
+          </div>
+          <!-- Promotion gifts-->
+        </div>
+
+        <ion-grid class="orderbygrid secondtitle">
+          <ion-row>
+            <ion-col> Subtotal <span style="float: right"> : </span></ion-col>
+            <ion-col style="text-align: right;"> {{cp.subtotal}}
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col> <span style="float: right"> : </span> Discount Amount ({{cp.invdisper}} %) </ion-col>
+            <ion-col style="text-align: right;"> {{cp.invdisamount}}
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col> <span style="float: right"> : </span> Total Amount</ion-col>
+            <ion-col style="text-align: right;">
+              {{cp.total}}
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-list>
+
+    </div>
+    <!----------------- order cart [end] --------------->
+
+    <!----------------- returned product cart[start] --------------->
+    <ion-item lines="none" detail="false" class="required-stock stock-header">
+      <ion-label class="headertitle">Return Products</ion-label>
+    </ion-item>
+    <div class="required-stock-inner">
+      <ion-list class="sub-list-inner" *ngFor="let rp of returnedproduct;let i = index;">
+        <ion-item (click)="toggleBrand(i)" button lines="none" detail="false"
+          class="required-stock re-item  header-category-item">
+          <ion-label class="headertitle">{{rp.name}}</ion-label>
+          <ion-icon *ngIf="!rp.open" name="chevron-forward-outline" slot="end"></ion-icon>
+          <ion-icon *ngIf="rp.open" name="chevron-down-outline" slot="end"></ion-icon>
+        </ion-item>
+        <div *ngIf="rp.open" class="required_stock_brand_inner">
+          <div class="custom-card" *ngFor="let p of rp.child;let index of index;">
+            <div class="custom-card-left">
+              <img [src]=" p.img ? p.img : 'assets/notfound.png' " alt="" (error)="handleImgError($event)"
+                (click)="photoViewer(p.syskey)">
+            </div>
+            <div class="custom-card-right">
+              <ion-item lines="none" style="--inner-padding-end: 8px;">
+                <p class="stockname secondtitle">
+                  {{p.desc}}
+                </p>
+              </ion-item>
+              <ion-row style="margin-bottom: 10px;text-align: center;" class="secondtitle">
+                <ion-col size="5">
+                  <ion-col size="5">
+                    <ion-label>{{p.amount}}</ion-label>
+                  </ion-col>
+                </ion-col>
+                <ion-col size="3" class="price secondtitle">
+                  <ion-label> {{p.price}}</ion-label>
+                </ion-col>
+                <ion-col size="4" class="price secondtitle">
+                  <ion-label> {{p.total}}</ion-label>
+                </ion-col>
+              </ion-row>
+            </div>
+          </div>
+        </div>
+      </ion-list>
+      <ion-grid class="orderbygrid secondtitle">
+        <ion-row>
+          <ion-col> Subtotal <span style="float: right"> : </span></ion-col>
+          <ion-col style="text-align: right;"> {{returnsubtotal}}</ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col> Discount Amount({{discount}}%) <span style="float: right"> : </span></ion-col>
+          <ion-col style="text-align: right;"> {{returndiscountamount}}</ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col> Total Amount <span style="float: right"> : </span></ion-col>
+          <ion-col style="text-align: right;"> {{returntotalamount}}
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </div>
+    <!----------------- returned product cart[end] --------------->
+    <br>
+    <ion-item lines="none" [disabled]="true" style="--background: transparent;--border-width: 1px;">
+      <ion-label position="floating" class="headertitle">Remark :</ion-label>
+      <ion-textarea [(ngModel)]="remark"></ion-textarea>
+    </ion-item>
+    <br><br>
+  </div>
+</ion-content>

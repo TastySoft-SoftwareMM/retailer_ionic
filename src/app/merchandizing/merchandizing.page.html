@@ -1,0 +1,81 @@
+<ion-header>
+  <ion-toolbar color="custom">
+    <ion-buttons slot="start" *ngIf="hiddenSearch">
+      <ion-back-button defaultHref="/main"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Merchandizing</ion-title>
+
+
+    <!-- search  -->
+    <ion-buttons *ngIf="hiddenSearch" (click)="hiddenSearch = false" slot="end">
+      <ion-button>
+        <ion-icon name="search" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+    <ion-buttons class="searchbtn" *ngIf="!hiddenSearch">
+      <ion-button (click)="closeSearchfun()">
+        <ion-icon name="arrow-back" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-searchbar *ngIf="!hiddenSearch" search-icon="null" placeholder="Search..." [(ngModel)]="searchterm"
+      (ionChange)="searchQuery()">
+    </ion-searchbar>
+
+    <!-- search  -->
+  </ion-toolbar>
+
+
+</ion-header>
+
+
+
+<ion-content [scrollEvents]="true" parallaxHeader=''>
+  <!-- -------------------- Checkin Shop ---------------------->
+  <div class="segment-wrap parallaxHeader" *ngIf="hiddenSearch && !isLoading">
+    <app-checkinshop></app-checkinshop>
+  </div>
+
+  <!-- -------------------- loading ---------------------->
+  <div *ngIf="isLoading" class="spinner-container">
+    <ion-spinner></ion-spinner>
+  </div>
+
+  <div *ngIf="!isLoading" class="animated animatedFadeIn fadeInUp main-content-wrapper">
+    <ion-list *ngFor="let p of onlinemerch;let i = index;" style="margin-right: 5px;">
+      <ion-item button class="drop-header" lines="full" (click)="toggleSection(i)">
+        <ion-label class="headertitle">{{p.brandOwnerName}}</ion-label>
+        <ion-icon *ngIf="!p.open" name="chevron-forward-outline" slot="end"></ion-icon>
+        <ion-icon *ngIf="p.open" name="chevron-down-outline" slot="end"></ion-icon>
+      </ion-item>
+      <div *ngIf="p.open" class="drop-content">
+        <ion-row style="border-bottom: 1px solid #00000017;" *ngFor="let t of p.taskList">
+          <ion-col size="12">
+            <!-- <ion-item lines="none"
+              (click)="showPopup(p.brandOwnerId,p.campaignId,t.t2,t.t1,t.t3,p.brandOwnerName,p.brandOwnerCode,t.syskey,t.taskCode,t.taskName,t.remark)"
+              button [ngClass]="t.taskstatus"> -->
+            <ion-item lines="none" (click)="showPopup(p,t)" button [ngClass]="t.taskstatus">
+              <p class="myanmar secondtitle">{{t.taskCode}}</p>
+              <div slot="end" class="ion-activatable ripple-parent">
+                <ion-icon name="list-outline"></ion-icon>
+              </div>
+            </ion-item>
+          </ion-col>
+        </ion-row>
+      </div>
+    </ion-list>
+
+  </div>
+
+  <div class="keyboard"></div>
+
+</ion-content>
+<ion-footer *ngIf="check_merchandizing_view_only == 'false' && !isLoading">
+  <ion-grid class="fo-button-box">
+    <ion-row>
+      <ion-col>
+        <ion-button (click)="submit()" expand="block" color="custom">Submit</ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-footer>

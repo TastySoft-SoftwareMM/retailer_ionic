@@ -1,0 +1,219 @@
+ion-list {
+    padding: 0;
+}
+.sub-category-wrapper {
+    border: 1px solid var(--ion-color-border);
+    border-top: none;
+}
+.category-item {
+    --background: #ffd1d1 !important;
+    ion-label,
+    ion-icon {
+        color: black !important;
+    }
+}
+.custom-item {
+    --padding-top: 0;
+    --padding-bottom: -0;
+    --background: #fdf2f0 !important;
+    ion-label,
+    ion-icon {
+        color: black !important;
+    }
+    ion-icon {
+        zoom: 0.8;
+    }
+}
+.category-item-open {
+    border-bottom: 1px solid var(--ion-color-border);
+}
+.inc-dec-row {
+    border-bottom: 1px solid #e2e2e2c9;
+    text-align: center;
+    transition: all 0.3s;
+
+    .text-con {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .row-container {
+        margin-bottom: 10px !important;
+        .row-box {
+            background-color: #e2e2e2c9;
+            border-radius: 5px;
+            width: 80%;
+            margin-left: 12px !important;
+            margin-right: 5px;
+            ion-icon {
+                font-size: 20px;
+            }
+            ion-input {
+                width: 20px;
+            }
+            ion-button {
+                margin: 0 !important;
+                padding: 0 !important;
+                height: 30px;
+                margin: 3px;
+                margin-left: -1px;
+            }
+        }
+        .add-qty,
+        .dec-qty {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            padding: 7px;
+            border-radius: 5px;
+            color: var(--ion-color-custom);
+        }
+    }
+    .amount-box {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        text-align: center;
+    }
+    ion-row,
+    ion-col {
+        margin: 0;
+        padding: 0;
+    }
+    .addbutton {
+        float: right !important;
+    }
+    ion-button {
+        margin-left: 0em;
+    }
+}
+
+.custom-card {
+    display: inline-flex;
+    width: 100%;
+    margin-bottom: 5px;
+    // transition: all 0.5s cubic-bezier(0.8, -0.6, 0.2, 1.5);
+
+    --inner-padding-start: 0;
+    --inner-padding-end: 0;
+    --padding-start: 5px;
+    --padding-end: 0;
+    --padding-top: 5px;
+
+    .custom-card-left {
+        width: 20%;
+        height: 100%;
+        background-color: white;
+        border: 1px solid #dbdbdb;
+        border-radius: 5px;
+        padding: 5px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        img {
+            height: 60px;
+            object-fit: fill;
+            // height: 100px;
+            border-radius: 5px;
+        }
+    }
+    .custom-card-right {
+        width: 80%;
+        height: 100%;
+        margin-left: 5px;
+        border: 1px solid #dbdbdb;
+        background-color: white;
+        border-radius: 5px;
+        margin-right: 5px;
+
+        ion-item {
+            --background: transparent !important;
+            border-bottom: none;
+            --inner-padding-start: 0;
+            --padding-start: 7px;
+            // --padding-top: 5px;
+            // height: 45px;
+            p {
+                font-size: calc(0.7em + 4px);
+                text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+                color: var(--ion-color-custom);
+            }
+            ion-label {
+                font-size: calc(0.7em + 4px);
+                text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+                color: var(--ion-color-custom);
+            }
+        }
+        .row-box {
+            background-color: #e2e2e2c9;
+            border-radius: 5px;
+            margin-left: 5px;
+            text-align: center;
+
+            width: 85%;
+            ion-icon {
+                font-size: 20px;
+            }
+            ion-input {
+                width: 20px;
+            }
+            ion-button {
+                margin: 0 !important;
+                padding: 0 !important;
+                height: 30px;
+                margin: 3px;
+                margin-left: -1px;
+            }
+        }
+        .label {
+            font-size: 0.8rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .add-qty,
+        .dec-qty {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            padding: 5px;
+            border-radius: 5px;
+            color: var(--ion-color-custom);
+        }
+        ion-row,
+        ion-col {
+            margin: 0;
+            padding: 0;
+        }
+        .price {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            ion-label {
+                margin-left: 1px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+        }
+        .addbutton {
+            float: right !important;
+        }
+        ion-button {
+            margin-left: 0em;
+        }
+        .add-to-cart {
+            width: 90%;
+            margin-left: 15px;
+            text-transform: inherit;
+            margin-bottom: 10px !important;
+        }
+    }
+}
+.ripple-parent {
+    position: relative;
+    overflow: hidden;
+}

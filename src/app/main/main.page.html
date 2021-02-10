@@ -1,0 +1,287 @@
+<ion-menu side="start" menuId="first" contentId="main" type="overlay">
+  <ion-content (click)="checkNetwork()" class="menu-content">
+    <div class="menuHeader">
+      <img src="assets/notfound.png" class="profileImg" (click)="workData('profile')">
+    </div>
+    <ion-list style="background-color: white;">
+      <ion-item button detail lines="none" (click)="workData('profile')" class="s-item">
+        <ion-label>Profile</ion-label>
+        <ion-icon name="person-sharp" slot="start"></ion-icon>
+
+      </ion-item>
+      <ion-item button detail lines="none" (click)="menuworkData('orderlist')" class="s-item ol-item">
+        <ion-label>Order List</ion-label>
+        <ion-icon name="basket" slot="start"></ion-icon>
+      </ion-item>
+    </ion-list>
+  </ion-content>
+  <ion-footer class="ion-no-border" style="background-color: white;">
+    <ion-button expand="block" (click)="logout()" color="custom">
+      <ion-label>Log Out</ion-label>
+    </ion-button>
+  </ion-footer>
+</ion-menu>
+<ion-router-outlet id="main"></ion-router-outlet>
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start" (click)="openFirst()" *ngIf="hiddenSearch">
+      <ion-button>
+        <ion-icon name="menu" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Retailer</ion-title>
+
+    <!-- search  -->
+    <ion-buttons *ngIf="hiddenSearch && !checkout && (shopbyUser.length > 0 || shopbyTeam.length > 0  ) "
+      (click)="hiddenSearch = false" slot="end">
+      <ion-button>
+        <ion-icon name="search" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+    <ion-buttons class="searchbtn" *ngIf="!hiddenSearch && !checkout">
+      <ion-button (click)="closeSearchfun()">
+        <ion-icon name="arrow-back" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-searchbar *ngIf="!hiddenSearch && !checkout" search-icon="null" placeholder="Search..."
+      [(ngModel)]="searchterm" (ionChange)="searchQuery()">
+    </ion-searchbar>
+
+
+    <!-- search  -->
+    <ion-buttons *ngIf="checkout && invoicecompleted != 'true'" slot="end" (click)="workData('shopcart')"
+      style="margin-right: 10px;">
+      <ion-button>
+        <ion-icon name="cart" slot="icon-only"></ion-icon>
+      </ion-button>
+      <ion-badge color="">{{util.truncateCartCount(cartItemCount | async)}}</ion-badge>
+    </ion-buttons>
+    <ion-buttons *ngIf="checkout && invoicecompleted == 'true'" slot="end" (click)="workData('orderdetail')"
+      style="margin-right: 10px;">
+      <ion-button>
+        <ion-icon name="basket-outline" slot="icon-only"></ion-icon>
+      </ion-button>
+      <ion-badge color="">{{util.truncateCartCount(cartItemCountOrderDetail | async)}}</ion-badge>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-list *ngIf="shopbyUser.length > 0 && !checkout && merchandizing && hiddenSearch && !isLoading && !storeowner"
+  class="uploadmerch animated animatedFadeIn fadeInDown">
+  <ion-button expand="block" color="custom" (click)="uploadMerchandizing()" style="height: 48px;">
+    <ion-icon name="cloud-upload" style="position: absolute;left: 6px;"></ion-icon>
+    <ion-label>Upload Merchandizing</ion-label>
+    <span *ngIf="countofmerchandizingLoading" style="position: absolute;right: 0;">
+      <ion-spinner style="color: whitesmoke !important;zoom: 0.7;">
+      </ion-spinner>
+    </span>
+
+    <span *ngIf="!countofmerchandizingLoading" style="position: absolute;right: 0;">
+      {{countofmerchandizing.donecount}} /
+      {{countofmerchandizing.total}}</span>
+  </ion-button>
+</ion-list>
+
+<ion-content [scrollEvents]="true">
+  <div class="msg-container" *ngIf="shopbyUser.length == 0 && shopbyTeam.length == 0 && !checkout && !isLoading">
+    <p class="headertitle" style="text-align: center;">No shop</p>
+    <ion-button (click)="goToSyncPage()" *ngIf="hiddenSearch">
+      <ion-icon name="refresh"></ion-icon>
+      Retry
+    </ion-button>
+  </div>
+
+  <!-- -------------------- loading ---------------------->
+  <div *ngIf="isLoading" class="spinner-container">
+    <ion-spinner></ion-spinner>
+  </div>
+
+
+  <!-- -------------------- shoplist  ---------------------->
+  <ion-list *ngIf="!checkout && !isLoading" class="shoplist  animated animatedFadeIn fadeInUp">
+    <ion-list *ngIf="shopbyUser.length > 0">
+      <ion-item (click)="toggleSectionByMyList()" button lines="none" detail="false" class="required-stock drop-header"
+        [ngClass]="{'section-active' : open, 'section' : !open}">
+        <ion-label class="headertitle">My list of stores for visit:</ion-label>
+        <span slot="end"> {{shopcountbyUser}} / {{shopbyUser.length}}</span>
+        <ion-icon *ngIf="!open" name="chevron-forward-outline" slot="end"></ion-icon>
+        <ion-icon *ngIf="open" name="chevron-down-outline" slot="end"></ion-icon>
+      </ion-item>
+      <div class="drop-inner collapse-user">
+        <div id="measuringWrapper" #target>
+          <ion-item *ngFor="let data of shopbyUser;" button (click)="selectShop(data)" detail="false" lines="none"
+            class="shopitem">
+            <ion-label class="shopname  myanmar headertitle">{{data.shopname}}
+              <div class="shop-sub-line">
+                <!-- phone no -->
+                <p class="secondtitle">{{data.phoneno}}</p>
+
+                <!-- check in status -->
+                <p [ngClass]="data.checkinStatus" class="right secondtitle" *ngIf="data.checkinStatus == 'CHECKIN'">
+                  [ Pending ]</p>
+                <p [ngClass]="data.checkinStatus" class="right secondtitle" *ngIf="data.checkinStatus == 'CHECKOUT'">
+                  [ Complete ]</p>
+                <p [ngClass]="data.checkinStatus" class="right secondtitle"
+                  *ngIf="data.checkinStatus == 'TEMPCHECKOUT'">
+                  [ Temporary Checkout ]
+                </p>
+                <p [ngClass]="data.checkinStatus" class="right secondtitle" *ngIf="data.checkinStatus == 'STORECLOSED'">
+                  [ Store Closed ]
+                </p>
+              </div>
+              <p class="address myanmar secondtitle">{{data.address}}</p>
+            </ion-label>
+
+          </ion-item>
+        </div>
+      </div>
+    </ion-list>
+
+
+
+    <!---------------------- shopbyteam  ---------------------->
+    <ion-list class="product-types" *ngFor="let p of shopbyTeam; let i= index;">
+      <ion-item *ngIf="p.child.length > 0" detail="false" class="required-stock drop-header" button tappable
+        (click)="toggleSectionByTeam(i)" [ngClass]="{'section-active' :p.open, 'section' : !p.open}" lines="none"
+        detail="false">
+        <ion-label class="headertitle">Other lists ( {{p.username}} ) </ion-label>
+        <span slot="end" class="count">{{p.shopcountbyteam}}/ {{p.child.length}}</span>
+        <ion-icon *ngIf="!p.open" name="chevron-forward-outline" slot="end"></ion-icon>
+        <ion-icon *ngIf="p.open" name="chevron-down-outline" slot="end"></ion-icon>
+      </ion-item>
+
+
+      <div class="drop-inner collapse-team" [ngClass]="'collapse-team-' + i">
+        <div id="measuringWrapperteam-{{i}}" class="measuringWrapperteam">
+          <ion-item lines="none" detail="false" *ngFor="let data of p.child" class="shopitem">
+            <ion-label class="shopname headertitle myanmar">{{data.shopname}}
+              <p class="secondtitle">{{data.phoneno}}</p>
+              <p class="address myanmar secondtitle">{{data.address}}</p>
+            </ion-label>
+            <p [ngClass]="data.checkinStatus" class="right secondtitle" *ngIf="data.checkinStatus == 'CHECKIN'">
+              Pending</p>
+            <p [ngClass]="data.checkinStatus" class="right secondtitle" *ngIf="data.checkinStatus == 'CHECKOUT'">
+              Complete</p>
+            <p [ngClass]="data.checkinStatus" class="right secondtitle" *ngIf="data.checkinStatus == 'TEMPCHECKOUT'">
+              Temporary <br>
+              Checkout
+            </p>
+            <p [ngClass]="data.checkinStatus" class="right secondtitle" *ngIf="data.checkinStatus == 'STORECLOSED'">
+              Store <br>
+              Closed
+            </p>
+          </ion-item>
+        </div>
+      </div>
+    </ion-list>
+
+    <div style="height: 50px;"></div>
+  </ion-list>
+
+
+
+  <!-- -------------------- checksteps  ---------------------->
+  <!-- <ion-slides [options]="util.slideOpts" #slideContainer>
+    <ion-slide> -->
+  <ion-grid *ngIf="checkout && !isLoading" class="slide">
+    <!-- shop detail -->
+    <ion-row class="shopinfo_col">
+      <ion-col size="12">
+        <app-checkinshop></app-checkinshop>
+      </ion-col>
+    </ion-row>
+
+    <!-- ads manager -->
+    <!-- <app-ads></app-ads> -->
+
+    <!-- Tasks -->
+    <ion-row class="check_steps  animated animatedFadeIn fadeInUp">
+
+      <!-- Check In -->
+      <ion-col size="6" (click)="workData_1('checkin')" *ngIf="!checkout">
+        <div class="btnDiv ion-activatable ripple-parent">
+          <ion-ripple-effect></ion-ripple-effect>
+          <div class="iconPart">
+            <ion-icon name="location" class="iconBtn"></ion-icon>
+          </div>
+          <div id="textPart">
+            <ion-label class="textBtn">1. Check In</ion-label>
+          </div>
+        </div>
+      </ion-col>
+      <!-- Check In -->
+
+      <!-- Check Out -->
+      <ion-col size="6" (click)="checkOutFunction()" *ngIf="checkout">
+        <div class="btnDiv ion-activatable ripple-parent">
+          <div class="iconPart">
+            <ion-icon src="assets/checkout.svg" class="iconBtn"></ion-icon>
+          </div>
+          <div id="textPart">
+            <ion-label class="textBtn">1. Check Out</ion-label>
+          </div>
+          <!-- <ion-ripple-effect></ion-ripple-effect> -->
+        </div>
+      </ion-col>
+      <!-- Check Out -->
+
+      <ion-col size="6" (click)="workData_1('inventorycheck')">
+        <div class="btnDiv ion-activatable ripple-parent">
+          <b [ngClass]="checkstep.inventorycheck"></b>
+          <div class="iconPart">
+            <ion-icon src="assets/supplier_fill.svg" class="iconBtn"></ion-icon>
+          </div>
+          <div id="textPart">
+            <ion-label class="textBtn">2. Inventory Check</ion-label>
+          </div>
+          <!-- <ion-ripple-effect></ion-ripple-effect> -->
+        </div>
+      </ion-col>
+
+      <ion-col size="6" (click)="workData_1('merchandizing')" *ngIf="merchandizing && !storeowner">
+        <div class="btnDiv ion-activatable ripple-parent">
+          <b [ngClass]="checkstep.merchandizing"></b>
+          <div class="iconPart">
+            <ion-icon src="assets/product_order_fill.svg" class="iconBtn"></ion-icon>
+          </div>
+          <div id="textPart">
+            <ion-label class="textBtn">3. Merchandizing</ion-label>
+          </div>
+          <!-- <ion-ripple-effect></ion-ripple-effect> -->
+        </div>
+      </ion-col>
+      <ion-col size="6">
+        <div class="btnDiv ion-activatable ripple-parent" (click)="workData_1('orderPlacement')">
+          <b [ngClass]="checkstep.orderplacement"></b>
+          <div class="iconPart">
+            <ion-icon src="assets/order_fill.svg" class="iconBtn"></ion-icon>
+          </div>
+          <div id="textPart">
+            <ion-label *ngIf="merchandizing && !storeowner" class="textBtn">4. Order Placement</ion-label>
+            <ion-label
+              *ngIf="(!merchandizing && storeowner) || (merchandizing && storeowner) || (!merchandizing && !storeowner)"
+              class="textBtn">3. Order
+              Placement</ion-label>
+          </div>
+          <!-- <ion-ripple-effect></ion-ripple-effect> -->
+        </div>
+      </ion-col>
+    </ion-row>
+
+    <!-- Skip orderplacement -->
+    <ion-row style="padding: 5px;" class=" animated animatedFadeIn fadeInUp">
+      <ion-col size="12">
+        <ion-item lines="none" [disabled]="skiporderDisabled">
+          <ion-label>Skip order placement</ion-label>
+          <ion-toggle [(ngModel)]="skiporder" (ionChange)="skipOrder($event)"></ion-toggle>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+
+  </ion-grid>
+
+
+  <div class="keyboard"></div>
+
+</ion-content>

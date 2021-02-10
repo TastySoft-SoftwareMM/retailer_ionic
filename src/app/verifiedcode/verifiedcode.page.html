@@ -1,0 +1,89 @@
+<ion-header class="ion-no-border" transparent>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+       <ion-back-button defaultHref="/login"></ion-back-button>
+      </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content fullscreen>
+  <div class="upperPart">
+    <ion-grid class="ion-text-center upperGrid">
+      <div class="upperCenter">
+        <ion-row>
+          <ion-col size="12">
+            <h1>Verification Code</h1>
+            <br>
+            <p>
+              Please type the verification code sent to
+              <strong>{{phoneNumber}}</strong>
+            </p>
+          </ion-col>
+        </ion-row>
+        <br />
+        <div class="varifiedCodediv">
+          <div class="varifiedCoderow">
+              <ion-col *ngFor="let code of otpCodes; let i = index;" size="1">
+                <label *ngIf="code!='-'" class="codeStyle " >{{code}}</label>
+                <label *ngIf="code=='-'" class="codeStyle test">6</label>
+              </ion-col>
+          </div>
+        </div>
+        <br><br>
+        <p class="resendP">
+          Don't receive the OTP? <strong class="resendOTP" (click)="resendOTP()"> RESEND OTP </strong>
+        </p>
+      </div>
+    </ion-grid>
+  </div>
+  <div class="bottomPart">
+    <ion-grid>
+      <ion-row class="numbers">
+        <ion-col size="4">
+          <ion-button expand="full" (click)="addPasscode('1')">1</ion-button>
+        </ion-col>
+        <ion-col size="4">
+          <ion-button expand="full" (click)="addPasscode('2')">2</ion-button>
+        </ion-col>
+        <ion-col size="4">
+          <ion-button expand="full" (click)="addPasscode('3')">3</ion-button>
+        </ion-col>
+      </ion-row>
+      <ion-row class="numbers">
+        <ion-col size="4">
+          <ion-button expand="full" (click)="addPasscode('4')">4</ion-button>
+        </ion-col>
+        <ion-col size="4">
+          <ion-button expand="full" (click)="addPasscode('5')">5</ion-button>
+        </ion-col>
+        <ion-col size="4">
+          <ion-button expand="full" (click)="addPasscode('6')">6</ion-button>
+        </ion-col>
+      </ion-row>
+      <ion-row class="numbers">
+        <ion-col size="4">
+          <ion-button expand="full" (click)="addPasscode('7')">7</ion-button>
+        </ion-col>
+        <ion-col size="4">
+          <ion-button expand="full" (click)="addPasscode('8')">8</ion-button>
+        </ion-col>
+        <ion-col size="4">
+          <ion-button expand="full" (click)="addPasscode('9')">9</ion-button>
+        </ion-col>
+      </ion-row>
+      <ion-row class="numbers">
+        <ion-col size="4">
+          <!-- <ion-button expand="full" (click)="addPasscode('7')">7</ion-button> -->
+        </ion-col>
+        <ion-col size="4">
+          <ion-button expand="full" (click)="addPasscode('0')">0</ion-button>
+        </ion-col>
+        <ion-col size="4">
+          <ion-button expand="full" (click)="addPasscode('back')">
+            <ion-icon name="backspace-outline"></ion-icon>
+          </ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
+</ion-content>

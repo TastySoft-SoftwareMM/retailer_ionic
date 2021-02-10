@@ -1,0 +1,43 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <ion-buttons slot="primary">
+      <ion-button (click)="popoverOpen($event)">
+        <ion-icon slot="icon-only" ios="ellipsis-horizontal" md="ellipsis-vertical" class="moreColor"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+<ion-content fullscreen (click)="checkNetwork()">
+  <div class="logoPart">
+    <img src="assets/login.png" height="100%">
+  </div>
+  <h1>Login Now</h1>
+  <p class="pStyle">Please sign in to continue.</p>
+  <br>
+  <ion-item lines="full">
+    <ion-icon src="assets/id.svg" slot="start"></ion-icon>
+    <ion-input type="tel" placeholder="User ID" [(ngModel)]="userId"></ion-input>
+  </ion-item>
+  <br>
+  <ion-item lines="full">
+    <ion-icon name="lock-closed" slot="start"></ion-icon>
+    <ion-input type="password" placeholder="Password" [(ngModel)]="password"></ion-input>
+  </ion-item>
+  <ion-row class="ion-text-center">
+    <ion-col>
+      <p>
+        <strong>Forgot Password?</strong>
+      </p>
+    </ion-col>
+  </ion-row>
+  <ion-button expand="block" color="custom" (click)="logIn()">LOGIN</ion-button>
+  <ion-row class="ion-text-center">
+    <ion-col size="12">
+      <p class="pStyle">
+        Don't have an account? <strong (click)="signup()"> Sign up</strong>
+      </p>
+    </ion-col>
+  </ion-row>
+
+  <div class="keyboard"></div>
+</ion-content>

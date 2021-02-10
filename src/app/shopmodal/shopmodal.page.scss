@@ -1,0 +1,34 @@
+ion-header {
+    // box-shadow: 0 1px 3px 1px rgba(32, 33, 36, 0.28);
+    // border-bottom: 1px solid var(--ion-color-border);
+}
+ion-content {
+    // --padding-top: 5%;
+    // --padding-end: 5%;
+    // --padding-bottom: 5%;
+    // --padding-start: 5%;
+}
+.icons {
+    width: 100%;
+    height: 100%;
+    // color: #ccc;
+}
+ion-footer {
+    background: #fff;
+}
+.footer {
+    padding-bottom: 10px;
+    background: #fff;
+    position: fixed;
+    bottom: 0;
+    width: 90%;
+}
+
+.colFooter {
+    display: flex;
+    align-items: center;
+}
+ion-button {
+    width: 100%;
+    height: 40px;
+}

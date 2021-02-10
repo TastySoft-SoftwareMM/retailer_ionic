@@ -1,0 +1,16 @@
+<ion-header>
+  <ion-toolbar color="custom">
+    <ion-title>Menu</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/main"></ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+    <ion-fab vertical="bottom" horizontal="end" slot="fixed"  (click)="logOut()">
+      <ion-fab-button color="custom">
+        <ion-icon name="exit-outline"></ion-icon>
+      </ion-fab-button>
+    </ion-fab>
+</ion-content>

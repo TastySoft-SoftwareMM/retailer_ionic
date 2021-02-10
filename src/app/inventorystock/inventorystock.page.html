@@ -1,0 +1,135 @@
+<ion-header>
+  <ion-toolbar color="custom">
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>Stocks</ion-title>
+  </ion-toolbar>
+  <!-- <ion-toolbar color="custom">
+    <ion-searchbar placeholder="Search..." clearIcon="" [(ngModel)]="searchterm" (ionChange)="searchQuery()">
+    </ion-searchbar>
+  </ion-toolbar> -->
+</ion-header>
+<ion-content>
+
+  <div *ngIf="isLoading" class="spinner-container">
+    <ion-spinner></ion-spinner>
+  </div>
+
+  <ion-list *ngIf="!isLoading">
+    <ion-list *ngFor="let pBC of stocks" style="padding: 5px 5px 0 5px;">
+      <ion-item (click)="categoryClicke(pBC)" button lines="none" detail="false"
+        class="required-stock re-item category-item" [ngClass]="pBC.categoryOpen ? '' : 'category-item-open'">
+        <ion-label class="headertitle">{{pBC.categoryDesc}}</ion-label>
+        <ion-icon *ngIf="!pBC.categoryOpen" name="chevron-forward-outline" slot="end"></ion-icon>
+        <ion-icon *ngIf="pBC.categoryOpen" name="chevron-down-outline" slot="end"></ion-icon>
+      </ion-item>
+
+      <ion-list *ngIf="pBC.categoryOpen" class="sub-category-wrapper">
+        <ion-list *ngFor="let cat of pBC.items">
+          <ion-item lines="none" (click)="subCategoryClicke(cat)" class="custom-item sub-category-item"
+            [ngClass]="cat.subCategoryOpen ? '' : 'category-item-open'">
+            <ion-label>{{cat.subCategoryDesc}}</ion-label>
+            <ion-icon *ngIf="!cat.subCategoryOpen" name="chevron-forward-outline" slot="end"></ion-icon>
+            <ion-icon *ngIf="cat.subCategoryOpen" name="chevron-down-outline" slot="end"></ion-icon>
+          </ion-item>
+
+          <ion-virtual-scroll *ngIf="cat.subCategoryOpen" [items]="cat.subitems" approxItemHeight="100px">
+            <ion-item lines='none' class="custom-card" *virtualItem='let data;'>
+              <div class="custom-card-left">
+                <app-image-shell [src]="data?.img" [alt]="'Sample Image'" (click)="photoViewer(data.syskey)">
+                </app-image-shell>
+              </div>
+              <div class="custom-card-right">
+                <ion-item lines="none" style="--inner-padding-end: 8px;">
+                  <div>
+                    <p class="stockname secondtitle">{{data.desc}}</p>
+                  </div>
+                  <ion-checkbox color="custom" slot="end" [(ngModel)]="data.isChecked" (ionChange)="checkEvent(data)">
+                  </ion-checkbox>
+                </ion-item>
+                <ion-row style="margin-bottom: 5px;">
+                  <ion-col size="6">
+                    <ion-row>
+                      <ion-col size="4" class="label secondtitle">
+                        Qty
+                      </ion-col>
+                      <ion-col size="8">
+                        <ion-row class="row-box">
+                          <ion-col (click)="decreaseAmount(data)"
+                            class="ion-align-self-center ion-activatable ripple-parent dec-qty">
+                            <ion-icon src="assets/minus.svg" class="icoqty"></ion-icon>
+                            <ion-ripple-effect></ion-ripple-effect>
+                          </ion-col>
+                          <ion-col class="ion-align-self-center">
+                            <ion-input class="qtyinput secondtitle" type="text" [(ngModel)]="data.amount" maxLength="4"
+                              (click)='inputChange("qty",data)' minlength="0" placeholder="1" value="data.amount">
+                            </ion-input>
+
+                          </ion-col>
+                          <ion-col (click)="incrementAmount(data)"
+                            class="ion-align-self-center ion-activatable ripple-parent add-qty">
+                            <ion-icon src="assets/plus.svg" class="icoqty"></ion-icon>
+                            <ion-ripple-effect></ion-ripple-effect>
+                          </ion-col>
+                        </ion-row>
+                      </ion-col>
+                    </ion-row>
+                  </ion-col>
+                  <ion-col size="6">
+                    <ion-row>
+                      <ion-col size="4" class="label secondtitle">
+                        Exp qty
+                      </ion-col>
+                      <ion-col size="8">
+                        <ion-row class="row-box">
+                          <ion-col (click)="decreaseexpAmount(data)"
+                            class="ion-align-self-center ion-activatable ripple-parent dec-qty">
+                            <ion-icon src="assets/minus.svg" class="icoqty"></ion-icon>
+                            <ion-ripple-effect></ion-ripple-effect>
+                          </ion-col>
+                          <ion-col class="ion-align-self-center">
+                            <ion-input readonly class="qtyinput secondtitle" type="text" [(ngModel)]="data.expqty" maxLength="4"
+                              (click)='inputChange("expqty",data)' minlength="0" placeholder="1" value="data.expqty">
+                            </ion-input>
+                          </ion-col>
+                          <ion-col (click)="incrementexpAmount(data)"
+                            class="ion-align-self-center ion-activatable ripple-parent add-qty">
+                            <ion-icon src="assets/plus.svg" class="icoqty"></ion-icon>
+                            <ion-ripple-effect></ion-ripple-effect>
+                          </ion-col>
+                        </ion-row>
+                      </ion-col>
+                    </ion-row>
+                  </ion-col>
+                </ion-row>
+              </div>
+            </ion-item>
+          </ion-virtual-scroll>
+
+        </ion-list>
+      </ion-list>
+    </ion-list>
+
+
+
+    <!-- <ion-infinite-scroll threshold="100px" (ionInfinite)="doInfinite($event)">
+      <ion-infinite-scroll-content loadingText="Loading more data...">
+      </ion-infinite-scroll-content>
+    </ion-infinite-scroll> -->
+  </ion-list>
+
+  <div class="msg-container" *ngIf="stocks.length == 0 && !isLoading">
+    <p class=" headertitle">No stock</p>
+  </div>
+
+</ion-content>
+<ion-footer>
+  <ion-grid class="fo-button-box">
+    <ion-row>
+      <ion-col>
+        <ion-button expand="block" color="custom" (click)="addStock()">Add</ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-footer>

@@ -1,0 +1,291 @@
+<ion-toolbar class="cart-toolbar">
+  <ion-buttons (click)="navigateBack()" class=" animated animatedFadeIn fadeInLeft" style="position: absolute;">
+    <ion-button color="dark">
+      <ion-icon name="arrow-back-outline" slot="icon-only"></ion-icon>
+    </ion-button>
+  </ion-buttons>
+
+  <ion-row *ngFor="let s of shopinfo" style="text-align: center;"
+    class="sub-shop-info animated animatedFadeIn fadeInDown">
+    <ion-col size="12" style="padding-left: 30px;">
+      <ion-label class="shop-header headertitle">
+        {{s.shop_name}}
+      </ion-label>
+    </ion-col>
+    <ion-col size="12" *ngIf="s.address">
+      <ion-label class="myanmar secondtitle">
+        {{s.address}}
+      </ion-label>
+    </ion-col>
+    <ion-col size="12">
+      <ion-label class="myanmar secondtitle">
+        {{s.date}}
+      </ion-label>
+    </ion-col>
+  </ion-row>
+
+  <ion-icon (click)="viewInvoiceDiscount()" src="assets/discount.svg"
+    class="invdiscountincart  animated animatedFadeIn fadeInRight"></ion-icon>
+
+</ion-toolbar>
+<ion-content>
+
+  <!-- Loading Controller -->
+  <div *ngIf="isLoading" class="spinner-container">
+    <ion-spinner></ion-spinner>
+  </div>
+
+
+  <!-- Order Session -->
+  <div class="animated animatedFadeIn fadeInUp" style="padding: 5px;" *ngIf="!isLoading && !confirmDisabled">
+    <!----------------- order cart [start] --------------->
+    <ion-item lines="none" detail="false" class="required-stock  stock-header">
+      <ion-label class="headertitle">Order Products</ion-label>
+    </ion-item>
+
+    <div class="required-stock-inner">
+      <ion-list class="sub-list-inner" *ngFor="let cp of cart;let i = index;">
+        <!-- Brand Owner Session -->
+        <ion-item (click)="toggleOrder(i)" button lines="none" detail="false"
+          class="required-stock re-item header-category-item ">
+          <ion-label class="headertitle">{{cp.name}}</ion-label>
+          <ion-icon *ngIf="!cp.open" name="chevron-forward-outline" slot="end"></ion-icon>
+          <ion-icon *ngIf="cp.open" name="chevron-down-outline" slot="end"></ion-icon>
+        </ion-item>
+        <div *ngIf="cp.open && !cp.isLoading" class="required_stock_brand_inner">
+          <!-- stock card with promotion session -->
+          <div class="card-wrapper fadeIN" *ngFor="let p of cp.child;let index = index;">
+            <!-- stock card item  -->
+            <div class="custom-card fadeIN">
+              <div class="custom-card-left" (click)="photoViewer(p.syskey)">
+                <p *ngIf="p.promoItems.length > 0 || p.multiplePromo" class="promotion-status">Pro</p>
+                <app-image-shell [src]="p?.img" [alt]="'Sample Image'">
+                </app-image-shell>
+              </div>
+              <div class="custom-card-right">
+                <ion-item lines="none" style="--inner-padding-end: 4px;">
+                  <p class="stockname secondtitle">
+                    {{p.desc}}
+                  </p>
+                  <ion-buttons (click)="deleteCart(cp,p)" slot="end">
+                    <ion-button>
+                      <ion-icon name="trash" slot="icon-only" class="trash-icon"></ion-icon>
+                    </ion-button>
+                  </ion-buttons>
+                </ion-item>
+                <ion-row>
+                  <ion-col size="5">
+                    <ion-row class="row-box">
+                      <ion-col (click)="decreseCart(cp,p)"
+                        class="ion-align-self-center ion-activatable ripple-parent dec-qty">
+                        <ion-icon src="assets/minus.svg" class="icoqty"></ion-icon>
+                        <ion-ripple-effect></ion-ripple-effect>
+                      </ion-col>
+                      <ion-col class="ion-align-self-center" style="text-align: center;">
+                        <ion-input readonly placeholder="1" class="qtyinput secondtitle" [(ngModel)]="p.amount"
+                          maxLength="4" (click)='inputChange(cp,p)' minlength="0" value="p.amount">
+                        </ion-input>
+                      </ion-col>
+                      <ion-col (click)="increaseCart(cp,p)"
+                        class="ion-align-self-center ion-activatable ripple-parent add-qty">
+                        <ion-icon src="assets/plus.svg " class="icoqty"></ion-icon>
+                        <ion-ripple-effect></ion-ripple-effect>
+                      </ion-col>
+                    </ion-row>
+                  </ion-col>
+                  <ion-col size="3" class="price secondtitle">
+                    <ion-label> {{p.price}}</ion-label>
+                  </ion-col>
+                  <ion-col size="4" class="price secondtitle">
+                    <ion-label> {{p.total}}</ion-label>
+                    <div *ngIf="p.discountPercent != 0 || p.discountPercent != '' " class="cutpercent">
+                      <span style="margin-right: 5px;text-decoration-line: line-through;
+                    color: grey;">{{p.price * p.amount}}</span>
+                      -{{p.discountPercent}}%</div>
+                  </ion-col>
+                </ion-row>
+              </div>
+            </div>
+            <ul class="gift-list fadeIN" *ngIf="p.gifts && p.gifts.length > 0">
+              <li class="gift-list-item with-padding" *ngFor="let gift of p.gifts">
+                <span>
+                  {{gift.discountItemDesc}}
+                </span>
+                <span class="qty-badge qty-badge-primary qty-badge-pill">{{gift.discountItemQty}}</span>
+              </li>
+            </ul>
+          </div>
+
+          <!--Invoice  Promotion gifts-->
+          <ion-item (click)="giftToggleSection(i)" *ngIf="cp.gift" button lines="none"
+            [ngClass]="!cp.giftopen ? 'custom-border-bottom' : ''" detail="false"
+            class="required-stock re-item custom-item fadeIN">
+            <ion-label class="headertitle">Invoice Gift</ion-label>
+            <ion-icon *ngIf="!cp.giftopen" name="chevron-forward-outline" slot="end"></ion-icon>
+            <ion-icon *ngIf="cp.giftopen" name="chevron-down-outline" slot="end"></ion-icon>
+          </ion-item>
+          <div *ngIf="cp.gift && cp.giftopen" class="gift-list-bd fadeIN">
+            <ul class="gift-list">
+              <li class="gift-list-item with-padding" *ngFor="let gift of cp.gifts">
+                <span>
+                  {{gift.GiftDesc}}
+                </span>
+                <span class="qty-badge qty-badge-primary qty-badge-pill">{{gift.GiftQty}}</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Loading -->
+        <div *ngIf="cp.isLoading" class="spinner-container-cart">
+          <ion-spinner></ion-spinner>
+        </div>
+
+
+        <!-- summary -->
+        <ion-grid class="orderbygrid secondtitle fadeIN">
+          <ion-row>
+            <ion-col> Subtotal <span style="float: right"> : </span></ion-col>
+            <ion-col style="text-align: right;">
+              <span *ngIf="!cp.isLoading"> {{util.thousand_sperator(cp.subtotal)}} </span>
+              <span *ngIf="cp.isLoading">Calculating...</span>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col> <span style="float: right"> : </span> Discount Amount ({{cp.invdisper}} %) </ion-col>
+            <ion-col style="text-align: right;">
+              <span *ngIf="!cp.isLoading">{{util.thousand_sperator(cp.invdisamount)}} </span>
+              <span *ngIf="cp.isLoading">Calculating...</span>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col> <span style="float: right"> : </span> Total Amount</ion-col>
+            <ion-col style="text-align: right;">
+              <span *ngIf="!cp.isLoading">{{util.thousand_sperator(cp.total)}} </span>
+              <span *ngIf="cp.isLoading">Calculating...</span>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-list>
+    </div>
+    <!----------------- order cart [end] --------------->
+
+
+
+
+    <!----------------- returned product cart[start] --------------->
+    <ion-item *ngIf="returnedproduct.length > 0" lines="none" detail="false"
+      class="required-stock stock-header headertitle">
+      <ion-label>Return Products</ion-label>
+    </ion-item>
+    <div class="required-stock-inner" *ngIf="returnedproduct.length > 0">
+      <ion-list class="sub-list-inner" *ngFor="let rp of returnedproduct;let i = index;">
+        <ion-item (click)="toggleBrand(i)" button lines="none" detail="false"
+          class="required-stock re-item header-category-item">
+          <ion-label class="headertitle">{{rp.name}}</ion-label>
+          <ion-icon *ngIf="!rp.open" name="chevron-forward-outline" slot="end"></ion-icon>
+          <ion-icon *ngIf="rp.open" name="chevron-down-outline" slot="end"></ion-icon>
+        </ion-item>
+        <div *ngIf="rp.open" class="required_stock_brand_inner">
+          <div class="card-wrapper fadeIN" *ngFor="let p of rp.child;let index of index;">
+            <div class="custom-card">
+              <div class="custom-card-left">
+                <app-image-shell [src]="p?.img" [alt]="'Sample Image'" (click)="photoViewer(p.syskey)">
+                </app-image-shell>
+              </div>
+              <div class="custom-card-right">
+                <ion-item lines="none" style="--inner-padding-end: 8px;">
+                  <p class="stockname secondtitle">
+                    {{p.desc}}
+                  </p>
+                  <ion-buttons (click)="deleteExpCart(p)" slot="end">
+                    <ion-button>
+                      <ion-icon name="trash" slot="icon-only" class="trash-icon"></ion-icon>
+                    </ion-button>
+                  </ion-buttons>
+                </ion-item>
+                <ion-row>
+                  <ion-col size="5">
+                    <ion-row class="row-box">
+                      <ion-col (click)="decreaseReturnProduct(p)"
+                        class="ion-align-self-center ion-activatable ripple-parent dec-qty">
+                        <ion-icon src="assets/minus.svg" class="icoqty"></ion-icon>
+                        <ion-ripple-effect></ion-ripple-effect>
+                      </ion-col>
+                      <ion-col class="ion-align-self-center" style="text-align: center;">
+                        <ion-input class="qtyinput secondtitle" type="tel" [(ngModel)]="p.amount"
+                          (ionChange)='inputChangeRe($event,p)' minlength="0" maxLength="4" placeholder="1"
+                          value="p.amount">
+                        </ion-input>
+                      </ion-col>
+                      <ion-col (click)="increaseReturnProduct(p)"
+                        class="ion-align-self-center ion-activatable ripple-parent add-qty">
+                        <ion-icon src="assets/plus.svg" class="icoqty"></ion-icon>
+                        <ion-ripple-effect></ion-ripple-effect>
+                      </ion-col>
+                    </ion-row>
+                  </ion-col>
+                  <ion-col size="3" class="price secondtitle">
+                    <ion-label> {{p.price}}</ion-label>
+                  </ion-col>
+                  <ion-col size="4" class="price secondtitle">
+                    <ion-label> {{p.total}}</ion-label>
+                  </ion-col>
+                </ion-row>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ion-list>
+      <ion-grid class="orderbygrid secondtitle">
+        <ion-row>
+          <ion-col> Subtotal <span style="float: right"> : </span></ion-col>
+          <ion-col style="text-align: right;"> {{util.thousand_sperator(returnsubtotal)}}</ion-col>
+        </ion-row>
+      </ion-grid>
+    </div>
+    <!----------------- returned product cart[end] --------------->
+    <!-- <br>
+    <ion-item lines="none" style="--background: transparent;--border-width: 1px;">
+      <ion-label position="floating" class="headertitle">Remark :</ion-label>
+      <ion-textarea [(ngModel)]="remark"></ion-textarea>
+    </ion-item>
+    <br><br> -->
+  </div>
+
+
+  <div class="keyboard"></div>
+
+</ion-content>
+
+<ion-footer *ngIf="!isLoading">
+  <ion-grid class="fo-button-box">
+    <!-- <ion-row>
+      <ion-col *ngIf="confirmDisabled">
+        <ion-button (click)="completeVisit()" expand="block" color="custom">Complete Visit
+        </ion-button>
+      </ion-col>
+      <ion-col *ngIf="!confirmDisabled">
+        <ion-button [disabled]="btnDisabled" (click)="completeVisit()" expand="block" color="custom">Complete Visit
+        </ion-button>
+      </ion-col>
+      <ion-col>
+        <ion-button (click)="printQ()" [disabled]="printDisabled" expand="block" color="custom">Print
+        </ion-button>
+      </ion-col> -->
+    <!-- <ion-col> -->
+    <ion-button *ngIf="!confirmDisabled" expand="block" color="custom" (click)="previeMultipleSKUsPromo()">Preview
+    </ion-button>
+    <ion-button *ngIf="confirmDisabled" (click)="completeVisit()" expand="block" color="custom">Complete Visit
+    </ion-button>
+    <!-- <ion-button *ngIf="btnDisabled" [disabled]="confirmDisabled" expand="block" color="custom"
+          (click)="orderSubmit()">Order Confirm
+        </ion-button>
+        <ion-button *ngIf="!btnDisabled" expand="block" color="custom" (click)="orderUpdate()">
+          Order Update</ion-button> -->
+    <!-- </ion-col> -->
+    <!-- </ion-row> -->
+  </ion-grid>
+  <!-- <div style="margin-right: 7px;margin-left: 7px;">
+  </div> -->
+</ion-footer>

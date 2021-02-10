@@ -1,0 +1,128 @@
+<ion-header>
+  <ion-toolbar color="custom">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/main"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Profile</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<div *ngIf="isLoading" style="border-bottom: 1px solid #80808026;">
+  <ion-item lines="none" class="profile">
+    <ion-avatar slot="start" class="profileImg">
+      <img src="assets/notfound.png">
+    </ion-avatar>
+    <ion-label class="profilename">{{profile.userName}}
+      <p class="secondtitle">{{profile.userId}}</p>
+      <p></p>
+    </ion-label>
+  </ion-item>
+  <ion-segment style="margin: 0 5px 5px 5px;" (ionChange)="segmentChanged($event)" mode="ios" scrollable color="custom"
+    [(ngModel)]="segment">
+    <ion-segment-button value="1">
+      <ion-label>User Shop</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="2" *ngIf="!storeowner">
+      <ion-label>Team</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="3">
+      <ion-label>Shop Transfer</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="4">
+      <ion-label>Password Reset</ion-label>
+    </ion-segment-button>
+  </ion-segment>
+</div>
+<ion-content (click)="checkNetwork()">
+  <!--  Check Data-->
+  <div class="msg-container" *ngIf="segment == 1 && shopUser.length == 0 && isLoading">
+    <p class="headertitle">No shop</p>
+  </div>
+  <!--  Check Data-->
+  <div class="msg-container" *ngIf="segment == 2 && teams.length == 0 && isLoading">
+    <p class="headertitle">No team</p>
+  </div>
+  <ion-list *ngIf="isLoading" style="padding: 0;">
+    <div>
+      <ion-list *ngIf="segment == 1">
+        <ion-item button detail="false" *ngFor="let u of shopUser" lines="inset" (click)="goDetail(u)">
+          <ion-thumbnail slot="start">
+            <img class="img" src="assets/notfound.png" alt="">
+          </ion-thumbnail>
+          <ion-label class="ion-text-wrap headertitle">
+            {{u.shopname}}
+            <p class="secondtitle">{{u.shopcode}}</p>
+          </ion-label>
+          <b slot="end" [ngClass]="u.checkinStuats"></b>
+        </ion-item>
+      </ion-list>
+      <ion-list *ngIf="segment == 2">
+        <ion-list class="product-types" *ngFor="let p of teams; let i= index;">
+          <ion-item detail="false" button tappable (click)="toggleSection(i,p.usercode)"
+            [ngClass]="{'section-active' :p.open, 'section' : !p.open}" lines="inset">
+            <ion-thumbnail slot="start">
+              <img class="img" src="assets/notfound.png" alt="">
+            </ion-thumbnail>
+            <p class="headertitle">{{p.username}}</p>
+            <ion-icon *ngIf="!p.open" name="chevron-forward-outline" slot="end"></ion-icon>
+            <ion-icon *ngIf="p.open" name="chevron-down-outline" slot="end"></ion-icon>
+          </ion-item>
+          <div *ngIf="p.open">
+            <ion-item button lines="inset" *ngFor="let tbdy of p.child" (click)="goTeamDetail(tbdy)">
+              <ion-thumbnail slot="start">
+                <img class="img" src="assets/notfound.png" alt="">
+              </ion-thumbnail>
+              <ion-label class="headertitle">{{tbdy.shopname}}
+                <p class="secondtitle">{{tbdy.shopcode}}</p>
+              </ion-label>
+            </ion-item>
+          </div>
+        </ion-list>
+      </ion-list>
+      <ion-list *ngIf="segment == 3" class="list_padding">
+        <ion-item lines="full">
+          <ion-icon src="assets/shop.svg" slot="start"></ion-icon>
+          <ion-select interface="popover" [(ngModel)]="shopName" placeholder="Select Shop">
+            <ion-select-option *ngFor="let data of selectShops" [value]="data.shopsyskey" class="secondtitle">
+              {{data.shopname}}
+            </ion-select-option>
+          </ion-select>
+        </ion-item>
+        <br>
+        <ion-item lines="full">
+          <ion-icon name="person" slot="start"></ion-icon>
+          <ion-select interface="popover" placeholder="Select User" [(ngModel)]="userName">
+            <ion-select-option *ngFor="let data of selectUsers" value="{{data.user}}" class="secondtitle">
+              {{data.username}}
+            </ion-select-option>
+          </ion-select>
+        </ion-item>
+        <br>
+        <ion-button expand="block" color="custom" (click)="submit()">Submit</ion-button>
+        <br>
+      </ion-list>
+
+      <ion-list *ngIf="segment == 4" class="list_padding">
+        <ion-item lines="inset">
+          <ion-label position="floating">Current Password</ion-label>
+          <ion-input type="password" [(ngModel)]="curpass"></ion-input>
+        </ion-item>
+        <br>
+        <ion-item lines="inset">
+          <ion-label position="floating">New Password</ion-label>
+          <ion-input type="password" [(ngModel)]="newpass"></ion-input>
+        </ion-item>
+        <br>
+        <ion-item lines="inset">
+          <ion-label position="floating">Confirm Password</ion-label>
+          <ion-input type="password" [(ngModel)]="conpass"></ion-input>
+        </ion-item>
+        <br>
+        <ion-button expand="block" color="custom" (click)="resetPassword()">Save</ion-button>
+        <br>
+      </ion-list>
+    </div>
+  </ion-list>
+  
+  <div class="keyboard"></div>
+</ion-content>

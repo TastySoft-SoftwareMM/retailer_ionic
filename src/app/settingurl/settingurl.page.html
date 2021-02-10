@@ -1,0 +1,20 @@
+<ion-header>
+  <ion-toolbar color="custom">
+    <ion-title>URL</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/login_username"></ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <ion-item lines="inset">
+    <ion-label position="floating">URL</ion-label>
+    <ion-textarea [(ngModel)]="url" [disabled]="btnDisabled"></ion-textarea>
+  </ion-item>
+
+
+
+  <br>
+  <ion-button expand="block" color="custom" (click)="update()" *ngIf="btnDisabled">Update</ion-button>
+  <ion-button expand="block" color="custom" (click)="save()" *ngIf="!btnDisabled">Save</ion-button>
+</ion-content>

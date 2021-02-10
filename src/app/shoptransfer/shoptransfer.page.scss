@@ -1,0 +1,19 @@
+ion-toolbar {
+  // --background: transparent;
+  // --ion-color-base: transparent !important;
+}
+
+ion-content {
+  --padding-top: 15px;
+  --padding-bottom: 15px;
+  --padding-start: 15px;
+  --padding-end: 15px;
+
+  --background: whitesmoke;
+}
+ion-list{
+  background-color: transparent;
+  ion-item{
+    margin-bottom: 5px;
+  }
+}

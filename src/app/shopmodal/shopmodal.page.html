@@ -1,0 +1,34 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <ion-title>Select shop</ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <ion-list>
+    <ion-radio-group allow-empty-selection name="radio-group" (ionChange)="radioGroupChange($event)">
+      <ion-item lines="none" *ngFor="let item of shoplist" (ionFocus)="radioFocus()" (ionSelect)="radioSelect($event)">
+        <span class="headertitle myanmar">{{item.shopname}}</span>
+        <ion-radio slot="start" name="{{item.shopcode}}" value="{{item.shopcode}}">
+        </ion-radio>
+      </ion-item>
+    </ion-radio-group>
+  </ion-list>
+  <div style="height: 35px;width: 100%;">
+  </div>
+</ion-content>
+<ion-footer class="ion-no-border">
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <ion-button fill="outline" size="small" color="custom" (click)="closeModal()">
+          Cancel
+        </ion-button>
+      </ion-col>
+      <ion-col>
+        <ion-button fill="outline" size="small" color="custom" (click)="selectShop()">
+          Select
+        </ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-footer>

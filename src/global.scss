@@ -16,7 +16,7 @@
 @import "~@ionic/angular/css/normalize.css";
 @import "~@ionic/angular/css/structure.css";
 @import "~@ionic/angular/css/typography.css";
-@import '~@ionic/angular/css/display.css';
+@import "~@ionic/angular/css/display.css";
 
 /* Optional CSS utils that can be commented out */
 @import "~@ionic/angular/css/padding.css";
@@ -24,3 +24,732 @@
 @import "~@ionic/angular/css/text-alignment.css";
 @import "~@ionic/angular/css/text-transformation.css";
 @import "~@ionic/angular/css/flex-utils.css";
+
+@font-face {
+  font-family: "Myanmar";
+  font-style: normal;
+  font-weight: bold;
+  src: url("./assets/fonts/myanmar.ttf");
+}
+
+// ion-content {
+//   --background: white;
+// }
+.ion-page:not(ion-app):not(app-camera) {
+  // background-color: linear-gradient(#C9FFBF,) !important;
+  background: whitesmoke !important; /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}
+.custom-ion-content {
+  --background: transparent !important;
+}
+ion-item {
+  --ripple-color: #b5b0b0 !important;
+}
+ion-title {
+  font-size: calc(1rem + ((1.6vw - 2.68px) * 0.6944)) !important;
+}
+
+.secondtitle {
+  font-size: calc(1rem + ((1vw - 7.68px) * 0.6944)) !important;
+}
+.descriptiontitle {
+  font-size: calc(1rem + ((1vw - 7.68px) * 0.6944));
+}
+// .parallaxHeader {
+//   transition: all 1s;
+// }
+.keyboard {
+  transition: all 1s;
+}
+.searchbtn {
+  z-index: 1;
+  color: black;
+  position: absolute;
+  top: calc(50% - calc(45px / 2));
+  left: 5px;
+}
+
+.myanmar {
+  font-family: var(--ion-font-mm-family);
+  font-weight: bold !important;
+  font-size: 13px !important;
+  // color: #afaeac;
+}
+.headertitle {
+  font-size: calc(1rem + ((1.6vw - 5.68px) * 0.6944)) !important;
+}
+.fadeIN {
+  animation: fadeIn 1s;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+ion-slides {
+  width: 100% !important;
+  height: 100% !important;
+  ion-slide {
+    font-size: inherit !important;
+    text-align: inherit !important;
+
+    background-color: whitesmoke !important;
+    height: auto !important;
+  }
+}
+.slide {
+  width: 100% !important;
+  -webkit-hyphens: auto;
+  -ms-hyphens: auto;
+  hyphens: auto;
+  padding: 0;
+}
+
+.loading {
+  --spinner-color: var(--ion-color-custom) !important;
+  ion-spinner {
+    color: var(--ion-color-custom) !important;
+  }
+}
+.toast-scheme {
+  // --background: #1e1f208e;
+}
+
+ion-spinner {
+  color: var(--ion-color-custom) !important;
+}
+.loadingfornodata {
+  height: 90%;
+  width: 100%;
+  position: fixed;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  .loader_spinner {
+    zoom: 1.5;
+  }
+}
+.spinner-container {
+  width: 100%;
+  text-align: center;
+  /* padding: 30px; */
+  /* height: 100px; */
+  position: absolute;
+  top: calc(50% - calc(100px / 2));
+
+  ion-spinner {
+    color: var(--ion-color-custom) !important;
+    zoom: 1.4;
+  }
+}
+.menuHeader {
+  display: flex;
+  // padding-top: 20px !important;
+  width: 100%;
+  height: 180px;
+  // background: linear-gradient(to bottom right, #b30909, #f56c8a);
+  background-color: var(--ion-color-custom) !important;
+}
+ion-badge {
+  position: absolute;
+  right: -1px;
+  top: 5px;
+
+  min-width: 2em;
+
+  color: red;
+  background-color: white;
+  font-size: 0.6em;
+
+  border-radius: 9999px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  box-shadow: 0 0 16px #ccc !important;
+}
+.ripple-parent {
+  position: relative;
+  overflow: hidden;
+  // background-color: lightblue;
+}
+ion-ripple-effect {
+  // color: var(--ion-color-custom) !important;
+}
+.modalStyle .modal-wrapper {
+  height: 75%;
+  width: 80%;
+  border-radius: 2px;
+}
+.taskModal {
+  padding: 20px;
+  --width: 10px;
+  --max-height: 35%;
+  border-radius: 2px;
+}
+.custom-alert-input-modal {
+  transition: all 0.2s;
+  padding: 20px;
+  --max-width: 280px;
+  --max-height: calc(50px + 55px + 65px);
+  .modal-wrapper {
+    border-radius: 5px;
+  }
+}
+.popover-content {
+  --min-width: 50%;
+  white-space: pre-wrap;
+}
+.settingpopover {
+  --width: 10px;
+  .popover-content {
+    top: 12px !important;
+    left: 168px !important;
+    transform-origin: right top !important;
+  }
+}
+.content-popover .popover-content {
+  width: 10px !important;
+}
+.fo-button-box {
+  padding: 1px;
+  margin: 0;
+  ion-row {
+    margin: 2px;
+    ion-col {
+      padding: 0;
+      margin: 0;
+    }
+  }
+}
+.qtyinput {
+  // font-size: 13px !important;
+  width: 30px !important;
+  height: 20px;
+  padding: 0 !important;
+  margin: 0;
+  --padding-start: 0 !important;
+}
+.icoqty {
+  font-size: 15px !important;
+}
+ion-button {
+  text-transform: none;
+}
+// .searchbar-clear-icon.sc-ion-searchbar-md {
+//   width: 0;
+// }
+// .searchbar-input.sc-ion-searchbar-md {
+//   padding-left: unset;
+//   padding-right: unset;
+//   -webkit-padding-start: 10px;
+//   /* padding-inline-start: 55px; */
+//   -webkit-padding-end: 55px;
+//   /* padding-inline-end: 55px; */
+// }
+// .searchbar .searchbar-cancel-button.sc-ion-searchbar-md,
+// .searchbar-search-icon.sc-ion-searchbar-md {
+//   position: absolute;
+//   width: 0;
+// }
+.searchbar-md .searchbar-input {
+}
+// .searchbar-input.sc-ion-searchbar-md {
+//   box-shadow: 0px 1px 0px 0px #69696947;
+//   color: white;
+//   background-color: transparent !important;
+//   --placeholder-color: black;
+// }
+
+ion-button,
+.alert-button.sc-ion-alert-md {
+  text-transform: inherit !important;
+}
+.custom-alert-class .alert-message {
+  padding: 0 0 0 20px;
+}
+//merchandizing modal
+.modal-css {
+  --height: 80%;
+  padding: 20px;
+  border-radius: 2px;
+}
+.shop-info-header {
+  background: white;
+  margin-right: 5px;
+  margin-top: 5px;
+  padding: 5px;
+  border: 1px solid #dbdbdb;
+  border-radius: 5px;
+  font-size: 0.9em;
+}
+.msg-container {
+  position: absolute;
+  top: calc(50% - calc(100px / 2));
+  right: calc(50% - calc(100px / 2));
+  width: 100px;
+  font-size: 1.2em;
+  color: darkgrey;
+}
+ion-header {
+  ion-toolbar {
+    // padding-top: 22px !important;
+  }
+}
+.cart-toolbar {
+  // padding-top: 20px !important;
+}
+ion-item {
+  --highlight-color-valid: var(--ion-color-custom); // valid underline color
+}
+.nodata {
+  display: flex;
+  height: 36px;
+  align-items: center;
+  justify-content: center;
+}
+//--------------------------------------- stock css---------------------------------
+.stockname {
+  color: black !important;
+}
+.stock-header {
+  --background: #ffcdd2 !important;
+
+  text-align: center;
+}
+
+.re-item,
+.drop-header {
+  --background: var(--ion-color-custom) !important;
+  --padding-bottom: 4px;
+  --padding-top: 4px;
+  border: none !important;
+  border-radius: 2px;
+  ion-label,
+  ion-icon,
+  span,
+  p {
+    color: white !important;
+  }
+}
+.trash-icon {
+  color: var(--ion-color-custom) !important;
+}
+
+.required-stock-inner {
+  padding: 5px;
+  padding-bottom: 0;
+  border: 1px solid var(--ion-color-border);
+  border-top: 0;
+  margin-bottom: 5px;
+  .sub-list-inner {
+    padding: 0;
+    margin: 0;
+    position: relative;
+  }
+}
+.required-stock {
+  border: 1px solid var(--ion-color-border);
+  border-bottom: 0;
+}
+.required_stock_brand_inner {
+  padding: 5px;
+  padding-bottom: 0;
+}
+.spinner-container-cart {
+  position: relative;
+  // background-color: #0000001f !important;
+  border: 1px solid var(--ion-color-border);
+  border-bottom: 0;
+  border-top: 0;
+
+  width: 100%;
+  text-align: center;
+  height: 20vh !important;
+
+  ion-spinner {
+    position: absolute;
+    top: calc(50% - calc(30px / 2));
+    color: var(--ion-color-custom) !important;
+    // zoom: 1.3;
+    left: calc(50% - calc(30px / 2));
+  }
+}
+
+/** Order Css **/
+
+.orderbygrid {
+  // margin-bottom: 5px;
+  font-weight: bold;
+  background-color: #fff;
+  border: 1px solid var(--ion-color-border);
+  // box-shadow: 0px 1px 4px 0px #cbcbcb;
+}
+
+.sub-shop-info {
+  border-bottom: 1px solid var(--ion-color-border);
+  margin: 5px;
+  margin-bottom: 0;
+  .shop-header {
+    font-size: 18px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+    color: var(--ion-color-custom);
+  }
+}
+
+.uploadloadingclass {
+  .loading-wrapper {
+    padding-inline-start: 15px !important;
+    padding-inline-end: 15px !important;
+    padding-top: 10px !important;
+    padding-bottom: 10px !important;
+  }
+  .uploadmsg {
+    padding: 10px;
+    font-size: 16px;
+    padding-right: 100px;
+  }
+  .warning {
+    margin-left: 10px;
+  }
+  // span {
+  //     position: absolute;
+  //     bottom: 5px;
+  //     right: 10px;
+  // }
+  .wrap {
+    display: flex;
+    justify-content: space-between;
+  }
+  ion-progress-bar {
+    margin: 5px 0 5px 0;
+  }
+}
+
+.promotion-status {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  top: 0;
+  left: 0;
+  padding: 2px 12px 2px 12px;
+  z-index: 3;
+  margin: 0;
+  // background: #a8e07c;
+  background: var(--ion-color-custom) !important;
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 2px;
+  border-bottom-right-radius: 12px;
+  color: #fff;
+}
+.with-padding {
+  padding: 0.75rem 0.5rem;
+}
+// Promotion
+.gift-list-bd {
+  background-color: white;
+  border: 1px solid var(--ion-color-border);
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+  // margin-bottom: 5px;
+}
+.gift-list {
+  display: flex;
+  flex-direction: column;
+  padding: 5px;
+  margin: 0;
+  .gift-list-item:nth-child(even) {
+    background-color: whitesmoke;
+  }
+  .gift-list-item {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    // padding: 0.75rem 0.5rem;
+    margin-bottom: -1px;
+    background-color: #fff;
+    border: 1px solid var(--ion-color-border);
+    ion-row {
+      width: 100%;
+      margin: 0;
+      padding: 0;
+      ion-col {
+        padding: 0.75rem 0.5rem;
+      }
+      .col-flex-between {
+        display: flex;
+        justify-content: space-between;
+      }
+    }
+  }
+  .gift-list-item:first-child {
+    border-top-left-radius: 0.25rem;
+    border-top-right-radius: 0.25rem;
+  }
+  .gift-list-item-buy-get {
+    background-color: #ffd1d1 !important;
+  }
+
+  .gift-list-item:last-child {
+    border-bottom-left-radius: 0.25rem;
+    border-bottom-right-radius: 0.25rem;
+  }
+}
+.border-right-promo {
+  border-right: 1px solid var(--ion-color-border);
+}
+.with-border {
+  border-right: 1px solid var(--ion-color-border);
+}
+.header-list-promo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.qty-badge {
+  display: inline-block;
+  // padding: 0.25em 0.4em;
+  font-size: 10px;
+  font-weight: 700;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: baseline;
+  margin-left: 5px;
+  height: 15px;
+}
+.qty-badge-pill {
+  padding-right: 0.6em;
+  padding-left: 0.6em;
+  border-radius: 10rem;
+}
+.qty-badge-primary {
+  color: black;
+  border: 1px solid #ccc;
+  background-color: #fdf2f0 !important;
+}
+.statuspro {
+  height: 20px !important;
+  font-size: 10px !important;
+  width: 30px !important;
+  margin: 0 5px 0 5px;
+}
+
+.pro {
+  // background-color: #a8e07c;
+  background-color: var(--ion-color-custom) !important;
+  width: 40px;
+  height: 25px;
+  color: white;
+  padding: 5px;
+  border-radius: 5px;
+  font-size: 12px;
+  font-weight: 600;
+  display: block;
+  text-align: center;
+}
+
+.header-category-item {
+  --background: #ffd1d1 !important;
+}
+.custom-item {
+  --background: #fdf2f0 !important;
+}
+
+.custom-item,
+.header-category-item {
+  // position: sticky;
+  // top: 0;
+  // z-index: 2;
+  // height: 48px;
+  // padding: 2px;
+  --padding-top: 0 !important;
+  --padding-bottom: 0 !important;
+  white-space: pre-wrap !important;
+
+  ion-label,
+  ion-icon {
+    color: black !important;
+  }
+  ion-icon {
+    zoom: 0.8 !important;
+  }
+}
+.custom-border-bottom {
+  border-bottom: 1px solid !important;
+  border-color: var(--ion-color-border) !important;
+}
+.invdiscountincart {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  zoom: 1.2;
+}
+.cutpercent {
+  position: absolute;
+  top: -10px;
+  right: 5px;
+  color: #ff000070;
+  font-size: 11px !important;
+  display: flex;
+}
+.seeallwrapper {
+  padding: 0;
+  margin: 0;
+}
+.seeall {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  font-weight: 500;
+  padding: 0.8rem;
+  background-color: white;
+  transition: all 0.2s;
+  .suggested {
+    color: #212020d6;
+  }
+  .ads {
+    font-size: 0.7rem;
+    color: #393838d6;
+  }
+  ion-icon {
+    zoom: 1.3;
+    color: var(--ion-color-medium);
+  }
+}
+.seeall:active {
+  transform: scale(0.98);
+}
+/* Animation */
+
+@keyframes fadeInUp {
+  from {
+    transform: translate3d(0, 40px, 0);
+  }
+
+  to {
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+  }
+}
+
+@-webkit-keyframes fadeInUp {
+  from {
+    transform: translate3d(0, 40px, 0);
+  }
+
+  to {
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+  }
+}
+
+// fade in down
+@keyframes fadeInDown {
+  from {
+    transform: translate3d(0, -40px, 0);
+  }
+
+  to {
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+  }
+}
+
+@-webkit-keyframes fadeInDown {
+  from {
+    transform: translate3d(0, 40px, 0);
+  }
+
+  to {
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+  }
+}
+
+// fade in left
+@keyframes fadeInLeft {
+  from {
+    transform: translateX(-40px);
+  }
+
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@-webkit-keyframes fadeInLeft {
+  from {
+    transform: translateX(-40px);
+  }
+
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+// fade in Right
+@keyframes fadeInRight {
+  from {
+    transform: translateX(40px);
+  }
+
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@-webkit-keyframes fadeInRight {
+  from {
+    transform: translateX(40px);
+  }
+
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.animated {
+  animation-duration: 1s;
+  animation-fill-mode: both;
+  -webkit-animation-duration: 1s;
+  -webkit-animation-fill-mode: both;
+}
+
+.animatedFadeIn {
+  opacity: 0;
+}
+
+.fadeInUp {
+  opacity: 0;
+  animation-name: fadeInUp;
+  -webkit-animation-name: fadeInUp;
+}
+.fadeInDown {
+  opacity: 0;
+  animation-name: fadeInDown;
+  -webkit-animation-name: fadeInDown;
+}
+
+.fadeInLeft {
+  opacity: 0;
+  animation-name: fadeInLeft;
+  -webkit-animation-name: fadeInLeft;
+}
+
+.fadeInRight {
+  opacity: 0;
+  animation-name: fadeInRight;
+  -webkit-animation-name: fadeInRight;
+}

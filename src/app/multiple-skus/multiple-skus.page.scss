@@ -1,0 +1,196 @@
+ion-slides {
+    background-color: #f5f5f5;
+}
+
+ion-slide {
+    background-color: #fff !important;
+    min-height: 100vh;
+    display: block;
+}
+ion-list {
+    padding: 0;
+    margin: 0;
+}
+.slide-list {
+    width: 100%;
+}
+.header-content {
+    background-color: #d2d1d1;
+}
+.custom-color {
+    color: var(--ion-color-custom) !important;
+}
+ion-card {
+    margin: 5px;
+}
+.rule {
+    margin-bottom: 10px;
+}
+.custom-item {
+    font-weight: bold;
+}
+.stock-card {
+    display: inline-flex;
+    width: 100%;
+    // margin-bottom: 5px;
+    // transition: all 0.2s cubic-bezier(0, 1, 0.98, 0);
+    padding: 5px 5px;
+
+    --inner-padding-start: 0;
+    --inner-padding-end: 0;
+    --padding-start: 3px;
+    --padding-end: 3px;
+    --padding-top: 3px;
+}
+
+.custom-card {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    // margin-bottom: 5px;
+    padding: 0;
+    .category-content-card {
+        background-color: white;
+    }
+
+    ion-buttons {
+        margin: 0;
+        padding: 0;
+    }
+}
+.custom-card-left {
+    position: relative;
+    width: 25%;
+    height: 100%;
+    background-color: white;
+    border: 1px solid #dbdbdb;
+    border-radius: 5px;
+    padding: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    img {
+        height: 80px;
+        object-fit: fill;
+        border-radius: 5px;
+    }
+}
+.custom-card-right {
+    position: relative;
+    width: 75%;
+    margin-left: 5px;
+    border: 1px solid #dbdbdb;
+    background-color: white;
+    border-radius: 5px;
+    // margin-right: 5px;
+    ion-item {
+        --background: transparent !important;
+        border-bottom: none;
+        --inner-padding-start: 0;
+        --inner-padding-end: 4px;
+        --padding-start: 12px;
+        div {
+            height: 60px;
+        }
+        p {
+            font-size: calc(0.7em + 3px);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+            color: var(--ion-color-custom);
+        }
+        ion-label {
+            font-size: calc(0.7em + 3px);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+            color: var(--ion-color-custom);
+        }
+    }
+    .row-box {
+        background-color: #e2e2e2c9;
+        border-radius: 5px;
+        width: 85%;
+        margin-left: 12px !important;
+        margin-right: 5px;
+        ion-icon {
+            font-size: 20px;
+        }
+        ion-input {
+            width: 20px;
+        }
+        ion-button {
+            margin: 0 !important;
+            padding: 0 !important;
+            height: 30px;
+            margin: 3px;
+            margin-left: -1px;
+        }
+    }
+    .add-qty,
+    .dec-qty {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        padding: 5px;
+        border-radius: 5px;
+        color: var(--ion-color-custom);
+    }
+    ion-row,
+    ion-col {
+        margin: 0;
+        padding: 0;
+        font-size: 16px;
+    }
+    .price {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        ion-label {
+            margin-left: 1px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+    }
+    .addbutton {
+        float: right !important;
+    }
+    ion-button {
+        margin-left: 0em;
+    }
+    .add-to-cart {
+        width: 90%;
+        margin-left: 15px;
+        text-transform: inherit;
+        margin-bottom: 10px !important;
+    }
+}
+.custom-card {
+    // .stock-wrapper {
+    // }
+    // ion-item-divider:last-child {
+    //     display: none;
+    // }
+}
+.stock-wrapper {
+    width: 100%;
+}
+.small-item-divider {
+    --inner-padding-top: 0 !important;
+    --inner-padding-bottom: 0 !important;
+    min-height: auto;
+    height: 30px;
+}
+.addtocart {
+    color: #0fca0f;
+}
+
+.gift-list {
+    padding: 5px;
+    padding-top: 0;
+}
+.gift-list .gift-list-item-buy-get {
+    background-color: #fdf2f0 !important;
+    font-weight: bold;
+}
+.gift-list-item {
+    background-color: white;
+}

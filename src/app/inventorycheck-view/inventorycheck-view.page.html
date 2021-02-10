@@ -1,0 +1,84 @@
+<ion-header>
+  <ion-toolbar color="custom">
+    <ion-title>Inventory Check</ion-title>
+    <ion-buttons (click)="goBack()" *ngIf="hiddenSearch" slot="start">
+      <ion-button>
+        <ion-icon name="arrow-back-outline" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+    <!-- search  -->
+    <ion-buttons *ngIf="hiddenSearch" (click)="hiddenSearch = false" slot="end">
+      <ion-button>
+        <ion-icon name="search" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+    <ion-buttons class="searchbtn" *ngIf="!hiddenSearch">
+      <ion-button (click)="closeSearchfun()">
+        <ion-icon name="arrow-back" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-searchbar *ngIf="!hiddenSearch" search-icon="null" placeholder="Search..." [(ngModel)]="searchterm"
+      (ionChange)="searchQuery()">
+    </ion-searchbar>
+
+    <!-- search  -->
+  </ion-toolbar>
+</ion-header>
+<div class="segment-wrap" *ngIf="hiddenSearch">
+  <app-checkinshop></app-checkinshop>
+</div>
+<ion-content>
+  <!------------------ nodata ------------------------>
+  <div class="msg-container" *ngIf="stocks.length == 0 && !isLoading">
+    <p>No stock</p>
+  </div>
+  <!-- -------------------- loading ---------------------->
+  <div *ngIf="isLoading" class="spinner-container">
+    <ion-spinner></ion-spinner>
+  </div>
+  <!-- -------------------- Shop list ---------------------->
+
+  <ion-list *ngIf="stocks.length > 0 && !isLoading" class="fadeIN" style="padding-top: 4px !important;">
+    <div class="custom-card" *ngFor="let data of stocks; let i = index">
+      <div class="custom-card-left">
+        <app-image-shell [src]="data?.img" [alt]="'Sample Image'" (click)="photoViewer(data.syskey)">
+        </app-image-shell>
+      </div>
+      <div class="custom-card-right">
+        <ion-item lines="none" style="--inner-padding-end: 8px;">
+          <div>
+            <p class="stockname">
+              {{data.desc}}
+            </p>
+          </div>
+        </ion-item>
+        <ion-row style="margin-bottom: 5px;">
+          <ion-col size="6">
+            <ion-row>
+              <ion-col size="4" class="label">
+                Qty :
+              </ion-col>
+              <ion-col size="8">
+                {{data.amount}}
+              </ion-col>
+            </ion-row>
+          </ion-col>
+          <ion-col size="6">
+            <ion-row>
+              <ion-col size="6" class="label">
+                Exp qty :
+              </ion-col>
+              <ion-col size="6">
+                {{data.expqty}}
+              </ion-col>
+            </ion-row>
+          </ion-col>
+        </ion-row>
+      </div>
+    </div>
+  </ion-list>
+  <div style="height: 40px;">
+  </div>
+</ion-content>

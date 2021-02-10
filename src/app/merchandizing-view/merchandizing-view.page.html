@@ -1,0 +1,31 @@
+<!-- <ion-header>
+  <ion-toolbar color="custom">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/main"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Merchandizing</ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content *ngIf="isLoading">
+  <app-checkinshop></app-checkinshop>
+  <ion-list *ngFor="let p of onlinemerch;let i = index;" style="margin-right: 5px;">
+    <ion-item button class="drop-header" lines="full" (click)="toggleSection(i)">
+      <ion-label>{{p.brandOwnerDesc}}</ion-label>
+      <ion-icon *ngIf="!p.open" name="chevron-forward-outline" slot="end"></ion-icon>
+      <ion-icon *ngIf="p.open" name="chevron-down-outline" slot="end"></ion-icon>
+    </ion-item>
+    <div *ngIf="p.open" class="drop-content">
+      <ion-row style="border-bottom: 1px solid #00000017;" *ngFor="let t of p.mc003">
+        <ion-col size="12">
+          <ion-item lines="none" (click)="showPopup(t.pictureData, taskCode , taskDesc)" button
+            [ngClass]="t.taskstatus">
+            <p class="myanmar">{{t.taskCode}}</p>
+            <div slot="end" class="ion-activatable ripple-parent">
+              <ion-icon name="list-outline"></ion-icon>
+            </div>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+    </div>
+  </ion-list>
+</ion-content> -->

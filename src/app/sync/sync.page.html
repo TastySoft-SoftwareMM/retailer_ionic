@@ -1,0 +1,41 @@
+<ion-content>
+  <div class="progress" [ngStyle]="showProgress" *ngIf="downloadPercent>=0 && downloadPercent<100">
+    <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="75"
+      aria-valuemin="0" aria-valuemax="100" [ngStyle]="downloadStatus">
+      <span *ngIf="downloadPercent > 0">
+        {{downloadPercent}}%
+      </span>
+      <span *ngIf="downloadPercent == 0" style="color: black !important;" class="scan">
+        Scanning...
+      </span>
+    </div>
+  </div>
+
+
+
+  <div class="progress" [ngStyle]="imgProgress">
+    <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="75"
+      aria-valuemin="0" aria-valuemax="100" [ngStyle]="imgdownloadStatus">
+      <span *ngIf="imgdownloadPercent > 0">{{imgdownloadPercent.toFixed()}}%</span>
+      <span *ngIf="imgdownloadPercent == 0" class="scan"> Scanning...</span>
+    </div>
+  </div>
+
+
+  <ion-item class="ion-no-padding">
+    <ion-label>Types</ion-label>
+    <ion-select value="download" okText="Okay" interface="popover" cancelText="Dismiss">
+      <ion-select-option value="download">Download</ion-select-option>
+      <ion-select-option value="upload">Upload</ion-select-option>
+    </ion-select>
+  </ion-item>
+  <br>
+  <ion-button class="fadeIN" expand="block" color="custom" (click)="downloadData()" *ngIf="startButton"
+    [disabled]="btnDisabled">Start</ion-button>
+
+  <ion-button expand="block" color="custom" (click)="downloadStockImages()" *ngIf="!startButton"
+    [disabled]="downloadbtnDisabled">Download
+    Stock Images</ion-button>
+
+
+</ion-content>

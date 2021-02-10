@@ -1,0 +1,22 @@
+ion-slides {
+    height: 100%;
+}
+ion-toolbar {
+    position: fixed;
+    --background: #4b4b4b57;
+    color: white;
+    ion-title {
+        text-shadow: 2px 2px 5px black;
+    }
+    // padding-top: 22px;
+}
+ion-content {
+    --background: black;
+}
+.loading {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

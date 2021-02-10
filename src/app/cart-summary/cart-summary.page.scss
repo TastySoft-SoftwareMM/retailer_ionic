@@ -1,0 +1,26 @@
+ion-content {
+    --padding-start: 15px;
+    --padding-top: 15px;
+    --padding-bottom: 15px;
+    --padding-end: 15px;
+    --background: whitesmoke;
+}
+ion-list {
+    background: transparent;
+    padding-top: 0;
+}
+span {
+    float: right;
+}
+.box {
+    padding: 0;
+    border: 1px solid var(--ion-color-border);
+    margin-bottom: 15px;
+    .header {
+        border-bottom: 1px solid var(--ion-color-border);
+        text-align: center;
+    }
+    .footer {
+        border-top: 1px solid var(--ion-color-border);
+    }
+}

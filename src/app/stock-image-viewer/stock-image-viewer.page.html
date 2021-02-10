@@ -1,0 +1,55 @@
+<ion-content>
+  <ion-toolbar class="header-toolbar">
+    <ion-buttons (click)="dismissModal()" slot="start">
+      <ion-button>
+        <ion-icon name="arrow-back-outline" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title class="stock-ion-title">{{stock.desc}}</ion-title>
+  </ion-toolbar>
+
+  <ion-img [src]="src[0].img" alt="" (ionError)="handleImgError($event)"></ion-img>
+
+  <ion-row class="stock-detail-header ">
+    <ion-col size="9">
+      <ion-label class="stock-name">{{stock.desc}}</ion-label>
+    </ion-col>
+    <ion-col *ngIf="stock.promoItems && stock.promoItems.length > 0" size="3"
+      style="display: flex;justify-content: flex-end;">
+      <span class="pro">Pro</span>
+    </ion-col>
+  </ion-row>
+
+  <ion-row _ngcontent-fhs-c10="" class="md hydrated" style="padding-left: 10px;">
+    <ion-col style="display: flex;">
+      <span class="tag">
+        <ion-icon name="pricetag-outline"></ion-icon>{{stock.categoryDesc}}
+      </span>
+      <span class="tag">
+        <ion-icon name="pricetag-outline"></ion-icon>{{stock.subCategoryDesc}}
+      </span>
+    </ion-col>
+  </ion-row>
+
+  <ion-grid class="stock-detail">
+    <ion-row>
+      <ion-col>
+        <ion-label class="detail-header">Detail</ion-label>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col> Pack size </ion-col>
+      <ion-col> {{stock.packSizeCode}}</ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col> Category </ion-col>
+      <ion-col> {{stock.categoryCode}}</ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col> Subcategory </ion-col>
+      <ion-col> {{stock.subCategoryCode}}
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+</ion-content>

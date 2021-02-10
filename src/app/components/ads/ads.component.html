@@ -1,0 +1,29 @@
+<ion-row>
+  <!-- suggested  -->
+  <ion-col size="12" class="seeallwrapper animated animatedFadeIn fadeInLeft">
+    <div class="seeall ion-activatable ripple-parent">
+      <div class="suggested"><span class="ads">Ads . </span> Suggested Promotion</div>
+      <ion-icon name="arrow-forward-outline"></ion-icon>
+    </div>
+  </ion-col>
+  <!-- img slide -->
+  <ion-col size="12">
+    <ion-slides class="animated animatedFadeIn fadeInLeft" [options]="slideOpts" #slideWithNav
+      (ionSlideDidChange)="SlideDidChange(slider,slideWithNav)">
+      <ion-slide *ngFor="let s of slider.slidesItems">
+        <app-image-shell [src]="s.img" [alt]="'Ad Image'">
+        </app-image-shell>
+        <span class="adlabel">Ad</span>
+        <div style="
+        background: #16151524;
+        height: 100%;
+        width: 100%;
+        position: absolute;
+        top: 0;
+        z-index: 2;
+        left: 0;
+    "></div>
+      </ion-slide>
+    </ion-slides>
+  </ion-col>
+</ion-row>

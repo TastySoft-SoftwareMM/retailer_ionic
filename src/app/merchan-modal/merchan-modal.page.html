@@ -1,0 +1,71 @@
+<ion-toolbar class="header">
+  <ion-title class="myanmar">{{_task.taskCode}}</ion-title>
+  <ion-buttons slot="start">
+    <ion-button (click)="backPage()">
+      <ion-icon name="arrow-back-outline" slot="icon-only"></ion-icon>
+    </ion-button>
+  </ion-buttons>
+</ion-toolbar>
+<ion-content class="ion-padding" (click)="checkNetwork()" *ngIf="isLoading">
+  <ion-list class="animated animatedFadeIn fadeInUp">
+    <ion-item lines="none" class="taskName">
+      <p class="myanmar secondtitle">{{_task.taskName}}</p>
+    </ion-item>
+    <div class="slides-custom">
+      <ion-grid style="padding-left: 0;">
+
+        <ion-item lines="inset" [disabled]="check_merchandizing_view_only">
+          <ion-label position="stacked" class="headertitle">Remark :</ion-label>
+          <ion-input [(ngModel)]="_task.remark"></ion-input>
+        </ion-item>
+
+        <ion-row *ngIf="check_merchandizing_view_only == 'false'">
+          <ion-col size="6" *ngFor="let i of images; let p = index;">
+            <ion-icon (click)="closePicture(p,i)" class="close" name="close"
+              *ngIf="check_merchandizing_view_only == 'false'">
+            </ion-icon>
+            <img (click)="photoViewer(i.img,p)" [src]="sanitizer.bypassSecurityTrustUrl(i.img)" class="img fadeIN"
+              alt="">
+          </ion-col>
+
+          <ion-col size="6" *ngIf="check_merchandizing_view_only == 'false'">
+            <div (click)="selectimagePicker()">
+              <ion-icon class="add" name="add-outline"></ion-icon>
+            </div>
+          </ion-col>
+        </ion-row>
+
+        <!----- check_merchandizing_view_only -->
+        <ion-row *ngIf="check_merchandizing_view_only == 'true'">
+          <ion-col size="6" *ngFor="let i of images; let p = index;">
+            <img (click)="photoViewer(i.img,p)" [src]="sanitizer.bypassSecurityTrustUrl(i.img)" class="img fadeIN"
+              alt="">
+          </ion-col>
+        </ion-row>
+
+        <!-- <div *ngIf="check_merchandizing_view_only == 'true'">
+          <div size="6" *ngFor="let i of images; let p = index;">
+            <app-merchan-image-shell [src]="i?.img" (click)="photoViewer(i.img,p)"></app-merchan-image-shell>
+          </div>
+        </div> -->
+
+        <ion-col class="noimage" *ngIf="images.length == 0 && check_merchandizing_view_only == 'true'">
+          <ion-label class="secondtitle">No images</ion-label>
+        </ion-col>
+        <!----- check_merchandizing_view_only -->
+      </ion-grid>
+    </div>
+  </ion-list>
+
+  <div class="keyboard"></div>
+
+</ion-content>
+<ion-footer *ngIf="check_merchandizing_view_only == 'false'">
+  <ion-grid class="fo-button-box">
+    <ion-row>
+      <ion-col>
+        <ion-button (click)="upload()" expand="block" color="custom">Save</ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-footer>

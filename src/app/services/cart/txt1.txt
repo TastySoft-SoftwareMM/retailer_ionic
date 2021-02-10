@@ -1,0 +1,7 @@
+# Compare Source 2
+
+1. Price Zone
+2. Remove Estimated Delivery Date
+3. Ads Manager
+4. Animation Class
+5. location error

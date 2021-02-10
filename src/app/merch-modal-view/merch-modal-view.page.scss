@@ -1,0 +1,46 @@
+ion-content {
+    --padding-top: 0 !important;
+}
+ion-title {
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+}
+.slides-custom {
+    img {
+        border-radius: 5px;
+        max-width: 100%;
+        border: 0;
+        // display: flex;
+        height: 80px;
+        width: 100%;
+        object-fit: cover;
+        border: 1px solid #d6d4d4;
+    }
+    .close {
+        position: absolute;
+        right: 6px;
+        color: #fe0000;
+        zoom: 1;
+        margin-top: 5px !important;
+        margin-right: 5px;
+        background: whitesmoke;
+        padding: 2px;
+        border-radius: 50%;
+        box-shadow: 0px 0px 2px 0px #8c8c8c;
+    }
+    div {
+        background-color: #bebebe;
+        height: 80px;
+        border-radius: 5px;
+        text-align: center;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        .add {
+            color: white;
+            font-size: 40px;
+        }
+    }
+}
+.gallery {
+    background-color: blue;
+}

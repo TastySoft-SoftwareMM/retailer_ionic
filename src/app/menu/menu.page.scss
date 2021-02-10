@@ -1,0 +1,87 @@
+ion-button{
+  text-transform: none;
+}
+
+ion-col{
+  padding: 10px;
+  // margin: 0px;
+}
+
+h5{
+  text-shadow: 2px 2px 4px rgba(0, 0, 0,0.2);
+  color: #000;
+}
+
+.btnDiv{
+  width: 100%;
+  height: 10em;
+  box-shadow: 0 10px 6px -6px #777;
+}
+
+.iconPart{
+  display: flex;
+  font-size: 3em;
+  width:100%;
+  height: 70%;
+  border-top:  1px solid #ccc;
+  border-left:  1px solid #ccc;
+  border-right:  1px solid #ccc;
+  color: var(--ion-color-custom) !important;
+}
+
+.textPart{
+  padding-left: 10px;
+  padding-right: 10px;
+  display: flex;
+  width:100%;
+  height: 30%;
+  color: #fff;
+  background: var(--ion-color-custom);
+}
+
+.iconBtn{
+  margin: auto;
+}
+
+.textBtn{
+  margin: auto;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0,0.2);
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.textRow{
+  margin: 10px;
+  border: 1px dashed gray;
+}
+
+.listRow {
+  margin: 10px;
+}
+
+.listCol{
+  padding: 0;
+}
+
+
+.listBack{
+  text-shadow: 2px 2px 4px rgba(0, 0, 0,0.2);
+  color: #fff;
+  // --background: linear-gradient(to bottom right,#c185ff, #78d4fb);
+  --background: var(--ion-color-custom);
+}
+
+.subListback{
+  --background: #00adff14;
+  border-bottom: 1px solid #fff;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0,0.2);
+}
+
+.pending{
+  color: #e0ac08;
+}
+
+.complete{
+  color: #28ba62;
+}

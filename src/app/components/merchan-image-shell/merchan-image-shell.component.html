@@ -1,0 +1,4 @@
+<ion-spinner class="spinner"></ion-spinner>
+<img class="inner-img" *ngIf="_src != ''" [src]="sanitizer.bypassSecurityTrustUrl(_src)" (load)="_imageLoaded()"
+  (error)="handleImgError($event)" />
+<img *ngIf="_src == ''" src="assets/notfound.png" alt="">

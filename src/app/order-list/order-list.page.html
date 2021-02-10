@@ -1,0 +1,69 @@
+<ion-header>
+  <ion-toolbar color="custom">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="main"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Order List</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+
+<ion-content [scrollEvents]="true" parallaxHeader=''>
+
+  <!------------- shop info --------------->
+  <div *ngIf="!isLoading" class="shop-info-header parallaxHeader  animated animatedFadeIn fadeInDown">
+    <div class="secondtitle" *ngFor="let s  of shop_info">
+      <ion-row>
+        <ion-col size="3">
+          <ion-label>Shop </ion-label>
+          <span style="float: right;">-</span>
+        </ion-col>
+        <ion-col size="9">
+          <b>{{s.shop_name}}</b>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size="3">
+          <ion-label>Phone </ion-label>
+          <span style="float: right;">-</span>
+        </ion-col>
+        <ion-col size="9">
+          <b>{{s.phone}}</b>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size="3">
+          <ion-label>Address </ion-label>
+          <span style="float: right;">-</span>
+        </ion-col>
+        <ion-col size="9">
+          <b>{{s.address}}</b>
+        </ion-col>
+      </ion-row>
+    </div>
+  </div>
+
+  <!------------- Order --------------->
+  <div *ngIf="!isLoading" class="animated animatedFadeIn fadeInUp main-content-wrapper">
+    <ion-list class="product-types" *ngFor="let p of order; let i= index;">
+      <ion-item-sliding>
+        <ion-item-options side="end" *ngIf="p.saveStatus != '128'">
+          <ion-item-option class="itemoption" (click)="updateOrderPage(p)">
+            <ion-icon name="create-sharp"></ion-icon>
+          </ion-item-option>
+        </ion-item-options>
+        <ion-item [ngClass]="p.saveStatus == '128' ? 'saveStatus128' : ''" class="drop-header" detail="false" button
+          (click)="toggleSection(p)" [ngClass]="{'section-active' : p.open , 'section' : !p.open}" lines="none">
+          <p style="overflow: hidden;font-size: 14px;" class="secondtitle">{{p.syskey}}</p>
+          <p slot="end" style="font-size: 14px;" class="secondtitle">{{utilService.dateFormat(p.createddate)}}</p>
+          <ion-icon name="chevron-forward-outline" slot="end">
+          </ion-icon>
+        </ion-item>
+      </ion-item-sliding>
+    </ion-list>
+  </div>
+  <!-- -------------------- loading ---------------------->
+  <div *ngIf="isLoading" class="spinner-container">
+    <ion-spinner></ion-spinner>
+  </div>
+</ion-content>

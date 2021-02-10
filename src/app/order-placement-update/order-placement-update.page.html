@@ -1,0 +1,430 @@
+<ion-content>
+
+
+
+  <!-- <ion-segment style="margin: 0 10px 10px 10px;" (ionChange)="segmentChanged($event)" mode="ios" scrollable
+    color="custom" [(ngModel)]="segment">
+    <ion-segment-button value="1">
+      <ion-label>User Shop</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="2" *ngIf="!storeowner">
+      <ion-label>Team</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="3">
+      <ion-label>Shop Transfer</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="4">
+      <ion-label>Password Reset</ion-label>
+    </ion-segment-button>
+  </ion-segment>
+
+  <ion-slides>
+    <ion-slide>
+      <div style="height: 10vh; background-color: rebeccapurple;">
+        <h1>Page 1</h1>
+      </div>
+    </ion-slide>
+
+    <ion-slide>
+      <div style="height: 50vh;background-color: aqua;">
+        <h1>Page 2</h1>
+      </div>
+    </ion-slide>
+  </ion-slides> -->
+  <!-- <ion-item>
+    <ion-label color="medium">Coletor:</ion-label>
+    <ion-select class="ion-text-end" multiple="true" name="idLine" interface="popover">
+      <ion-select-option *ngFor="let item of linesList" value="{{item.id}}">
+        {{ item.name }}
+      </ion-select-option>
+    </ion-select>
+    <ion-icon name="chevron-forward-outline" color="primary" item-end></ion-icon>
+  </ion-item>
+
+  <ion-item>
+    <ion-label>Select</ion-label>
+    <ion-select interface="popover" multiple="true" [(ngModel)]="shopName" placeholder="Select Shop">
+      <ion-select-option *ngFor="let data of linesList" [value]="data.id" class="secondtitle">
+        {{data.name}}
+      </ion-select-option>
+    </ion-select>
+  </ion-item>
+
+  <ion-item button (click)="fill()">
+    <ion-label>fill</ion-label>
+  </ion-item>
+
+  <ion-item button (click)="click()">
+    <ion-label>test</ion-label>
+  </ion-item> -->
+</ion-content>
+
+<!-- <ion-header>
+  <ion-toolbar>
+    <ion-title>Order</ion-title>
+  </ion-toolbar>
+</ion-header>
+<app-checkinshop></app-checkinshop>
+
+<ion-content #myContent>
+
+  <h1>Ion Label</h1>
+  <ion-label class="headertitle">San Thi Ree (Header title)</ion-label><br>
+  <p class="secondtitle">Second title</p>
+  <b class="descriptiontitle">Description title</b>
+
+  <p>Hello Myanmar!</p>
+  <ion-list *ngFor="let i of [0,3,32,32,4,43,3,54,3,54,3,23,32,32,32,32,32]">
+    <p>List {{i}}</p>
+  </ion-list>
+  <hr>
+</ion-content> -->
+<!-- <ion-header class="bar-positive">
+  <div class="buttons">
+    <button class="button button-icon ion-navicon"></button>
+  </div>
+  <h1 class="title">Things</h1>
+</ion-header>
+<ion-content header-shrink scroll-event-interval="5">
+  <div style="height: 50px;"></div>
+  <div class="list card">
+
+    <div class="item item-avatar">
+      <img src="http://ionicframework.com/img/docs/mcfly.jpg">
+      <h2>Marty McFly</h2>
+      <p>November 05, 1955</p>
+    </div>
+
+    <div class="item item-body">
+      <img class="full-image" src="http://ionicframework.com/img/docs/delorean.jpg">
+      <p>
+        This is a "Facebook" styled Card. The header is created from a Thumbnail List item,
+        the content is from a card-body consisting of an image and paragraph text. The footer
+        consists of tabs, icons aligned left, within the card-footer.
+      </p>
+      <p>
+        <a href="#" class="subdued">1 Like</a>
+        <a href="#" class="subdued">5 Comments</a>
+      </p>
+    </div>
+
+    <div class="item tabs tabs-secondary tabs-icon-left">
+      <a class="tab-item" href="#">
+        <i class="icon ion-thumbsup"></i>
+        Like
+      </a>
+      <a class="tab-item" href="#">
+        <i class="icon ion-chatbox"></i>
+        Comment
+      </a>
+      <a class="tab-item" href="#">
+        <i class="icon ion-share"></i>
+        Share
+      </a>
+    </div>
+
+  </div>
+  <div class="list card">
+
+    <div class="item item-avatar">
+      <img src="http://ionicframework.com/img/docs/mcfly.jpg">
+      <h2>Marty McFly</h2>
+      <p>November 05, 1955</p>
+    </div>
+
+    <div class="item item-body">
+      <img class="full-image" src="http://ionicframework.com/img/docs/delorean.jpg">
+      <p>
+        This is a "Facebook" styled Card. The header is created from a Thumbnail List item,
+        the content is from a card-body consisting of an image and paragraph text. The footer
+        consists of tabs, icons aligned left, within the card-footer.
+      </p>
+      <p>
+        <a href="#" class="subdued">1 Like</a>
+        <a href="#" class="subdued">5 Comments</a>
+      </p>
+    </div>
+
+    <div class="item tabs tabs-secondary tabs-icon-left">
+      <a class="tab-item" href="#">
+        <i class="icon ion-thumbsup"></i>
+        Like
+      </a>
+      <a class="tab-item" href="#">
+        <i class="icon ion-chatbox"></i>
+        Comment
+      </a>
+      <a class="tab-item" href="#">
+        <i class="icon ion-share"></i>
+        Share
+      </a>
+    </div>
+
+  </div>
+  <div class="list card">
+
+    <div class="item item-avatar">
+      <img src="http://ionicframework.com/img/docs/mcfly.jpg">
+      <h2>Marty McFly</h2>
+      <p>November 05, 1955</p>
+    </div>
+
+    <div class="item item-body">
+      <img class="full-image" src="http://ionicframework.com/img/docs/delorean.jpg">
+      <p>
+        This is a "Facebook" styled Card. The header is created from a Thumbnail List item,
+        the content is from a card-body consisting of an image and paragraph text. The footer
+        consists of tabs, icons aligned left, within the card-footer.
+      </p>
+      <p>
+        <a href="#" class="subdued">1 Like</a>
+        <a href="#" class="subdued">5 Comments</a>
+      </p>
+    </div>
+
+    <div class="item tabs tabs-secondary tabs-icon-left">
+      <a class="tab-item" href="#">
+        <i class="icon ion-thumbsup"></i>
+        Like
+      </a>
+      <a class="tab-item" href="#">
+        <i class="icon ion-chatbox"></i>
+        Comment
+      </a>
+      <a class="tab-item" href="#">
+        <i class="icon ion-share"></i>
+        Share
+      </a>
+    </div>
+
+  </div>
+</ion-content> -->
+
+<!-- <ion-content class="ion-padding" (click)="checkNetwork()">
+ <ion-segment (ionChange)="segmentChanged($event)" scrollable [(ngModel)]="segment">
+    <ion-segment-button value="1" [class]="">
+      <ion-label>Browse all items</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="2">
+      <ion-label>Recommend stocks</ion-label>
+    </ion-segment-button>
+  </ion-segment>
+</ion-content> -->
+<!-- <ion-header> -->
+<!-- <ion-toolbar>
+    <ion-title *ngIf="!hide">Retailer</ion-title>
+    <ion-buttons slot="start" *ngIf="hide" (click)="hide = false ">
+      <ion-button>
+        <ion-icon name="arrow-back-sharp" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-buttons slot="end" (click)="hide = !hide" *ngIf="!hide">
+      <ion-button>
+        <ion-icon name="search" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-searchbar *ngIf="hide" search-icon="" cancelButtonText="Cancel" cancel-button-icon="arrow-back-sharp">
+    </ion-searchbar>
+  </ion-toolbar> -->
+
+<!-- <ion-grid class="ion-no-padding">
+    <ion-row class="headerRow">
+      <ion-col class="headerCol">
+      </ion-col>
+      <ion-col class="headerCol">
+        <ion-tab-button (click)="workData('shopcart')">
+          <ion-icon name="cart"></ion-icon>
+          <ion-badge>{{cartItemCount | async}}</ion-badge>
+        </ion-tab-button>
+      </ion-col>
+      <ion-col class="headerCol">
+        <ion-tab-button (click)="workData('menu')">
+          <ion-icon ios="ellipsis-horizontal" md="ellipsis-vertical"></ion-icon>
+        </ion-tab-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid> -->
+<!-- </ion-header>
+<ion-content>
+  <ion-button (click)="openPopover($event)">
+    <ion-label>AL</ion-label>
+  </ion-button> -->
+<!-- 
+  <div class="mdc-select">
+    <div class="mdc-select__anchor demo-width-class">
+      <span class="mdc-select__ripple"></span>
+      <input type="text" disabled readonly class="mdc-select__selected-text" value="Vegetables">
+      <i class="mdc-select__dropdown-icon"></i>
+      <span class="mdc-floating-label mdc-floating-label--float-above">Pick a Food Group</span>
+      <span class="mdc-line-ripple"></span>
+    </div>
+
+    <div class="mdc-select__menu demo-width-class mdc-menu mdc-menu-surface">
+      <ul class="mdc-list">
+        <li class="mdc-list-item" data-value=""></li>
+        <li class="mdc-list-item" data-value="grains">
+          <span class="mdc-list-item__text">
+            Bread, Cereal, Rice, and Pasta
+          </span>
+        </li>
+        <li class="mdc-list-item mdc-list-item--selected" data-value="vegetables" aria-selected="true">
+          <span class="mdc-list-item__text">
+            Vegetables
+          </span>
+        </li>
+        <li class="mdc-list-item" data-value="fruit">
+          <span class="mdc-list-item__text">
+            Fruit
+          </span>
+        </li>
+      </ul>
+    </div>
+  </div> -->
+<!-- <div class="custom-card">
+    <div class="custom-card-left">
+      <img alt="">
+    </div>
+    <div class="custom-card-right">
+      <ion-item lines="none" style="--inner-padding-end: 8px;">
+        <div>
+          <p>
+            CIO9876567
+          </p>
+        </div>
+        <ion-buttons slot="end">
+          <ion-button>
+            <ion-icon name="trash" slot="icon-only" style="color: #bbbaba;"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+      </ion-item>
+      <ion-row style="margin-bottom: 5px;">
+        <ion-col size="6">
+          <ion-row>
+            <ion-col size="4" class="label">
+              Qty :
+            </ion-col>
+            <ion-col size="8">
+              <ion-row class="row-box">
+                <ion-col class="ion-align-self-center ion-activatable ripple-parent dec-qty">
+                  <ion-icon name="remove-outline"></ion-icon>
+                  <ion-ripple-effect></ion-ripple-effect>
+                </ion-col>
+                <ion-col class="ion-align-self-center">
+                  <ion-input class="qtyinput" type="text minlength=" 0" maxlength="3" placeholder="1">
+                  </ion-input>
+                </ion-col>
+                <ion-col class="ion-align-self-center ion-activatable ripple-parent add-qty">
+                  <ion-icon name="add-outline"></ion-icon>
+                  <ion-ripple-effect></ion-ripple-effect>
+                </ion-col>
+              </ion-row>
+            </ion-col>
+          </ion-row>
+        </ion-col>
+        <ion-col size="6">
+          <ion-row>
+            <ion-col size="4" class="label">
+              Exp qty :
+            </ion-col>
+            <ion-col size="8">
+              <ion-row class="row-box">
+                <ion-col class="ion-align-self-center ion-activatable ripple-parent dec-qty">
+                  <ion-icon name="remove-outline"></ion-icon>
+                  <ion-ripple-effect></ion-ripple-effect>
+                </ion-col>
+                <ion-col class="ion-align-self-center">
+                  <ion-input class="qtyinput" type="text" minlength="0" maxlength="3" placeholder="1">
+                  </ion-input>
+                </ion-col>
+                <ion-col class="ion-align-self-center ion-activatable ripple-parent add-qty">
+                  <ion-icon name="add-outline"></ion-icon>
+                  <ion-ripple-effect></ion-ripple-effect>
+                </ion-col>
+              </ion-row>
+            </ion-col>
+          </ion-row>
+        </ion-col>
+      </ion-row>
+    </div>
+  </div> -->
+
+
+<!-- </ion-content> -->
+<!-- <ion-content class="ion-padding">
+ 
+  
+  <ion-list>
+    <ion-item lines="none" details="false" class="required-stock stock-header">
+      <ion-label>Recommend Stocks</ion-label>
+    </ion-item>
+    <div class="required-stock-inner">
+      <div class="custom-card" *ngFor="let p of jsonData;let i = index;">
+        <div class="custom-card-left">
+          <img src="assets/nophoto.svg" alt="">
+        </div>
+        <div class="custom-card-right">
+          <ion-item lines="none" style="--inner-padding-end: 8px;">
+            <div>
+              <p>
+                7483902
+                <ion-label>SP Bean Bakery</ion-label>
+              </p>
+            </div>
+            <ion-buttons slot="end">
+              <ion-button>
+                <ion-icon name="trash" slot="icon-only" style="color: #bbbaba;"></ion-icon>
+              </ion-button>
+            </ion-buttons>
+          </ion-item>
+          <ion-row>
+            <ion-col size="5">
+              <ion-row class="row-box">
+                <ion-col (click)="decreseCart(p)" class="ion-align-self-center ion-activatable ripple-parent dec-qty">
+                  <ion-icon name="remove-outline"></ion-icon>
+                  <ion-ripple-effect></ion-ripple-effect>
+                </ion-col>
+                <ion-col class="ion-align-self-center" style="text-align: center;">
+                  <ion-input placeholder="1" type="text" [(ngModel)]="p.amount" (ionChange)='inputChange($event,i)'
+                    min="1" minlength="1" maxlength="3" [value]="p.amount">
+                  </ion-input>
+                  <ion-ripple-effect></ion-ripple-effect>
+                </ion-col>
+                <ion-col (click)="increaseCart(p)" class="ion-align-self-center ion-activatable ripple-parent add-qty">
+                  <ion-icon name="add-outline"></ion-icon>
+                  <ion-ripple-effect></ion-ripple-effect>
+                </ion-col>
+              </ion-row>
+            </ion-col>
+            <ion-col size="3" class="price">
+              <ion-label>{{p.price}}</ion-label>
+            </ion-col>
+            <ion-col size="4" class="price">
+              <ion-label>{{ p.price * p.amount }}</ion-label>
+            </ion-col>
+          </ion-row>
+        </div>
+      </div>
+    </div>
+  </ion-list>
+
+
+</ion-content> -->
+<!-- 
+<ion-footer>
+  <ion-grid class="fo-button-box">
+    <ion-row>
+      <ion-col>
+        <ion-button [disabled]="true" expand="block" color="custom">Complete Visit
+        </ion-button>
+      </ion-col>
+      <ion-col>
+        <ion-button [disabled]="true" expand="block" color="custom">
+          Print
+        </ion-button>
+      </ion-col>
+      <ion-col>
+        <ion-button expand="block" color="custom" (click)="orderUpdate()">Order Update</ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-footer> -->

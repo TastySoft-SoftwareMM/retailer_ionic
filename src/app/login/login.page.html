@@ -1,0 +1,23 @@
+<ion-content>
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <div class="contentLogin ion-text-center">
+          <img src="assets/send.png" alt="" width="50%">
+          <h1>OTP Verification</h1>
+          <p>We will send you an <strong>One Time Password</strong> on this mobile number</p>
+          <br>
+          <ion-input placeholder="Enter phone number" type="tel" [(ngModel)]="phoneNumber"></ion-input>
+          <br>
+          <!-- <ion-button expand="block">GET OTP</ion-button> -->
+          <ion-fab vertical="end" horizontal="center" >
+            <ion-fab-button color="custom" (click)="openVerifiedcode()">
+              <ion-icon src="assets/next.svg"></ion-icon>
+            </ion-fab-button>
+          </ion-fab>
+          <br><br><br><br>
+        </div>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

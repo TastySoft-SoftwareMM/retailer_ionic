@@ -121,7 +121,7 @@ export class SyncPage implements OnInit {
                 ref.offlineService.insertStockImg({ code: code, img: ref.webview.convertFileSrc(npath) })
               });
 
-              
+
               if (interval + 1 == ref.stockall.length) {
                 ref.imgProgress = { 'display': 'none' };
                 setTimeout(() => {

@@ -255,7 +255,7 @@ export class CheckoutOrderupdatePage implements OnInit {
         };
       })
 
-
+      // Join Array Order product with Return products
       const joinbrandList = orderbrandList.concat(returnbrandList);
       const brandList = Array.from(new Set(joinbrandList.map(s => s.brandOwnerSyskey))).map(syskey => {
         return {
@@ -435,12 +435,10 @@ export class CheckoutOrderupdatePage implements OnInit {
         }
 
 
-
         this.child.filter(obj => {
           this.stockbybrand.reduce((i, j) => i + j.stockData.push(obj), 0);
         });
         //--------part of order [end]---------
-
 
 
         //--------part of return [start]---------
@@ -473,6 +471,7 @@ export class CheckoutOrderupdatePage implements OnInit {
             "taxPercent": 0.0
           });
         });
+
         this.stockreturndata.filter(obj => {
           if (obj) {
             this.stockbybrand.reduce((i, j) => i + j.stockReturnData.push(obj), 0);

@@ -3,18 +3,11 @@
 
   <ion-toolbar color="primary">
     <ion-buttons (click)="dismissModal()" slot="start">
-<<<<<<< HEAD
-      <ion-button slot="start" class="back-ion-button" color="light">
+      <ion-button size="small" slot="start" class="back-ion-button" color="light">
         <ion-icon name="arrow-back-outline" slot="icon-only"></ion-icon>
       </ion-button>
     </ion-buttons>
 
-=======
-      <ion-button class="back-ion-button" color="light">
-        <ion-icon name="arrow-back-outline" slot="icon-only"></ion-icon>
-      </ion-button>
-    </ion-buttons>
->>>>>>> 55a4808895cb728781f683c963cf08f6b773f22a
     <ion-title>
       {{stock.desc}}
     </ion-title>
@@ -116,27 +109,17 @@
               </ion-row>
             </li>
             <li class="gift-list-item" *ngFor="let p of dl.details">
-<<<<<<< HEAD
 
               <ion-row *ngIf="p.BuyType == 'Equal to'">
                 <ion-col size="6" class="border-right-promo">
                   <span class="custom-color">{{p.PromoAmount}}</span>
-=======
-              <ion-row>
-                <ion-col size="6" class="border-right-promo">
-                  <span style="font-weight: bold;">{{p.PromoAmount}}</span>
->>>>>>> 55a4808895cb728781f683c963cf08f6b773f22a
                   <span *ngIf="p.PromoType == 'Amount'"> Ks </span>
                   <span *ngIf="p.PromoType == 'Qty'"> pcs </span>
 
                   <!-- between -->
                   <span *ngIf="p.Operator == 'between'" style="margin: 0 4px 0 4px;"> between </span>
-<<<<<<< HEAD
                   <span *ngIf="p.Operator == 'between'" style="margin: 0 4px 0 4px;font-weight: bold;"
                     class="custom-color">
-=======
-                  <span *ngIf="p.Operator == 'between'" style="margin: 0 4px 0 4px;font-weight: bold;">
->>>>>>> 55a4808895cb728781f683c963cf08f6b773f22a
                     {{p.PromoAmount2}}
                   </span>
 
@@ -154,7 +137,6 @@
                 <ion-col size="6" [ngClass]="p.DiscountType == 'Inkind' ? 'col-flex-between': ''">
                   <span *ngIf="p.DiscountType == 'Price'" style="vertical-align: middle;
                 font-weight: bold;
-<<<<<<< HEAD
                 font-size: 15px;" class="custom-color">{{p.DiscountAmount}}</span>
                   <span *ngIf="p.DiscountPriceType =='Percentage' && p.DiscountType == 'Price'">&nbsp;% off </span>
 
@@ -194,9 +176,6 @@
                   <span *ngIf="p.DiscountType == 'Price'" style="vertical-align: middle;
                 font-weight: bold;
                 font-size: 15px;" class="custom-color">{{p.DiscountAmount}}</span>
-=======
-                font-size: 15px;">{{p.DiscountAmount}}</span>
->>>>>>> 55a4808895cb728781f683c963cf08f6b773f22a
                   <span *ngIf="p.DiscountPriceType =='Percentage' && p.DiscountType == 'Price'">&nbsp;% off </span>
 
                   <!-- Inkind Gift -->
@@ -205,7 +184,6 @@
                   <span *ngIf="p.DiscountType == 'Inkind'"
                     class="qty-badge qty-badge-primary qty-badge-pill">{{p.DiscountItemQty}}</span>
                 </ion-col>
-<<<<<<< HEAD
 
                 <ion-col size="12" class="border-top-promo">
                   <span class="tagcontainer">
@@ -234,8 +212,6 @@
                   </span>
 
                 </ion-col>
-=======
->>>>>>> 55a4808895cb728781f683c963cf08f6b773f22a
               </ion-row>
             </li>
           </ul>
@@ -273,11 +249,7 @@
             <ion-item-divider *ngIf="i == 0" class="custom-item">
               <ion-label style="line-height: 1.7rem;">Buy Rule Type &nbsp;<span
                   style="color: var(--ion-color-medium);">•</span>&nbsp; <span
-<<<<<<< HEAD
                   class="statustype">{{p.multiplePromo.RuleType}}</span></ion-label>
-=======
-                  class="custom-color">{{p.multiplePromo.RuleType}}</span></ion-label>
->>>>>>> 55a4808895cb728781f683c963cf08f6b773f22a
             </ion-item-divider>
 
             <ion-item lines="none" class="stock-card">
@@ -338,30 +310,18 @@
                     </ion-col>
                   </ion-row>
                 </li>
-<<<<<<< HEAD
                 <li class="gift-list-item" *ngIf="p.multiplePromo.BuyType == 'Equal to'">
                   <ion-row>
                     <ion-col size="12">
                       <span class="custom-color">{{p.multiplePromo.PromoAmount}}</span>
-=======
-                <li class="gift-list-item">
-                  <ion-row>
-                    <ion-col size="12">
-                      <span style="font-weight: bold;">{{p.multiplePromo.PromoAmount}}</span>
->>>>>>> 55a4808895cb728781f683c963cf08f6b773f22a
                       <span *ngIf="p.multiplePromo.PromoType == 'Amount'"> Ks </span>
                       <span *ngIf="p.multiplePromo.PromoType == 'Qty'"> pcs </span>
 
                       <!-- between -->
                       <span *ngIf="p.multiplePromo.Operator == 'between'" style="margin: 0 4px 0 4px;"> between
                       </span>
-<<<<<<< HEAD
                       <span *ngIf="p.multiplePromo.Operator == 'between'" style="margin: 0 4px 0 4px;font-weight: bold;"
                         class="custom-color">
-=======
-                      <span *ngIf="p.multiplePromo.Operator == 'between'"
-                        style="margin: 0 4px 0 4px;font-weight: bold;">
->>>>>>> 55a4808895cb728781f683c963cf08f6b773f22a
                         {{p.multiplePromo.PromoAmount2}}
                       </span>
 
@@ -383,7 +343,6 @@
                     </ion-col>
                   </ion-row>
                 </li>
-<<<<<<< HEAD
 
                 <li class="gift-list-item" *ngIf="p.multiplePromo.BuyType == 'Multiple of'">
                   <ion-row>
@@ -427,8 +386,6 @@
                     </ion-col>
                   </ion-row>
                 </li>
-=======
->>>>>>> 55a4808895cb728781f683c963cf08f6b773f22a
               </ul>
             </ion-list>
 
@@ -447,11 +404,7 @@
                     <ion-col size="12" [ngClass]="p.multiplePromo.DiscountType == 'Inkind' ? 'col-flex-between': ''">
                       <span *ngIf="p.multiplePromo.DiscountType == 'Price'" style="vertical-align: middle;
                                 font-weight: bold;
-<<<<<<< HEAD
                                 font-size: 15px;" class="custom-color">{{p.multiplePromo.DiscountAmount}}</span>
-=======
-                                font-size: 15px;">{{p.multiplePromo.DiscountAmount}}</span>
->>>>>>> 55a4808895cb728781f683c963cf08f6b773f22a
                       <span
                         *ngIf="p.multiplePromo.DiscountPriceType =='Percentage' && p.multiplePromo.DiscountType == 'Price'">&nbsp;%
                         off
@@ -464,7 +417,6 @@
                 </li>
               </ul>
             </ion-list>
-<<<<<<< HEAD
             <!-- 
             <ion-item-divider class="custom-item small-item-divider" *ngIf="i+ 1 != header.DetailList.length">
               <ion-label class="custom-color">{{p.multiplePromo.EndType}}</ion-label>
@@ -472,12 +424,6 @@
 
             <h2 class="endtypeh2" *ngIf="i+ 1 != header.DetailList.length"><span
                 class="statustype">{{p.multiplePromo.EndType}}</span></h2>
-=======
-
-            <ion-item-divider class="custom-item small-item-divider" *ngIf="i+ 1 != header.DetailList.length">
-              <ion-label class="custom-color">{{p.multiplePromo.EndType}}</ion-label>
-            </ion-item-divider>
->>>>>>> 55a4808895cb728781f683c963cf08f6b773f22a
             <!-- stock detail-->
           </ion-list>
         </ion-card>

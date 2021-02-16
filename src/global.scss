@@ -466,14 +466,10 @@ ion-item {
   padding: 5px;
   margin: 0;
   .gift-list-item:nth-child(even) {
-<<<<<<< HEAD
-    background-color: white;
+    background-color: #fdf2f0;
   }
   .gift-list-item:nth-child(odd) {
-    background-color: #fdf2f0;
-=======
-    background-color: whitesmoke;
->>>>>>> 55a4808895cb728781f683c963cf08f6b773f22a
+    background-color: white;
   }
   .gift-list-item {
     position: relative;

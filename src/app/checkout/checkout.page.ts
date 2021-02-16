@@ -845,7 +845,7 @@ export class CheckoutPage implements OnInit {
 
 
 
-      //Brand List from order and return products
+      //Brand List from order and return product
 
       //Order
       const orderbrandList = Array.from(new Set(this.cart.map(s => s.brandOwnerSyskey))).map(syskey => {

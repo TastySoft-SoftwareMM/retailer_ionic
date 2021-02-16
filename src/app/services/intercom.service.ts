@@ -55,7 +55,6 @@ export class IntercomService {
       localStorage.setItem("url", "http://18.136.44.90:8084/madbrepository/");
       localStorage.setItem("imgurl", "http://18.136.44.90:8084/");
 
-
       // http://18.136.44.90:8084/madbrepository/
       /******GO Live Server ***/
       // this.apiurl = "http://54.255.17.88:8084/madbrepository/";

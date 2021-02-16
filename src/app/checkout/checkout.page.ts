@@ -508,7 +508,32 @@ export class CheckoutPage implements OnInit {
       }
       this.params.totalamount = (Number(orderproduct) - Number(returnproduct)) - Number(borderinvdiscountamount);
 
-      this.cart.filter(bobj => {
+      //Brand List from order and return products
+
+      //Order
+      const orderbrandList = Array.from(new Set(this.cart.map(s => s.brandOwnerSyskey))).map(syskey => {
+        return {
+          'brandOwnerSyskey': syskey
+        };
+      })
+      //Return
+      const returnbrandList = Array.from(new Set(this.returnedproduct.map(s => s.brandOwnerSyskey))).map(syskey => {
+        return {
+          'brandOwnerSyskey': syskey
+        };
+      })
+
+      const joinbrandList = orderbrandList.concat(returnbrandList);
+      const brandList = Array.from(new Set(joinbrandList.map(s => s.brandOwnerSyskey))).map(syskey => {
+        return {
+          'brandOwnerSyskey': syskey
+        };
+      })
+
+
+
+
+      brandList.filter(bobj => {
 
         this.stockbybrand = [];
         this.stockreturndata = [];
@@ -575,7 +600,7 @@ export class CheckoutPage implements OnInit {
           "transId": "",
           "docummentDate": this.util.getTodayDate(),
           "brandOwnerCode": this.cartService.stockdata.find(el => el.brandOwnerSyskey == bobj.brandOwnerSyskey).brandOwnerCode,
-          "brandOwnerName": bobj.name,
+          "brandOwnerName": this.cartService.stockdata.find(el => el.brandOwnerSyskey == bobj.brandOwnerSyskey).brandOwnerName,
           "brandOwnerSyskey": bobj.brandOwnerSyskey,
           "orderSyskey": "",
           "totalamount": this.util.fixedPoint((Number(bordersubtotal) - Number(breturntotal)) - Number(invdisamount)),
@@ -595,71 +620,73 @@ export class CheckoutPage implements OnInit {
         });
 
         //---- part of order stockData 
-        bobj.child.map(hrule => {
-          hrule.rule.map(sobj => {
-            //---- Promotion Items [gifts] -------
+        if (orderbrand.length > 0) {
+          orderbrand[0].child.map(hrule => {
+            hrule.rule.map(sobj => {
+              //---- Promotion Items [gifts] -------
 
-            //Single Rule
-            var promotItems = [];
-            if (sobj.gifts.length > 0) {
-              sobj.gifts.map(gift => {
+              //Single Rule
+              var promotItems = [];
+              if (sobj.gifts.length > 0) {
+                sobj.gifts.map(gift => {
+                  promotItems.push({
+                    syskey: "0",
+                    recordStatus: 1,
+                    stockCode: '',
+                    stockName: gift.discountItemDesc,
+                    stockSyskey: gift.discountStockSyskey == "" || gift.discountStockSyskey == null || gift.discountStockSyskey == undefined ? 0 : gift.discountStockSyskey,
+                    promoStockSyskey: gift.discountItemSyskey == "" || gift.discountItemSyskey == null || gift.discountItemSyskey == undefined ? 0 : gift.discountItemSyskey,
+                    qty: Number(gift.discountItemQty),
+                    promoStockType: gift.discountItemType
+                  })
+                })
+              }
+
+              // Multiple rule gift
+              if (sobj.multigift) {
                 promotItems.push({
                   syskey: "0",
                   recordStatus: 1,
                   stockCode: '',
-                  stockName: gift.discountItemDesc,
-                  stockSyskey: gift.discountStockSyskey == "" || gift.discountStockSyskey == null || gift.discountStockSyskey == undefined ? 0 : gift.discountStockSyskey,
-                  promoStockSyskey: gift.discountItemSyskey == "" || gift.discountItemSyskey == null || gift.discountItemSyskey == undefined ? 0 : gift.discountItemSyskey,
-                  qty: Number(gift.discountItemQty),
-                  promoStockType: gift.discountItemType
+                  stockName: sobj.multigift.discountItemDesc,
+                  stockSyskey: sobj.multigift.discountStockSyskey == "" || sobj.multigift.discountStockSyskey == null || sobj.multigift.discountStockSyskey == undefined ? 0 : sobj.multigift.discountStockSyskey,
+                  promoStockSyskey: sobj.multigift.discountItemSyskey == "" || sobj.multigift.discountItemSyskey == null || sobj.multigift.discountItemSyskey == undefined ? 0 : sobj.multigift.discountItemSyskey,
+                  qty: Number(sobj.multigift.discountItemQty),
+                  promoStockType: sobj.multigift.discountItemType
                 })
-              })
-            }
+              }
 
-            // Multiple rule gift
-            if (sobj.multigift) {
-              promotItems.push({
-                syskey: "0",
-                recordStatus: 1,
-                stockCode: '',
-                stockName: sobj.multigift.discountItemDesc,
-                stockSyskey: sobj.multigift.discountStockSyskey == "" || sobj.multigift.discountStockSyskey == null || sobj.multigift.discountStockSyskey == undefined ? 0 : sobj.multigift.discountStockSyskey,
-                promoStockSyskey: sobj.multigift.discountItemSyskey == "" || sobj.multigift.discountItemSyskey == null || sobj.multigift.discountItemSyskey == undefined ? 0 : sobj.multigift.discountItemSyskey,
-                qty: Number(sobj.multigift.discountItemQty),
-                promoStockType: sobj.multigift.discountItemType
-              })
-            }
+              //---- Promotion Items [gifts] -------
+              let discountAmount = this.util.fixedPoint((Number(sobj.price) * Number(sobj.discountPercent)) / 100);
+              let sellingPrice = this.util.fixedPoint(Number(sobj.price) - Number(discountAmount));
 
-            //---- Promotion Items [gifts] -------
-            let discountAmount = this.util.fixedPoint((Number(sobj.price) * Number(sobj.discountPercent)) / 100);
-            let sellingPrice = this.util.fixedPoint(Number(sobj.price) - Number(discountAmount));
-
-            this.child.push({
-              "syskey": "",
-              "stockCode": sobj.code,
-              "recordStatus": 1,
-              "saleCurrCode": "MMK",
-              "n1": "",
-              "wareHouseSyskey": sobj.whSyskey,
-              "binSyskey": "0",
-              "qty": Number(sobj.amount),
-              "lvlSyskey": "390398473894233",
-              "lvlQty": 0,
-              "n8": 0.0,
-              "normalPrice": Number(sobj.price),
-              "price": sellingPrice,
-              "n9": 0.0,
-              "taxAmount": 0.0,
-              "totalAmount": this.util.fixedPoint(Number(sellingPrice) * Number(sobj.amount)),
-              "taxCodeSK": "0",
-              "isTaxInclusice": 0,
-              "taxPercent": 0.0,
-              'discountAmount': Number(discountAmount),
-              'discountPercent': sobj.discountPercent,
-              'promotionStockList': promotItems
-            });
-          })
-        });
+              this.child.push({
+                "syskey": "",
+                "stockCode": sobj.code,
+                "recordStatus": 1,
+                "saleCurrCode": "MMK",
+                "n1": "",
+                "wareHouseSyskey": sobj.whSyskey,
+                "binSyskey": "0",
+                "qty": Number(sobj.amount),
+                "lvlSyskey": "390398473894233",
+                "lvlQty": 0,
+                "n8": 0.0,
+                "normalPrice": Number(sobj.price),
+                "price": sellingPrice,
+                "n9": 0.0,
+                "taxAmount": 0.0,
+                "totalAmount": this.util.fixedPoint(Number(sellingPrice) * Number(sobj.amount)),
+                "taxCodeSK": "0",
+                "isTaxInclusice": 0,
+                "taxPercent": 0.0,
+                'discountAmount': Number(discountAmount),
+                'discountPercent': sobj.discountPercent,
+                'promotionStockList': promotItems
+              });
+            })
+          });
+        }
 
 
         this.child.filter(obj => {
@@ -817,7 +844,32 @@ export class CheckoutPage implements OnInit {
       this.params.totalamount = (Number(orderproduct) - Number(returnproduct));
 
 
-      this.cart.filter(bobj => {
+
+      //Brand List from order and return products
+
+      //Order
+      const orderbrandList = Array.from(new Set(this.cart.map(s => s.brandOwnerSyskey))).map(syskey => {
+        return {
+          'brandOwnerSyskey': syskey
+        };
+      })
+      //Return
+      const returnbrandList = Array.from(new Set(this.returnedproduct.map(s => s.brandOwnerSyskey))).map(syskey => {
+        return {
+          'brandOwnerSyskey': syskey
+        };
+      })
+
+      const joinbrandList = orderbrandList.concat(returnbrandList);
+      const brandList = Array.from(new Set(joinbrandList.map(s => s.brandOwnerSyskey))).map(syskey => {
+        return {
+          'brandOwnerSyskey': syskey
+        };
+      })
+
+
+
+      brandList.filter(bobj => {
         this.stockbybrand = [];
         this.stockreturndata = [];
         this.child = [];
@@ -862,7 +914,7 @@ export class CheckoutPage implements OnInit {
 
 
         this.stockbybrand.push({
-          "syskey": bobj.returnbrandsyskey,
+          "syskey": this.returnedproduct.find(el => el.brandOwnerSyskey == bobj.brandOwnerSyskey).returnbrandsyskey,
           "autokey": "",
           "createdate": "",
           "modifieddate": "",
@@ -875,8 +927,8 @@ export class CheckoutPage implements OnInit {
           "transType": "SalesOrder",
           "transId": "",
           "docummentDate": this.util.getTodayDate(),
-          "brandOwnerCode": bobj.brandOwnerCode,
-          "brandOwnerName": bobj.brandOwnerName,
+          "brandOwnerCode": this.cartService.stockdata.find(el => el.brandOwnerSyskey == bobj.brandOwnerSyskey).brandOwnerCode,
+          "brandOwnerName": this.cartService.stockdata.find(el => el.brandOwnerSyskey == bobj.brandOwnerSyskey).brandOwnerName,
           "brandOwnerSyskey": bobj.brandOwnerSyskey,
           "orderSyskey": "",
           "totalamount": this.util.fixedPoint((Number(bordersubtotal) - Number(breturntotal)) - Number(invdisamount)),
@@ -894,89 +946,94 @@ export class CheckoutPage implements OnInit {
           "stockData": [],
           "stockReturnData": []
         });
-        bobj.child.map(hrule => {
-          hrule.rule.map(sobj => {
-            // check stock => 'delete' or 'new / update'
 
-            var syskey;
-            if (sobj.returnsyskey) {
-              syskey = sobj.returnsyskey;
-            }
-            else {
-              syskey = "";
-            }
 
-            var recordStatus;
-            if (sobj.isactive == "no") {
-              recordStatus = 4;
-            }
-            else {
-              recordStatus = 1;
-            }
+        if (orderbrand.length > 0) {
+          orderbrand[0].child.map(hrule => {
+            hrule.rule.map(sobj => {
+              // check stock => 'delete' or 'new / update'
 
-            //---- Promotion Items [gifts] -------
+              var syskey;
+              if (sobj.returnsyskey) {
+                syskey = sobj.returnsyskey;
+              }
+              else {
+                syskey = "";
+              }
 
-            var promotItems = [];
-            // Single Rule
-            if (sobj.gifts.length > 0) {
-              sobj.gifts.map(gift => {
+              var recordStatus;
+              if (sobj.isactive == "no") {
+                recordStatus = 4;
+              }
+              else {
+                recordStatus = 1;
+              }
+
+              //---- Promotion Items [gifts] -------
+
+              var promotItems = [];
+              // Single Rule
+              if (sobj.gifts.length > 0) {
+                sobj.gifts.map(gift => {
+                  promotItems.push({
+                    syskey: "0",
+                    recordStatus: 1,
+                    stockCode: '',
+                    stockName: gift.discountItemDesc,
+                    stockSyskey: gift.discountStockSyskey == "" || gift.discountStockSyskey == null || gift.discountStockSyskey == undefined ? 0 : gift.discountStockSyskey,
+                    promoStockSyskey: gift.discountItemSyskey == "" || gift.discountItemSyskey == null || gift.discountItemSyskey == undefined ? 0 : gift.discountItemSyskey,
+                    qty: Number(gift.discountItemQty),
+                    promoStockType: gift.discountItemType
+                  })
+                })
+              }
+
+              // Multiple Rule
+              if (sobj.multigift) {
                 promotItems.push({
                   syskey: "0",
                   recordStatus: 1,
                   stockCode: '',
-                  stockName: gift.discountItemDesc,
-                  stockSyskey: gift.discountStockSyskey == "" || gift.discountStockSyskey == null || gift.discountStockSyskey == undefined ? 0 : gift.discountStockSyskey,
-                  promoStockSyskey: gift.discountItemSyskey == "" || gift.discountItemSyskey == null || gift.discountItemSyskey == undefined ? 0 : gift.discountItemSyskey,
-                  qty: Number(gift.discountItemQty),
-                  promoStockType: gift.discountItemType
+                  stockName: sobj.multigift.discountItemDesc,
+                  stockSyskey: sobj.multigift.discountStockSyskey == "" || sobj.multigift.discountStockSyskey == null || sobj.multigift.discountStockSyskey == undefined ? 0 : sobj.multigift.discountStockSyskey,
+                  promoStockSyskey: sobj.multigift.discountItemSyskey == "" || sobj.multigift.discountItemSyskey == null || sobj.multigift.discountItemSyskey == undefined ? 0 : sobj.multigift.discountItemSyskey,
+                  qty: Number(sobj.multigift.discountItemQty),
+                  promoStockType: sobj.multigift.discountItemType
                 })
-              })
-            }
+              }
 
-            // Multiple Rule
-            if (sobj.multigift) {
-              promotItems.push({
-                syskey: "0",
-                recordStatus: 1,
-                stockCode: '',
-                stockName: sobj.multigift.discountItemDesc,
-                stockSyskey: sobj.multigift.discountStockSyskey == "" || sobj.multigift.discountStockSyskey == null || sobj.multigift.discountStockSyskey == undefined ? 0 : sobj.multigift.discountStockSyskey,
-                promoStockSyskey: sobj.multigift.discountItemSyskey == "" || sobj.multigift.discountItemSyskey == null || sobj.multigift.discountItemSyskey == undefined ? 0 : sobj.multigift.discountItemSyskey,
-                qty: Number(sobj.multigift.discountItemQty),
-                promoStockType: sobj.multigift.discountItemType
-              })
-            }
+              //---- Promotion Items [gifts] -------
+              let discountAmount = this.util.fixedPoint((Number(sobj.price) * Number(sobj.discountPercent)) / 100);
+              let sellingPrice = this.util.fixedPoint(Number(sobj.price) - Number(discountAmount));
 
-            //---- Promotion Items [gifts] -------
-            let discountAmount = this.util.fixedPoint((Number(sobj.price) * Number(sobj.discountPercent)) / 100);
-            let sellingPrice = this.util.fixedPoint(Number(sobj.price) - Number(discountAmount));
-
-            this.child.push({
-              "syskey": syskey,
-              "stockCode": sobj.code,
-              "recordStatus": recordStatus,
-              "saleCurrCode": "MMK",
-              "n1": "",
-              "wareHouseSyskey": sobj.whSyskey,
-              "binSyskey": "0",
-              "qty": Number(sobj.amount),
-              "lvlSyskey": "390398473894233",
-              "lvlQty": 0,
-              "n8": 0.0,
-              "normalPrice": Number(sobj.price),
-              "price": sellingPrice,
-              "n9": 0.0,
-              "taxAmount": 0.0,
-              "totalAmount": this.util.fixedPoint(Number(sellingPrice) * Number(sobj.amount)),
-              "taxCodeSK": "0",
-              "isTaxInclusice": 0,
-              "taxPercent": 0.0,
-              'discountAmount': Number(discountAmount),
-              'discountPercent': sobj.discountPercent,
-              'promotionStockList': promotItems
+              this.child.push({
+                "syskey": syskey,
+                "stockCode": sobj.code,
+                "recordStatus": recordStatus,
+                "saleCurrCode": "MMK",
+                "n1": "",
+                "wareHouseSyskey": sobj.whSyskey,
+                "binSyskey": "0",
+                "qty": Number(sobj.amount),
+                "lvlSyskey": "390398473894233",
+                "lvlQty": 0,
+                "n8": 0.0,
+                "normalPrice": Number(sobj.price),
+                "price": sellingPrice,
+                "n9": 0.0,
+                "taxAmount": 0.0,
+                "totalAmount": this.util.fixedPoint(Number(sellingPrice) * Number(sobj.amount)),
+                "taxCodeSK": "0",
+                "isTaxInclusice": 0,
+                "taxPercent": 0.0,
+                'discountAmount': Number(discountAmount),
+                'discountPercent': sobj.discountPercent,
+                'promotionStockList': promotItems
+              });
             });
           });
-        });
+        }
+
 
         this.child.filter(obj => {
           this.stockbybrand.reduce((i, j) => i + j.stockData.push(obj), 0);

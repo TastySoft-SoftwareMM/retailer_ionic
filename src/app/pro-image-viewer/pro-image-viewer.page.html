@@ -3,10 +3,11 @@
 
   <ion-toolbar color="primary">
     <ion-buttons (click)="dismissModal()" slot="start">
-      <ion-button class="back-ion-button" color="light">
+      <ion-button slot="start" class="back-ion-button" color="light">
         <ion-icon name="arrow-back-outline" slot="icon-only"></ion-icon>
       </ion-button>
     </ion-buttons>
+
     <ion-title>
       {{stock.desc}}
     </ion-title>
@@ -108,15 +109,17 @@
               </ion-row>
             </li>
             <li class="gift-list-item" *ngFor="let p of dl.details">
-              <ion-row>
+
+              <ion-row *ngIf="p.BuyType == 'Equal to'">
                 <ion-col size="6" class="border-right-promo">
-                  <span style="font-weight: bold;">{{p.PromoAmount}}</span>
+                  <span class="custom-color">{{p.PromoAmount}}</span>
                   <span *ngIf="p.PromoType == 'Amount'"> Ks </span>
                   <span *ngIf="p.PromoType == 'Qty'"> pcs </span>
 
                   <!-- between -->
                   <span *ngIf="p.Operator == 'between'" style="margin: 0 4px 0 4px;"> between </span>
-                  <span *ngIf="p.Operator == 'between'" style="margin: 0 4px 0 4px;font-weight: bold;">
+                  <span *ngIf="p.Operator == 'between'" style="margin: 0 4px 0 4px;font-weight: bold;"
+                    class="custom-color">
                     {{p.PromoAmount2}}
                   </span>
 
@@ -134,7 +137,7 @@
                 <ion-col size="6" [ngClass]="p.DiscountType == 'Inkind' ? 'col-flex-between': ''">
                   <span *ngIf="p.DiscountType == 'Price'" style="vertical-align: middle;
                 font-weight: bold;
-                font-size: 15px;">{{p.DiscountAmount}}</span>
+                font-size: 15px;" class="custom-color">{{p.DiscountAmount}}</span>
                   <span *ngIf="p.DiscountPriceType =='Percentage' && p.DiscountType == 'Price'">&nbsp;% off </span>
 
                   <!-- Inkind Gift -->
@@ -142,6 +145,72 @@
                   {{p.DiscountItemDesc}}
                   <span *ngIf="p.DiscountType == 'Inkind'"
                     class="qty-badge qty-badge-primary qty-badge-pill">{{p.DiscountItemQty}}</span>
+                </ion-col>
+              </ion-row>
+
+
+              <ion-row *ngIf="p.BuyType == 'Multiple of'">
+                <ion-col size="6" class="border-right-promo">
+                  <span class="custom-color">{{p.BuyLimit}}</span>
+                  <span *ngIf="p.PromoType == 'Amount'"> Ks </span>
+                  <span *ngIf="p.PromoType == 'Qty'"> pcs </span>
+
+                  <!-- between -->
+                  <!-- <span *ngIf="p.Operator == 'between'" style="margin: 0 4px 0 4px;"> between </span>
+                  <span *ngIf="p.Operator == 'between'" style="margin: 0 4px 0 4px;font-weight: bold;">
+                    {{p.PromoAmount2}}
+                  </span>
+
+                  <span *ngIf="p.PromoType == 'Amount' && p.Operator == 'between'"> Ks </span>
+                  <span *ngIf="p.PromoType == 'Qty' && p.Operator == 'between'"> pcs </span> -->
+
+                  <!-- less than -->
+                  <!-- <span *ngIf="p.Operator == 'less than'" style="margin: 0 4px 0 4px;"> under </span> -->
+                  <!-- greater than -->
+                  <!-- <span *ngIf="p.Operator == 'equal and greater than'" style="margin: 0 4px 0 4px;"> or </span>
+                  <span *ngIf="p.Operator == 'equal and greater than' || p.Operator == 'greater than'"
+                    style="margin: 0 4px 0 4px;"> above </span> -->
+                </ion-col>
+
+                <ion-col size="6" [ngClass]="p.DiscountType == 'Inkind' ? 'col-flex-between': ''">
+                  <span *ngIf="p.DiscountType == 'Price'" style="vertical-align: middle;
+                font-weight: bold;
+                font-size: 15px;" class="custom-color">{{p.DiscountAmount}}</span>
+                  <span *ngIf="p.DiscountPriceType =='Percentage' && p.DiscountType == 'Price'">&nbsp;% off </span>
+
+                  <!-- Inkind Gift -->
+                  <!-- <span *ngIf="p.DiscountType == 'Inkind'" class="pro statuspro">Get</span> -->
+                  {{p.DiscountItemDesc}}
+                  <span *ngIf="p.DiscountType == 'Inkind'"
+                    class="qty-badge qty-badge-primary qty-badge-pill">{{p.DiscountItemQty}}</span>
+                </ion-col>
+
+                <ion-col size="12" class="border-top-promo">
+                  <span class="tagcontainer">
+                    <ion-icon style="transform: rotate(270deg);margin-right: 2px;" name="pricetag-outline"></ion-icon>
+
+                    <span class="custom-color">{{p.PromoAmount}}</span>
+                    <span *ngIf="p.PromoType == 'Amount'"> &nbsp;Ks </span>
+                    <span *ngIf="p.PromoType == 'Qty'">&nbsp; pcs </span>
+
+                    <!-- between -->
+                    <span *ngIf="p.Operator == 'between'" style="margin: 0 4px 0 4px;"> between </span>
+                    <span *ngIf="p.Operator == 'between'" style="margin: 0 4px 0 4px;font-weight: bold;"
+                      class="custom-color">
+                      {{p.PromoAmount2}}
+                    </span>
+
+                    <span *ngIf="p.PromoType == 'Amount' && p.Operator == 'between'"> Ks </span>
+                    <span *ngIf="p.PromoType == 'Qty' && p.Operator == 'between'"> pcs </span>
+
+                    <!-- less than -->
+                    <span *ngIf="p.Operator == 'less than'" style="margin: 0 4px 0 4px;"> under </span>
+                    <!-- greater than -->
+                    <span *ngIf="p.Operator == 'equal and greater than'" style="margin: 0 4px 0 4px;"> or </span>
+                    <span *ngIf="p.Operator == 'equal and greater than' || p.Operator == 'greater than'"
+                      style="margin: 0 4px 0 4px;"> above </span>
+                  </span>
+
                 </ion-col>
               </ion-row>
             </li>
@@ -180,7 +249,7 @@
             <ion-item-divider *ngIf="i == 0" class="custom-item">
               <ion-label style="line-height: 1.7rem;">Buy Rule Type &nbsp;<span
                   style="color: var(--ion-color-medium);">•</span>&nbsp; <span
-                  class="custom-color">{{p.multiplePromo.RuleType}}</span></ion-label>
+                  class="statustype">{{p.multiplePromo.RuleType}}</span></ion-label>
             </ion-item-divider>
 
             <ion-item lines="none" class="stock-card">
@@ -241,18 +310,18 @@
                     </ion-col>
                   </ion-row>
                 </li>
-                <li class="gift-list-item">
+                <li class="gift-list-item" *ngIf="p.multiplePromo.BuyType == 'Equal to'">
                   <ion-row>
                     <ion-col size="12">
-                      <span style="font-weight: bold;">{{p.multiplePromo.PromoAmount}}</span>
+                      <span class="custom-color">{{p.multiplePromo.PromoAmount}}</span>
                       <span *ngIf="p.multiplePromo.PromoType == 'Amount'"> Ks </span>
                       <span *ngIf="p.multiplePromo.PromoType == 'Qty'"> pcs </span>
 
                       <!-- between -->
                       <span *ngIf="p.multiplePromo.Operator == 'between'" style="margin: 0 4px 0 4px;"> between
                       </span>
-                      <span *ngIf="p.multiplePromo.Operator == 'between'"
-                        style="margin: 0 4px 0 4px;font-weight: bold;">
+                      <span *ngIf="p.multiplePromo.Operator == 'between'" style="margin: 0 4px 0 4px;font-weight: bold;"
+                        class="custom-color">
                         {{p.multiplePromo.PromoAmount2}}
                       </span>
 
@@ -274,6 +343,49 @@
                     </ion-col>
                   </ion-row>
                 </li>
+
+                <li class="gift-list-item" *ngIf="p.multiplePromo.BuyType == 'Multiple of'">
+                  <ion-row>
+                    <ion-col size="12">
+                      <span class="custom-color">{{p.multiplePromo.BuyLimit}}</span>
+                      <span *ngIf="p.multiplePromo.PromoType == 'Amount'"> Ks </span>
+                      <span *ngIf="p.multiplePromo.PromoType == 'Qty'"> pcs </span>
+                    </ion-col>
+                    <ion-col size="12" class="border-top-promo">
+                      <span class="tagcontainer">
+                        <ion-icon style="transform: rotate(270deg);margin-right: 2px;" name="pricetag-outline">
+                        </ion-icon>
+                        <span class="custom-color">{{p.multiplePromo.PromoAmount}}</span>
+                        <span *ngIf="p.multiplePromo.PromoType == 'Amount'"> Ks </span>
+                        <span *ngIf="p.multiplePromo.PromoType == 'Qty'"> pcs </span>
+
+                        <!-- between -->
+                        <span *ngIf="p.multiplePromo.Operator == 'between'" style="margin: 0 4px 0 4px;"> between
+                        </span>
+                        <span *ngIf="p.multiplePromo.Operator == 'between'"
+                          style="margin: 0 4px 0 4px;font-weight: bold;" class="custom-color">
+                          {{p.multiplePromo.PromoAmount2}}
+                        </span>
+
+                        <span *ngIf="p.multiplePromo.PromoType == 'Amount' && p.multiplePromo.Operator == 'between'">
+                          Ks </span>
+                        <span *ngIf="p.multiplePromo.PromoType == 'Qty' && p.multiplePromo.Operator == 'between'">
+                          pcs
+                        </span>
+
+                        <!-- less than -->
+                        <span *ngIf="p.multiplePromo.Operator == 'less than'" style="margin: 0 4px 0 4px;"> under
+                        </span>
+                        <!-- greater than -->
+                        <span *ngIf="p.multiplePromo.Operator == 'equal and greater than'" style="margin: 0 4px 0 4px;">
+                          or </span>
+                        <span
+                          *ngIf="p.multiplePromo.Operator == 'equal and greater than' || p.multiplePromo.Operator == 'greater than'"
+                          style="margin: 0 4px 0 4px;"> above </span>
+                      </span>
+                    </ion-col>
+                  </ion-row>
+                </li>
               </ul>
             </ion-list>
 
@@ -292,7 +404,7 @@
                     <ion-col size="12" [ngClass]="p.multiplePromo.DiscountType == 'Inkind' ? 'col-flex-between': ''">
                       <span *ngIf="p.multiplePromo.DiscountType == 'Price'" style="vertical-align: middle;
                                 font-weight: bold;
-                                font-size: 15px;">{{p.multiplePromo.DiscountAmount}}</span>
+                                font-size: 15px;" class="custom-color">{{p.multiplePromo.DiscountAmount}}</span>
                       <span
                         *ngIf="p.multiplePromo.DiscountPriceType =='Percentage' && p.multiplePromo.DiscountType == 'Price'">&nbsp;%
                         off
@@ -305,10 +417,13 @@
                 </li>
               </ul>
             </ion-list>
-
+            <!-- 
             <ion-item-divider class="custom-item small-item-divider" *ngIf="i+ 1 != header.DetailList.length">
               <ion-label class="custom-color">{{p.multiplePromo.EndType}}</ion-label>
-            </ion-item-divider>
+            </ion-item-divider> -->
+
+            <h2 class="endtypeh2" *ngIf="i+ 1 != header.DetailList.length"><span
+                class="statustype">{{p.multiplePromo.EndType}}</span></h2>
             <!-- stock detail-->
           </ion-list>
         </ion-card>

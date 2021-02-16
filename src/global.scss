@@ -466,7 +466,10 @@ ion-item {
   padding: 5px;
   margin: 0;
   .gift-list-item:nth-child(even) {
-    background-color: whitesmoke;
+    background-color: white;
+  }
+  .gift-list-item:nth-child(odd) {
+    background-color: #fdf2f0;
   }
   .gift-list-item {
     position: relative;

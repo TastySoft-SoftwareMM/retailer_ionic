@@ -97,7 +97,7 @@ export class CartItemPage implements OnInit {
     private popoverCtrl: PopoverController,
     private toastController: ToastController) {
     this.isLoading = true;
-
+    this.cartService.checkshopping = true;
     this.nativeStorage.getItem("checkSteps").then(step => {
       this.checkstep = step;
     });
@@ -115,20 +115,15 @@ export class CartItemPage implements OnInit {
     }
     else {
       this.btnDisabled = false;
-      this.getCartTools();
+      if (this.cartService.checkshopping) {
+        this.getCartTools();
+      }
     }
   }
 
 
   ionViewDidEnter() {
     this.cartItemCount = this.cartService.getCartItemCount();
-    this.btnDisabled = sessionStorage.getItem('checkvisit');
-    if (this.btnDisabled == null || this.btnDisabled == undefined) {
-      this.btnDisabled = true;
-    }
-    else {
-      this.btnDisabled = false;
-    }
   }
 
   getCartTools() {
@@ -256,6 +251,7 @@ export class CartItemPage implements OnInit {
           this.returnedproduct.push({
             'name': obj.name,
             'brandOwnerSyskey': obj.brandOwnerSyskey,
+            'returnbrandsyskey': val[0].returnbrandsyskey,
             'child': val,
             'total': total,
             'open': true
@@ -362,11 +358,8 @@ export class CartItemPage implements OnInit {
         resolve();
 
       }
-
-
       resolve();
     });
-
   }
 
 
@@ -501,6 +494,7 @@ export class CartItemPage implements OnInit {
         product.total = Number(product.price) * Number(product.amount);
         //check decimal point => total
         product.total = this.util.checkDecimals(product.total);
+        this.messageService.showNetworkToast(err);
         resolve();
       })
 
@@ -546,6 +540,7 @@ export class CartItemPage implements OnInit {
           }
         }, err => {
           this.ordertotalamount = this.ordersubtotal;
+          this.messageService.showNetworkToast(err);
           resolve();
         })
       })
@@ -605,6 +600,7 @@ export class CartItemPage implements OnInit {
 
       }, async (err) => {
         await this.notAvailableInvoice(bo);
+        this.messageService.showNetworkToast(err);
         resolve();
       })
     });
@@ -1131,7 +1127,7 @@ export class CartItemPage implements OnInit {
         console.log(err);
         await this.cartService.updateCartByMultipleSKUsPromotion(this.cart, this.returnedproduct, []);
         this.loadingService.loadingDismiss();
-
+        this.messageService.showNetworkToast(err);
         this.navCtrl.navigateForward(['checkout']);
       });
     })
@@ -1147,595 +1143,607 @@ export class CartItemPage implements OnInit {
     }
   }
   orderInsert() {
-    console.log("allcart ==" + JSON.stringify(this.allcart));
-    console.log("allcart1 ==" + JSON.stringify(this.cart));
+    try {
+      console.log("allcart ==" + JSON.stringify(this.allcart));
+      console.log("allcart1 ==" + JSON.stringify(this.cart));
 
-    if (this.allcart.length == 0) {
-      this.messageService.showToast("No data in shopping cart");
-    }
-    else {
-      sessionStorage.setItem('ordercomment', this.remark);
-      this.allcart.filter(obj => obj.statusqty == "sim").map(val => {
-        if (val.amount == "") {
-          val.amount = 1;
-        };
-      });
-      this.allcart.filter(obj => obj.statusqty == "exp").map(val => {
-        if (val.amount == "") {
-          val.amount = 0;
-        };
-      });
-      this.params = this.getParams();
-      this.loadingService.loadingPresent();
-      this.orderno = "111" //orderno  update;
-      this.params.syskey = "";
-      this.params.autokey = "";
-      this.params.createddate = "";
-      this.params.modifieddate = "";
-      this.params.userid = "";
-      this.params.username = "";
-      this.params.saveStatus = 1;
-      this.params.recordStatus = 1;
-      this.params.syncStatus = 1;
-      this.params.syncBatch = "";
-      this.params.transType = "SalesOrder";
-      this.params.manualRef = "TBA";
-      this.params.docummentDate = this.util.getTodayDate();
-      this.params.shopCode = this.checkinshop.shopcode.toString();
-      this.params.currRate = 1.0;
-      this.params.cashamount = 1.0;
-      this.params.discountamount = 1.0;
-      this.params.taxSyskey = "0";
-      this.params.taxPercent = 1.0;
-      this.params.taxAmount = 1.0;
-      this.params.previousId = "";
-      this.params.comment = this.remark;
-      this.ordertotalamount = this.cart.reduce((i, j) => i + Number(j.subtotal), 0);
-      var borderinvdiscountamount = this.cart.reduce((i, j) => i + Number(j.invdisamount), 0);
-      var orderproduct: any = Number(this.ordertotalamount);
-      var returnproduct: any = Number(this.returnsubtotal);
-      if (!orderproduct) {
-        orderproduct = 0;
+      if (this.allcart.length == 0) {
+        this.messageService.showToast("No data in shopping cart");
       }
-      if (!returnproduct) {
-        returnproduct = 0;
-      }
-      if (!borderinvdiscountamount) {
-        borderinvdiscountamount = 0;
-      }
-      this.params.totalamount = (Number(orderproduct) - Number(returnproduct)) - Number(borderinvdiscountamount);
-      const data = Array.from(new Set(this.allcart.map(s => s.brandOwnerSyskey))).map(syskey => {
-        return {
-          'brandOwnerCode': this.allcart.find(s => s.brandOwnerSyskey === syskey).brandOwnerCode,
-          'brandOwnerName': this.allcart.find(s => s.brandOwnerSyskey === syskey).brandOwnerName,
-          'whSyskey': this.allcart.find(s => s.brandOwnerSyskey === syskey).whSyskey,
-          'brandOwnerSyskey': syskey
-        };
-      })
-      data.filter(bobj => {
-        this.stockbybrand = [];
-        this.stockreturndata = [];
-        this.child = [];
-        //---------part of Stockbybrand [start]-------------
-        var orderbrand, stockdata;
-        //order product
-        orderbrand = this.cart.filter(el => el.brandOwnerSyskey == bobj.brandOwnerSyskey);
-        console.log("Order Brand --" + JSON.stringify(orderbrand));
-
-        var bordersubtotal = this.util.fixedPoint(orderbrand.reduce((i, j) => i + Number(j.subtotal), 0));
-        var invdisamount = this.util.fixedPoint(orderbrand.reduce((i, j) => i + Number(j.invdisamount), 0));
-        var invdisper = this.util.fixedPoint(orderbrand.reduce((i, j) => i + Number(j.invdisper), 0));
-
-
-        stockdata = this.allcart.filter(el => el.brandOwnerSyskey == bobj.brandOwnerSyskey && el.statusqty == 'sim');
-        const returnstockdata = this.allcart.filter(el => el.brandOwnerSyskey == bobj.brandOwnerSyskey && el.statusqty == "exp").map(val => {
-          return val;
+      else {
+        sessionStorage.setItem('ordercomment', this.remark);
+        this.allcart.filter(obj => obj.statusqty == "sim").map(val => {
+          if (val.amount == "") {
+            val.amount = 1;
+          };
         });
-
-        //return product
-        let breturnsubtotal = returnstockdata.reduce((i, j) => i + Number(j.total), 0);
-        let breturntotal = Number(breturnsubtotal);
-
-
-        var promotItemsByBrand = [];
-
-        if (orderbrand.length > 0) {
-          var gifts = orderbrand[0].gifts;
-          console.log(gifts);
-          if (gifts.length > 0) {
-            gifts.map(gift => {
-              promotItemsByBrand.push({
-                'syskey': '0',
-                'recordStatus': 1,
-                'stockCode': '',
-                'stockName': gift.GiftDesc,
-                'stockSyskey': gift.discountStockSyskey == "" || gift.discountStockSyskey == null || gift.discountStockSyskey == undefined ? 0 : gift.discountStockSyskey,
-                'promoStockSyskey': gift.GiftSyskey == "" || gift.GiftSyskey == null || gift.GiftSyskey == undefined ? 0 : gift.GiftSyskey,
-                'qty': Number(gift.GiftQty),
-                'promoStockType': gift.DiscountItemType
-              });
-            })
-          }
+        this.allcart.filter(obj => obj.statusqty == "exp").map(val => {
+          if (val.amount == "") {
+            val.amount = 0;
+          };
+        });
+        this.params = this.getParams();
+        this.loadingService.loadingPresent();
+        this.orderno = "111" //orderno  update;
+        this.params.syskey = "";
+        this.params.autokey = "";
+        this.params.createddate = "";
+        this.params.modifieddate = "";
+        this.params.userid = "";
+        this.params.username = "";
+        this.params.saveStatus = 1;
+        this.params.recordStatus = 1;
+        this.params.syncStatus = 1;
+        this.params.syncBatch = "";
+        this.params.transType = "SalesOrder";
+        this.params.manualRef = "TBA";
+        this.params.docummentDate = this.util.getTodayDate();
+        this.params.shopCode = this.checkinshop.shopcode.toString();
+        this.params.currRate = 1.0;
+        this.params.cashamount = 1.0;
+        this.params.discountamount = 1.0;
+        this.params.taxSyskey = "0";
+        this.params.taxPercent = 1.0;
+        this.params.taxAmount = 1.0;
+        this.params.previousId = "";
+        this.params.comment = this.remark;
+        this.ordertotalamount = this.cart.reduce((i, j) => i + Number(j.subtotal), 0);
+        var borderinvdiscountamount = this.cart.reduce((i, j) => i + Number(j.invdisamount), 0);
+        var orderproduct: any = Number(this.ordertotalamount);
+        var returnproduct: any = Number(this.returnsubtotal);
+        if (!orderproduct) {
+          orderproduct = 0;
         }
+        if (!returnproduct) {
+          returnproduct = 0;
+        }
+        if (!borderinvdiscountamount) {
+          borderinvdiscountamount = 0;
+        }
+        this.params.totalamount = (Number(orderproduct) - Number(returnproduct)) - Number(borderinvdiscountamount);
+        const data = Array.from(new Set(this.allcart.map(s => s.brandOwnerSyskey))).map(syskey => {
+          return {
+            'brandOwnerCode': this.allcart.find(s => s.brandOwnerSyskey === syskey).brandOwnerCode,
+            'brandOwnerName': this.allcart.find(s => s.brandOwnerSyskey === syskey).brandOwnerName,
+            'whSyskey': this.allcart.find(s => s.brandOwnerSyskey === syskey).whSyskey,
+            'brandOwnerSyskey': syskey
+          };
+        })
+        data.filter(bobj => {
+          this.stockbybrand = [];
+          this.stockreturndata = [];
+          this.child = [];
+          //---------part of Stockbybrand [start]-------------
+          var orderbrand, stockdata;
+          //order product
+          orderbrand = this.cart.filter(el => el.brandOwnerSyskey == bobj.brandOwnerSyskey);
+          console.log("Order Brand --" + JSON.stringify(orderbrand));
+
+          var bordersubtotal = this.util.fixedPoint(orderbrand.reduce((i, j) => i + Number(j.subtotal), 0));
+          var invdisamount = this.util.fixedPoint(orderbrand.reduce((i, j) => i + Number(j.invdisamount), 0));
+          var invdisper = this.util.fixedPoint(orderbrand.reduce((i, j) => i + Number(j.invdisper), 0));
 
 
-        this.stockbybrand.push({
-          "syskey": "",
-          "autokey": "",
-          "createdate": "",
-          "modifieddate": "",
-          "userid": "",
-          "username": '',
-          "saveStatus": 1,
-          "recordStatus": 1,
-          "syncStatus": 1,
-          "syncBatch": "",
-          "transType": "SalesOrder",
-          "transId": "",
-          "docummentDate": this.util.getTodayDate(),
-          "brandOwnerCode": bobj.brandOwnerCode,
-          "brandOwnerName": bobj.brandOwnerName,
-          "brandOwnerSyskey": bobj.brandOwnerSyskey,
-          "orderSyskey": "",
-          "totalamount": this.util.fixedPoint((Number(bordersubtotal) - Number(breturntotal)) - Number(invdisamount)),
-          "orderTotalAmount": this.util.fixedPoint(Number(bordersubtotal)),
-          "returnTotalAmount": breturntotal,
-          "cashamount": 0.0,
-          "discountamount": 0.0,
-          "taxSyskey": "",
-          "taxAmount": 0.0,
-          "orderDiscountPercent": invdisper,
-          "returnDiscountPercent": '0',
-          "orderDiscountAmount": invdisamount,
-          "returnDiscountAmount": 0,
-          'promotionList': promotItemsByBrand,
-          "stockData": [],
-          "stockReturnData": []
-        });
+          stockdata = this.allcart.filter(el => el.brandOwnerSyskey == bobj.brandOwnerSyskey && el.statusqty == 'sim');
+          const returnstockdata = this.allcart.filter(el => el.brandOwnerSyskey == bobj.brandOwnerSyskey && el.statusqty == "exp").map(val => {
+            return val;
+          });
+
+          //return product
+          let breturnsubtotal = returnstockdata.reduce((i, j) => i + Number(j.total), 0);
+          let breturntotal = Number(breturnsubtotal);
 
 
-        stockdata.filter(sobj => {
-          //---- Promotion Items [gifts] -------
-          var promotItems = [];
-          if (sobj.gifts.length > 0) {
-            sobj.gifts.map(gift => {
-              promotItems.push({
-                syskey: "0",
-                recordStatus: 1,
-                stockCode: '',
-                stockName: gift.discountItemDesc,
-                stockSyskey: gift.discountStockSyskey == "" || gift.discountStockSyskey == null || gift.discountStockSyskey == undefined ? 0 : gift.discountStockSyskey,
-                promoStockSyskey: gift.discountItemSyskey == "" || gift.discountItemSyskey == null || gift.discountItemSyskey == undefined ? 0 : gift.discountItemSyskey,
-                qty: Number(gift.discountItemQty),
-                promoStockType: gift.discountItemType
+          var promotItemsByBrand = [];
+
+          if (orderbrand.length > 0) {
+            var gifts = orderbrand[0].gifts;
+            console.log(gifts);
+            if (gifts.length > 0) {
+              gifts.map(gift => {
+                promotItemsByBrand.push({
+                  'syskey': '0',
+                  'recordStatus': 1,
+                  'stockCode': '',
+                  'stockName': gift.GiftDesc,
+                  'stockSyskey': gift.discountStockSyskey == "" || gift.discountStockSyskey == null || gift.discountStockSyskey == undefined ? 0 : gift.discountStockSyskey,
+                  'promoStockSyskey': gift.GiftSyskey == "" || gift.GiftSyskey == null || gift.GiftSyskey == undefined ? 0 : gift.GiftSyskey,
+                  'qty': Number(gift.GiftQty),
+                  'promoStockType': gift.DiscountItemType
+                });
               })
-            })
+            }
           }
-          //---- Promotion Items [gifts] -------
 
-          let discountAmount = this.util.fixedPoint((Number(sobj.price) * Number(sobj.discountPercent)) / 100);
-          let sellingPrice = this.util.fixedPoint(Number(sobj.price) - Number(discountAmount));
 
-          this.child.push({
+          this.stockbybrand.push({
             "syskey": "",
-            "stockCode": sobj.code,
+            "autokey": "",
+            "createdate": "",
+            "modifieddate": "",
+            "userid": "",
+            "username": '',
+            "saveStatus": 1,
             "recordStatus": 1,
-            "saleCurrCode": "MMK",
-            "n1": "",
-            "wareHouseSyskey": sobj.whSyskey,
-            "binSyskey": "0",
-            "qty": Number(sobj.amount),
-            "lvlSyskey": "390398473894233",
-            "lvlQty": 0,
-            "n8": 0.0,
-            "normalPrice": Number(sobj.price),
-            "price": sellingPrice,
-            "n9": 0.0,
+            "syncStatus": 1,
+            "syncBatch": "",
+            "transType": "SalesOrder",
+            "transId": "",
+            "docummentDate": this.util.getTodayDate(),
+            "brandOwnerCode": bobj.brandOwnerCode,
+            "brandOwnerName": bobj.brandOwnerName,
+            "brandOwnerSyskey": bobj.brandOwnerSyskey,
+            "orderSyskey": "",
+            "totalamount": this.util.fixedPoint((Number(bordersubtotal) - Number(breturntotal)) - Number(invdisamount)),
+            "orderTotalAmount": this.util.fixedPoint(Number(bordersubtotal)),
+            "returnTotalAmount": breturntotal,
+            "cashamount": 0.0,
+            "discountamount": 0.0,
+            "taxSyskey": "",
             "taxAmount": 0.0,
-            "totalAmount": this.util.fixedPoint(Number(sellingPrice) * Number(sobj.amount)),
-            "taxCodeSK": "0",
-            "isTaxInclusice": 0,
-            "taxPercent": 0.0,
-            'discountAmount': Number(discountAmount),
-            'discountPercent': sobj.discountPercent,
-            'promotionStockList': promotItems
+            "orderDiscountPercent": invdisper,
+            "returnDiscountPercent": '0',
+            "orderDiscountAmount": invdisamount,
+            "returnDiscountAmount": 0,
+            'promotionList': promotItemsByBrand,
+            "stockData": [],
+            "stockReturnData": []
           });
-        });
-        this.child.filter(obj => {
-          this.stockbybrand.reduce((i, j) => i + j.stockData.push(obj), 0);
-        });
-        //--------part of stockbybrand [end]---------
 
 
+          stockdata.filter(sobj => {
+            //---- Promotion Items [gifts] -------
+            var promotItems = [];
+            if (sobj.gifts.length > 0) {
+              sobj.gifts.map(gift => {
+                promotItems.push({
+                  syskey: "0",
+                  recordStatus: 1,
+                  stockCode: '',
+                  stockName: gift.discountItemDesc,
+                  stockSyskey: gift.discountStockSyskey == "" || gift.discountStockSyskey == null || gift.discountStockSyskey == undefined ? 0 : gift.discountStockSyskey,
+                  promoStockSyskey: gift.discountItemSyskey == "" || gift.discountItemSyskey == null || gift.discountItemSyskey == undefined ? 0 : gift.discountItemSyskey,
+                  qty: Number(gift.discountItemQty),
+                  promoStockType: gift.discountItemType
+                })
+              })
+            }
+            //---- Promotion Items [gifts] -------
 
+            let discountAmount = this.util.fixedPoint((Number(sobj.price) * Number(sobj.discountPercent)) / 100);
+            let sellingPrice = this.util.fixedPoint(Number(sobj.price) - Number(discountAmount));
 
-        //--------part of stockreturndata [start]---------
-        returnstockdata.filter(sobj => {
-          this.stockreturndata.push({
-            "syskey": "",
-            "stockCode": sobj.code,
-            "saleCurrCode": "MMK",
-            "n1": "",
-            "wareHouseSyskey": sobj.whSyskey,
-            "binSyskey": "0",
-            "qty": Number(sobj.amount),
-            "lvlSyskey": "390398473894233",
-            "lvlQty": 0,
-            "n8": 0.0,
-            "price": Number(sobj.price),
-            "n9": 0.0,
-            "taxAmount": 0.0,
-            "totalAmount": sobj.total,
-            "taxCodeSK": "0",
-            "isTaxInclusice": 0,
-            "taxPercent": 0.0
+            this.child.push({
+              "syskey": "",
+              "stockCode": sobj.code,
+              "recordStatus": 1,
+              "saleCurrCode": "MMK",
+              "n1": "",
+              "wareHouseSyskey": sobj.whSyskey,
+              "binSyskey": "0",
+              "qty": Number(sobj.amount),
+              "lvlSyskey": "390398473894233",
+              "lvlQty": 0,
+              "n8": 0.0,
+              "normalPrice": Number(sobj.price),
+              "price": sellingPrice,
+              "n9": 0.0,
+              "taxAmount": 0.0,
+              "totalAmount": this.util.fixedPoint(Number(sellingPrice) * Number(sobj.amount)),
+              "taxCodeSK": "0",
+              "isTaxInclusice": 0,
+              "taxPercent": 0.0,
+              'discountAmount': Number(discountAmount),
+              'discountPercent': sobj.discountPercent,
+              'promotionStockList': promotItems
+            });
           });
+          this.child.filter(obj => {
+            this.stockbybrand.reduce((i, j) => i + j.stockData.push(obj), 0);
+          });
+          //--------part of stockbybrand [end]---------
+
+
+
+
+          //--------part of stockreturndata [start]---------
+          returnstockdata.filter(sobj => {
+            this.stockreturndata.push({
+              "syskey": "",
+              "stockCode": sobj.code,
+              "saleCurrCode": "MMK",
+              "n1": "",
+              "wareHouseSyskey": sobj.whSyskey,
+              "binSyskey": "0",
+              "qty": Number(sobj.amount),
+              "lvlSyskey": "390398473894233",
+              "lvlQty": 0,
+              "n8": 0.0,
+              "price": Number(sobj.price),
+              "n9": 0.0,
+              "taxAmount": 0.0,
+              "totalAmount": sobj.total,
+              "taxCodeSK": "0",
+              "isTaxInclusice": 0,
+              "taxPercent": 0.0
+            });
+          });
+          this.stockreturndata.filter(obj => {
+            this.stockbybrand.reduce((i, j) => i + j.stockReturnData.push(obj), 0);
+          });
+          this.stockbybrand.filter(obj => {
+            if (obj) {
+              this.params.stockByBrand.push(obj);
+            }
+          });
+          //--------part of stockreturndata [start]---------
         });
-        this.stockreturndata.filter(obj => {
-          this.stockbybrand.reduce((i, j) => i + j.stockReturnData.push(obj), 0);
-        });
-        this.stockbybrand.filter(obj => {
-          if (obj) {
-            this.params.stockByBrand.push(obj);
-          }
-        });
-        //--------part of stockreturndata [start]---------
-      });
 
-      console.log("Save Order == " + JSON.stringify(this.params));
-      // this.loadingService.loadingDismiss();
+        console.log("Save Order == " + JSON.stringify(this.params));
+        // this.loadingService.loadingDismiss();
 
 
-      setTimeout(() => {
-        this.onlineService.saveOrder(this.params).subscribe((res: any) => {
-          console.log("Return Order == " + JSON.stringify(res));
+        setTimeout(() => {
+          this.onlineService.saveOrder(this.params).subscribe((res: any) => {
+            console.log("Return Order == " + JSON.stringify(res));
 
-          if (res.status == "SUCCESS") {
-            this.cartService.updateOrderParam(res.data);
-            sessionStorage.setItem('printstatus', 'false');
-            this.btnDisabled = false;
-            this.printDisabled = false;
-            sessionStorage.setItem('checkvisit', "false");
-            var data: any = {
-              "checkin": "true",
-              "inventorycheck": this.checkstep.inventorycheck,
-              "merchandizing": this.checkstep.merchandizing,
-              "orderplacement": "COMPLETED",
-              "date": this.util.getTodayDate()
-            };
-            this.nativeStorage.setItem("checkSteps", data);
+            if (res.status == "SUCCESS") {
+              this.cartService.updateOrderParam(res.data);
+              sessionStorage.setItem('printstatus', 'false');
+              this.btnDisabled = false;
+              this.printDisabled = false;
+              sessionStorage.setItem('checkvisit', "false");
+              var data: any = {
+                "checkin": "true",
+                "inventorycheck": this.checkstep.inventorycheck,
+                "merchandizing": this.checkstep.merchandizing,
+                "orderplacement": "COMPLETED",
+                "date": this.util.getTodayDate()
+              };
+              this.nativeStorage.setItem("checkSteps", data);
 
 
-            var param;
-            /*********  Store Owner ********/
-            if (this.loginData.userType == "storeowner") {
-              param = {
-                "sessionId": sessionStorage.getItem('sessionid'),
-                "task": {
-                  "inventoryCheck": this.checkstep.inventorycheck,
-                  "orderPlacement": "COMPLETED",
+              var param;
+              /*********  Store Owner ********/
+              if (this.loginData.userType == "storeowner") {
+                param = {
+                  "sessionId": sessionStorage.getItem('sessionid'),
+                  "task": {
+                    "inventoryCheck": this.checkstep.inventorycheck,
+                    "orderPlacement": "COMPLETED",
+                  }
                 }
               }
+              else {
+                param = {
+                  "sessionId": sessionStorage.getItem('sessionid'),
+                  "task": {
+                    "inventoryCheck": this.checkstep.inventorycheck,
+                    "merchandizing": this.checkstep.merchandizing,
+                    "orderPlacement": "COMPLETED",
+                    "print": "INCOMPLETE"
+                  }
+                }
+              }
+
+              this.onlineService.setTask(param).subscribe((val: any) => {
+              });
+              this.messageService.showToast("Order confirm successfully.");
+              this.loadingService.loadingDismiss();
             }
             else {
-              param = {
-                "sessionId": sessionStorage.getItem('sessionid'),
-                "task": {
-                  "inventoryCheck": this.checkstep.inventorycheck,
-                  "merchandizing": this.checkstep.merchandizing,
-                  "orderPlacement": "COMPLETED",
-                  "print": "INCOMPLETE"
-                }
-              }
+              this.loadingService.loadingDismiss();
+              this.messageService.showToast("Something wrong!.");
             }
+          }, err => {
+            this.loadingService.loadingDismiss();
+            this.messageService.showNetworkToast(err);
+          });
+        }, 100);
+      }
 
-            this.onlineService.setTask(param).subscribe((val: any) => {
-            });
-            this.messageService.showToast("Order confirm successfully.");
-            this.loadingService.loadingDismiss();
-          }
-          else {
-            this.loadingService.loadingDismiss();
-            this.messageService.showToast("Something wrong!.");
-          }
-        }, err => {
-          this.loadingService.loadingDismiss();
-          this.messageService.showNetworkToast(err);
-        });
-      }, 100);
     }
+    catch (error) {
+      alert(error);
+    }
+
   }
   orderUpdate() {
-    if (this.allcart.length == 0) {
-      this.messageService.showToast("No data in shopping cart");
-    }
-    else {
-      sessionStorage.setItem('ordercomment', this.remark);
-      this.allcart.filter(obj => obj.statusqty == "sim").map(val => {
-        if (val.amount == "") {
-          val.amount = 1;
-        };
-      });
-      this.allcart.filter(obj => obj.statusqty == "exp").map(val => {
-        if (val.amount == "") {
-          val.amount = 0;
-        };
-      });
-      this.params = this.getParams();
-      this.loadingService.loadingPresent();
-      this.orderno = "111" //orderno  update;
-      this.params.syskey = sessionStorage.getItem('headersyskey');
-      this.params.autokey = "";
-      this.params.createddate = "";
-      this.params.modifieddate = "";
-      this.params.userid = "";
-      this.params.username = "";
-      this.params.saveStatus = 1;
-      this.params.recordStatus = 1;
-      this.params.syncStatus = 1;
-      this.params.syncBatch = "";
-      this.params.transType = "SalesOrder";
-      this.params.manualRef = "TBA";
-      this.params.docummentDate = this.util.getTodayDate();
-      this.params.shopCode = this.checkinshop.shopcode.toString();
-      this.params.currRate = 1.0;
-      this.params.cashamount = 1.0;
-      this.params.discountamount = 1.0;
-      this.params.taxSyskey = "0";
-      this.params.taxPercent = 1.0;
-      this.params.taxAmount = 1.0;
-      this.params.previousId = "";
-      this.params.comment = this.remark;
-      this.ordertotalamount = this.cart.reduce((i, j) => i + Number(j.subtotal), 0);
-
-      var orderproduct = Number(this.ordertotalamount);
-      var returnproduct = Number(this.returnsubtotal);
-      if (!orderproduct) {
-        orderproduct = 0;
+    try {
+      if (this.allcart.length == 0) {
+        this.messageService.showToast("No data in shopping cart");
       }
-      if (!returnproduct) {
-        returnproduct = 0;
-      }
-
-      this.params.totalamount = (Number(orderproduct) - Number(returnproduct));
-      const data = Array.from(new Set(this.allcart.map(s => s.brandOwnerSyskey))).map(syskey => {
-        return {
-          'brandOwnerCode': this.allcart.find(s => s.brandOwnerSyskey === syskey).brandOwnerCode,
-          'brandOwnerName': this.allcart.find(s => s.brandOwnerSyskey === syskey).brandOwnerName,
-          'whSyskey': this.allcart.find(s => s.brandOwnerSyskey === syskey).whSyskey,
-          'returnbrandsyskey': this.allcart.find(s => s.brandOwnerSyskey === syskey).returnbrandsyskey,
-          'brandOwnerSyskey': syskey
-        };
-      });
-
-      data.filter(bobj => {
-        this.stockbybrand = [];
-        this.stockreturndata = [];
-        this.child = [];
-        //------------- part of Stockbybrand [start]------------- 
-        var stockdata, orderbrand;
-
-        //order product
-        orderbrand = this.cart.filter(el => el.brandOwnerSyskey == bobj.brandOwnerSyskey);
-        var bordersubtotal = this.util.fixedPoint(orderbrand.reduce((i, j) => i + Number(j.subtotal), 0));
-        var invdisamount = this.util.fixedPoint(orderbrand.reduce((i, j) => i + Number(j.invdisamount), 0));
-        var invdisper = this.util.fixedPoint(orderbrand.reduce((i, j) => i + Number(j.invdisper), 0));
-
-        stockdata = this.allcart.filter(el => el.brandOwnerSyskey == bobj.brandOwnerSyskey && el.statusqty == "sim");
-
-
-        //return product
-        const returnstockdata = this.allcart.filter(el => el.brandOwnerSyskey == bobj.brandOwnerSyskey && el.statusqty == "exp").map(val => {
-          return val;
+      else {
+        sessionStorage.setItem('ordercomment', this.remark);
+        this.allcart.filter(obj => obj.statusqty == "sim").map(val => {
+          if (val.amount == "") {
+            val.amount = 1;
+          };
         });
-        let breturnsubtotal = returnstockdata.reduce((i, j) => i + Number(j.total), 0);
-        let breturntotal = Number(breturnsubtotal);
+        this.allcart.filter(obj => obj.statusqty == "exp").map(val => {
+          if (val.amount == "") {
+            val.amount = 0;
+          };
+        });
+        this.params = this.getParams();
+        this.loadingService.loadingPresent();
+        this.orderno = "111" //orderno  update;
+        this.params.syskey = sessionStorage.getItem('headersyskey');
+        this.params.autokey = "";
+        this.params.createddate = "";
+        this.params.modifieddate = "";
+        this.params.userid = "";
+        this.params.username = "";
+        this.params.saveStatus = 1;
+        this.params.recordStatus = 1;
+        this.params.syncStatus = 1;
+        this.params.syncBatch = "";
+        this.params.transType = "SalesOrder";
+        this.params.manualRef = "TBA";
+        this.params.docummentDate = this.util.getTodayDate();
+        this.params.shopCode = this.checkinshop.shopcode.toString();
+        this.params.currRate = 1.0;
+        this.params.cashamount = 1.0;
+        this.params.discountamount = 1.0;
+        this.params.taxSyskey = "0";
+        this.params.taxPercent = 1.0;
+        this.params.taxAmount = 1.0;
+        this.params.previousId = "";
+        this.params.comment = this.remark;
+        this.ordertotalamount = this.cart.reduce((i, j) => i + Number(j.subtotal), 0);
 
-
-        var promotItemsByBrand = [];
-        if (orderbrand.length > 0) {
-          var gifts = orderbrand[0].gifts;
-          console.log(gifts);
-          if (gifts.length > 0) {
-            gifts.map(gift => {
-              promotItemsByBrand.push({
-                'syskey': '0',
-                'recordStatus': 1,
-                'stockCode': '',
-                'stockName': gift.GiftDesc,
-                'stockSyskey': gift.discountStockSyskey == "" || gift.discountStockSyskey == null || gift.discountStockSyskey == undefined ? 0 : gift.discountStockSyskey,
-                'promoStockSyskey': gift.GiftSyskey == "" || gift.GiftSyskey == null || gift.GiftSyskey == undefined ? 0 : gift.GiftSyskey,
-                'qty': Number(gift.GiftQty),
-                'promoStockType': gift.DiscountItemType
-              });
-            })
-          }
+        var orderproduct = Number(this.ordertotalamount);
+        var returnproduct = Number(this.returnsubtotal);
+        if (!orderproduct) {
+          orderproduct = 0;
+        }
+        if (!returnproduct) {
+          returnproduct = 0;
         }
 
-
-        this.stockbybrand.push({
-          "syskey": bobj.returnbrandsyskey,
-          "autokey": "",
-          "createdate": "",
-          "modifieddate": "",
-          "userid": "",
-          "username": '',
-          "saveStatus": 1,
-          "recordStatus": 1,
-          "syncStatus": 1,
-          "syncBatch": "",
-          "transType": "SalesOrder",
-          "transId": "",
-          "docummentDate": this.util.getTodayDate(),
-          "brandOwnerCode": bobj.brandOwnerCode,
-          "brandOwnerName": bobj.brandOwnerName,
-          "brandOwnerSyskey": bobj.brandOwnerSyskey,
-          "orderSyskey": "",
-          "totalamount": this.util.fixedPoint((Number(bordersubtotal) - Number(breturntotal)) - Number(invdisamount)),
-          "orderTotalAmount": this.util.fixedPoint(Number(bordersubtotal)),
-          "returnTotalAmount": breturntotal,
-          "cashamount": 0.0,
-          "discountamount": 0.0,
-          "taxSyskey": "",
-          "taxAmount": 0.0,
-          "orderDiscountPercent": invdisper,
-          "returnDiscountPercent": 0,
-          "orderDiscountAmount": Number(invdisamount),
-          "returnDiscountAmount": 0,
-          'promotionList': promotItemsByBrand,
-          "stockData": [],
-          "stockReturnData": []
+        this.params.totalamount = (Number(orderproduct) - Number(returnproduct));
+        const data = Array.from(new Set(this.allcart.map(s => s.brandOwnerSyskey))).map(syskey => {
+          return {
+            'brandOwnerCode': this.allcart.find(s => s.brandOwnerSyskey === syskey).brandOwnerCode,
+            'brandOwnerName': this.allcart.find(s => s.brandOwnerSyskey === syskey).brandOwnerName,
+            'whSyskey': this.allcart.find(s => s.brandOwnerSyskey === syskey).whSyskey,
+            'returnbrandsyskey': this.allcart.find(s => s.brandOwnerSyskey === syskey).returnbrandsyskey,
+            'brandOwnerSyskey': syskey
+          };
         });
-        stockdata.filter(sobj => {
-          var syskey;
-          if (sobj.returnsyskey) {
-            syskey = sobj.returnsyskey;
-          }
-          else {
-            syskey = "";
-          }
-          var recordStatus;
-          if (sobj.isactive == "no") {
-            recordStatus = 4;
-          }
-          else {
-            recordStatus = 1;
-          }
 
-          //---- Promotion Items [gifts] -------
-          var promotItems = [];
-          if (sobj.gifts.length > 0) {
-            sobj.gifts.map(gift => {
-              promotItems.push({
-                syskey: "0",
-                recordStatus: 1,
-                stockCode: '',
-                stockName: gift.discountItemDesc,
-                stockSyskey: gift.discountStockSyskey == "" || gift.discountStockSyskey == null || gift.discountStockSyskey == undefined ? 0 : gift.discountStockSyskey,
-                promoStockSyskey: gift.discountItemSyskey == "" || gift.discountItemSyskey == null || gift.discountItemSyskey == undefined ? 0 : gift.discountItemSyskey,
-                qty: Number(gift.discountItemQty),
-                promoStockType: gift.discountItemType
+        data.filter(bobj => {
+          this.stockbybrand = [];
+          this.stockreturndata = [];
+          this.child = [];
+          //------------- part of Stockbybrand [start]------------- 
+          var stockdata, orderbrand;
+
+          //order product
+          orderbrand = this.cart.filter(el => el.brandOwnerSyskey == bobj.brandOwnerSyskey);
+          var bordersubtotal = this.util.fixedPoint(orderbrand.reduce((i, j) => i + Number(j.subtotal), 0));
+          var invdisamount = this.util.fixedPoint(orderbrand.reduce((i, j) => i + Number(j.invdisamount), 0));
+          var invdisper = this.util.fixedPoint(orderbrand.reduce((i, j) => i + Number(j.invdisper), 0));
+
+          stockdata = this.allcart.filter(el => el.brandOwnerSyskey == bobj.brandOwnerSyskey && el.statusqty == "sim");
+
+
+          //return product
+          const returnstockdata = this.allcart.filter(el => el.brandOwnerSyskey == bobj.brandOwnerSyskey && el.statusqty == "exp").map(val => {
+            return val;
+          });
+          let breturnsubtotal = returnstockdata.reduce((i, j) => i + Number(j.total), 0);
+          let breturntotal = Number(breturnsubtotal);
+
+
+          var promotItemsByBrand = [];
+          if (orderbrand.length > 0) {
+            var gifts = orderbrand[0].gifts;
+            console.log(gifts);
+            if (gifts.length > 0) {
+              gifts.map(gift => {
+                promotItemsByBrand.push({
+                  'syskey': '0',
+                  'recordStatus': 1,
+                  'stockCode': '',
+                  'stockName': gift.GiftDesc,
+                  'stockSyskey': gift.discountStockSyskey == "" || gift.discountStockSyskey == null || gift.discountStockSyskey == undefined ? 0 : gift.discountStockSyskey,
+                  'promoStockSyskey': gift.GiftSyskey == "" || gift.GiftSyskey == null || gift.GiftSyskey == undefined ? 0 : gift.GiftSyskey,
+                  'qty': Number(gift.GiftQty),
+                  'promoStockType': gift.DiscountItemType
+                });
               })
-            })
+            }
           }
 
 
-          //---- Promotion Items [gifts] -------
-          let discountAmount = this.util.fixedPoint((Number(sobj.price) * Number(sobj.discountPercent)) / 100);
-          let sellingPrice = this.util.fixedPoint(Number(sobj.price) - Number(discountAmount));
-
-          this.child.push({
-            "syskey": syskey,
-            "stockCode": sobj.code,
-            "recordStatus": recordStatus,
-            "saleCurrCode": "MMK",
-            "n1": "",
-            "wareHouseSyskey": sobj.whSyskey,
-            "binSyskey": "0",
-            "qty": Number(sobj.amount),
-            "lvlSyskey": "390398473894233",
-            "lvlQty": 0,
-            "n8": 0.0,
-            "normalPrice": Number(sobj.price),
-            "price": sellingPrice,
-            "n9": 0.0,
+          this.stockbybrand.push({
+            "syskey": bobj.returnbrandsyskey,
+            "autokey": "",
+            "createdate": "",
+            "modifieddate": "",
+            "userid": "",
+            "username": '',
+            "saveStatus": 1,
+            "recordStatus": 1,
+            "syncStatus": 1,
+            "syncBatch": "",
+            "transType": "SalesOrder",
+            "transId": "",
+            "docummentDate": this.util.getTodayDate(),
+            "brandOwnerCode": bobj.brandOwnerCode,
+            "brandOwnerName": bobj.brandOwnerName,
+            "brandOwnerSyskey": bobj.brandOwnerSyskey,
+            "orderSyskey": "",
+            "totalamount": this.util.fixedPoint((Number(bordersubtotal) - Number(breturntotal)) - Number(invdisamount)),
+            "orderTotalAmount": this.util.fixedPoint(Number(bordersubtotal)),
+            "returnTotalAmount": breturntotal,
+            "cashamount": 0.0,
+            "discountamount": 0.0,
+            "taxSyskey": "",
             "taxAmount": 0.0,
-            "totalAmount": this.util.fixedPoint(Number(sellingPrice) * Number(sobj.amount)),
-            "taxCodeSK": "0",
-            "isTaxInclusice": 0,
-            "taxPercent": 0.0,
-            'discountAmount': Number(discountAmount),
-            'discountPercent': sobj.discountPercent,
-            'promotionStockList': promotItems
+            "orderDiscountPercent": invdisper,
+            "returnDiscountPercent": 0,
+            "orderDiscountAmount": Number(invdisamount),
+            "returnDiscountAmount": 0,
+            'promotionList': promotItemsByBrand,
+            "stockData": [],
+            "stockReturnData": []
           });
-        });
+          stockdata.filter(sobj => {
+            var syskey;
+            if (sobj.returnsyskey) {
+              syskey = sobj.returnsyskey;
+            }
+            else {
+              syskey = "";
+            }
+            var recordStatus;
+            if (sobj.isactive == "no") {
+              recordStatus = 4;
+            }
+            else {
+              recordStatus = 1;
+            }
 
-        this.child.filter(obj => {
-          this.stockbybrand.reduce((i, j) => i + j.stockData.push(obj), 0);
-        });
-        //--------part of stockbybrand [end]---------
+            //---- Promotion Items [gifts] -------
+            var promotItems = [];
+            if (sobj.gifts.length > 0) {
+              sobj.gifts.map(gift => {
+                promotItems.push({
+                  syskey: "0",
+                  recordStatus: 1,
+                  stockCode: '',
+                  stockName: gift.discountItemDesc,
+                  stockSyskey: gift.discountStockSyskey == "" || gift.discountStockSyskey == null || gift.discountStockSyskey == undefined ? 0 : gift.discountStockSyskey,
+                  promoStockSyskey: gift.discountItemSyskey == "" || gift.discountItemSyskey == null || gift.discountItemSyskey == undefined ? 0 : gift.discountItemSyskey,
+                  qty: Number(gift.discountItemQty),
+                  promoStockType: gift.discountItemType
+                })
+              })
+            }
 
 
-        //--------part of stockreturndata [start]---------
-        returnstockdata.filter(sobj => {
-          var syskey;
-          if (sobj.returnsyskey) {
-            syskey = sobj.returnsyskey;
-          }
-          else {
-            syskey = "";
-          }
-          var recordStatus;
-          if (sobj.isactive == "no") {
-            recordStatus = 4;
-          }
-          else {
-            recordStatus = 1;
-          }
-          this.stockreturndata.push({
-            "syskey": syskey,
-            "stockCode": sobj.code,
-            "recordStatus": recordStatus,
-            "saleCurrCode": "MMK",
-            "n1": "",
-            "wareHouseSyskey": sobj.whSyskey,
-            "binSyskey": "0",
-            "qty": Number(sobj.amount),
-            "lvlSyskey": "390398473894233",
-            "lvlQty": 0,
-            "n8": 0.0,
-            "price": Number(sobj.price),
-            "n9": 0.0,
-            "taxAmount": 0.0,
-            "totalAmount": Number(sobj.price) * Number(sobj.amount),
-            "taxCodeSK": "0",
-            "isTaxInclusice": 0,
-            "taxPercent": 0.0
+            //---- Promotion Items [gifts] -------
+            let discountAmount = this.util.fixedPoint((Number(sobj.price) * Number(sobj.discountPercent)) / 100);
+            let sellingPrice = this.util.fixedPoint(Number(sobj.price) - Number(discountAmount));
+
+            this.child.push({
+              "syskey": syskey,
+              "stockCode": sobj.code,
+              "recordStatus": recordStatus,
+              "saleCurrCode": "MMK",
+              "n1": "",
+              "wareHouseSyskey": sobj.whSyskey,
+              "binSyskey": "0",
+              "qty": Number(sobj.amount),
+              "lvlSyskey": "390398473894233",
+              "lvlQty": 0,
+              "n8": 0.0,
+              "normalPrice": Number(sobj.price),
+              "price": sellingPrice,
+              "n9": 0.0,
+              "taxAmount": 0.0,
+              "totalAmount": this.util.fixedPoint(Number(sellingPrice) * Number(sobj.amount)),
+              "taxCodeSK": "0",
+              "isTaxInclusice": 0,
+              "taxPercent": 0.0,
+              'discountAmount': Number(discountAmount),
+              'discountPercent': sobj.discountPercent,
+              'promotionStockList': promotItems
+            });
           });
+
+          this.child.filter(obj => {
+            this.stockbybrand.reduce((i, j) => i + j.stockData.push(obj), 0);
+          });
+          //--------part of stockbybrand [end]---------
+
+
+          //--------part of stockreturndata [start]---------
+          returnstockdata.filter(sobj => {
+            var syskey;
+            if (sobj.returnsyskey) {
+              syskey = sobj.returnsyskey;
+            }
+            else {
+              syskey = "";
+            }
+            var recordStatus;
+            if (sobj.isactive == "no") {
+              recordStatus = 4;
+            }
+            else {
+              recordStatus = 1;
+            }
+            this.stockreturndata.push({
+              "syskey": syskey,
+              "stockCode": sobj.code,
+              "recordStatus": recordStatus,
+              "saleCurrCode": "MMK",
+              "n1": "",
+              "wareHouseSyskey": sobj.whSyskey,
+              "binSyskey": "0",
+              "qty": Number(sobj.amount),
+              "lvlSyskey": "390398473894233",
+              "lvlQty": 0,
+              "n8": 0.0,
+              "price": Number(sobj.price),
+              "n9": 0.0,
+              "taxAmount": 0.0,
+              "totalAmount": Number(sobj.price) * Number(sobj.amount),
+              "taxCodeSK": "0",
+              "isTaxInclusice": 0,
+              "taxPercent": 0.0
+            });
+          });
+          this.stockbybrand.filter(obj => {
+            if (obj) {
+              this.params.stockByBrand.push(obj);
+            }
+          });
+          this.stockreturndata.filter(obj => {
+            this.stockbybrand.reduce((i, j) => i + j.stockReturnData.push(obj), 0);
+          });
+          //--------part of stockreturndata [start]---------
         });
-        this.stockbybrand.filter(obj => {
-          if (obj) {
-            this.params.stockByBrand.push(obj);
-          }
-        });
-        this.stockreturndata.filter(obj => {
-          this.stockbybrand.reduce((i, j) => i + j.stockReturnData.push(obj), 0);
-        });
-        //--------part of stockreturndata [start]---------
-      });
-      console.log("Update order ==" + JSON.stringify(this.params));
+        console.log("Update order ==" + JSON.stringify(this.params));
 
 
-      setTimeout(() => {
-        this.onlineService.saveOrder(this.params).subscribe((res: any) => {
-          if (res.status == "SUCCESS") {
-            this.cartService.updateOrderParam(res.data);
-            // this.cartService.clearCart();
-            // this.cartService.produceAmount();
+        setTimeout(() => {
+          this.onlineService.saveOrder(this.params).subscribe((res: any) => {
+            if (res.status == "SUCCESS") {
+              this.cartService.updateOrderParam(res.data);
+              // this.cartService.clearCart();
+              // this.cartService.produceAmount();
 
-            sessionStorage.setItem('printstatus', 'false');
-            sessionStorage.setItem('checkvisit', "false");
+              sessionStorage.setItem('printstatus', 'false');
+              sessionStorage.setItem('checkvisit', "false");
 
-            // this.inventoryService.clearDataInventory();
+              // this.inventoryService.clearDataInventory();
 
-            this.btnDisabled = false;
-            this.printDisabled = false;
+              this.btnDisabled = false;
+              this.printDisabled = false;
 
-            //-------------- part of print  ---------------
-            // this.printQ();
-            this.messageService.showToast("Order update successfully.");
+              //-------------- part of print  ---------------
+              // this.printQ();
+              this.messageService.showToast("Order update successfully.");
+              this.loadingService.loadingDismiss();
+            }
+            else {
+              this.loadingService.loadingDismiss();
+              this.messageService.showToast("Something wrong!.");
+            }
+          }, err => {
             this.loadingService.loadingDismiss();
-          }
-          else {
-            this.loadingService.loadingDismiss();
-            this.messageService.showToast("Something wrong!.");
-          }
-        }, err => {
-          this.loadingService.loadingDismiss();
-          this.messageService.showNetworkToast(err);
-        });
+            this.messageService.showNetworkToast(err);
+          });
 
-      }, 100);
+        }, 100);
+      }
+    }
+    catch (error) {
+      alert(error);
     }
   }
 

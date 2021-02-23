@@ -244,14 +244,16 @@ export class CheckoutOrderupdatePage implements OnInit {
       //Order
       const orderbrandList = Array.from(new Set(this.order.map(s => s.brandOwnerSyskey))).map(syskey => {
         return {
-          'brandOwnerSyskey': syskey
+          'brandOwnerSyskey': syskey,
+          'brandSyskey': this.order.find(el => el.brandOwnerSyskey == syskey).brandSyskey
         };
       })
 
       //Return
       const returnbrandList = Array.from(new Set(this.returnedproduct.map(s => s.brandOwnerSyskey))).map(syskey => {
         return {
-          'brandOwnerSyskey': syskey
+          'brandOwnerSyskey': syskey,
+          'brandSyskey': this.returnedproduct.find(el => el.brandOwnerSyskey == syskey).brandSyskey
         };
       })
 
@@ -259,7 +261,8 @@ export class CheckoutOrderupdatePage implements OnInit {
       const joinbrandList = orderbrandList.concat(returnbrandList);
       const brandList = Array.from(new Set(joinbrandList.map(s => s.brandOwnerSyskey))).map(syskey => {
         return {
-          'brandOwnerSyskey': syskey
+          'brandOwnerSyskey': syskey,
+          'brandSyskey': this.order.find(el => el.brandOwnerSyskey == syskey).brandSyskey
         };
       });
 
@@ -321,7 +324,7 @@ export class CheckoutOrderupdatePage implements OnInit {
 
 
         this.stockbybrand.push({
-          "syskey": this.order.find(el => el.brandOwnerSyskey == bobj.brandOwnerSyskey).brandSyskey,
+          "syskey": bobj.brandSyskey,
           "autokey": "",
           "createdate": "",
           "modifieddate": "",
@@ -386,20 +389,28 @@ export class CheckoutOrderupdatePage implements OnInit {
                   })
                 })
               }
+              var promoDetailSyskey = "0";
 
               // Multiple SKUs Promotion
               if (sobj.multigift) {
-                promotItems.push({
-                  syskey: "0",
-                  recordStatus: 1,
-                  stockCode: '',
-                  stockName: sobj.multigift.discountItemDesc,
-                  stockSyskey: sobj.multigift.discountStockSyskey == "" || sobj.multigift.discountStockSyskey == null || sobj.multigift.discountStockSyskey == undefined ? 0 : sobj.multigift.discountStockSyskey,
-                  promoStockSyskey: sobj.multigift.discountItemSyskey == "" || sobj.multigift.discountItemSyskey == null || sobj.multigift.discountItemSyskey == undefined ? 0 : sobj.multigift.discountItemSyskey,
-                  qty: Number(sobj.multigift.discountItemQty),
-                  promoStockType: sobj.multigift.discountItemType
-                })
+                promoDetailSyskey = sobj.multigift.discountDetailSyskey;
+                if (sobj.multiplePromo.EndType == "END") {
+
+                  promotItems.push({
+                    syskey: "0",
+                    recordStatus: 1,
+                    stockCode: '',
+                    stockName: sobj.multigift.discountItemDesc,
+                    stockSyskey: sobj.multigift.discountStockSyskey == "" || sobj.multigift.discountStockSyskey == null || sobj.multigift.discountStockSyskey == undefined ? 0 : sobj.multigift.discountStockSyskey,
+                    promoStockSyskey: sobj.multigift.discountItemSyskey == "" || sobj.multigift.discountItemSyskey == null || sobj.multigift.discountItemSyskey == undefined ? 0 : sobj.multigift.discountItemSyskey,
+                    qty: Number(sobj.multigift.discountItemQty),
+                    promoStockType: sobj.multigift.discountItemType,
+                    promoDetailSyskey: sobj.multigift.discountDetailSyskey
+
+                  })
+                }
               }
+
 
 
               //---- Promotion Items [gifts] -------
@@ -428,7 +439,8 @@ export class CheckoutOrderupdatePage implements OnInit {
                 "taxPercent": 0.0,
                 'discountAmount': Number(discountAmount),
                 'discountPercent': sobj.discountPercent,
-                'promotionStockList': promotItems
+                'promotionStockList': promotItems,
+                'promoDetailSyskey': promoDetailSyskey,
               });
             });
           });

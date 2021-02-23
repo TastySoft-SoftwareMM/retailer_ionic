@@ -85,7 +85,25 @@
                     </ion-row>
                   </div>
                 </div>
-                <ul class="gift-list fadeIN" *ngIf="p.gifts && p.gifts.length > 0">
+
+                <!-- <ul class="gift-list fadeIN">
+                  <li class="gift-list-item with-padding">
+                    <span>
+                      {{gift.discountItemDesc}}
+                    </span>
+                    <span class="qty-badge qty-badge-primary qty-badge-pill">{{gift.discountItemQty}}</span>
+                  </li>
+                </ul> -->
+
+
+                <ul class="gift-list fadeIN" *ngIf="p.gifts && p.gifts.length > 0" style="background-color: white;">
+                  <li class="gift-list-item gift-list-item-buy-get">
+                    <ion-row>
+                      <ion-col size="12">
+                        <span style="color: black;">Gift</span>
+                      </ion-col>
+                    </ion-row>
+                  </li>
                   <li class="gift-list-item with-padding" *ngFor="let gift of p.gifts">
                     <span>
                       {{gift.discountItemDesc}}
@@ -93,6 +111,7 @@
                     <span class="qty-badge qty-badge-primary qty-badge-pill">{{gift.discountItemQty}}</span>
                   </li>
                 </ul>
+
 
                 <ion-list *ngIf="p.multigift && i+ 1 == h.rule.length" style="padding: 0;">
                   <ul class="gift-list" style="background-color: white;">
@@ -183,7 +202,7 @@
           <ion-icon *ngIf="!rp.open" name="chevron-forward-outline" slot="end"></ion-icon>
           <ion-icon *ngIf="rp.open" name="chevron-down-outline" slot="end"></ion-icon>
         </ion-item>
-        <div *ngIf="rp.open" class="required_stock_brand_inner">
+        <div *ngIf="rp.open" class="required_stock_brand_inner required_stock_brand_inner_return">
           <div class="card-wrapper fadeIN" *ngFor="let p of rp.child;let index of index;">
             <div class="custom-card">
               <div class="custom-card-left">

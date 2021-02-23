@@ -81,7 +81,7 @@
           <ion-label class="detail-header">Promotion</ion-label>
         </ion-col>
       </ion-row>
-      <ion-grid *ngFor="let pro of stock.promoItems">
+      <ion-card *ngFor="let pro of stock.promoItems">
         <ul class="gift-list" *ngFor="let dl of pro.DetailList" style="border: 1px solid var(--ion-color-border);
       padding: 0;
       border-radius: 5px;">
@@ -216,11 +216,7 @@
             </li>
           </ul>
         </ul>
-      </ion-grid>
-
-
-
-
+      </ion-card>
     </ion-grid>
 
     <ion-list *ngIf="stock.isMultipleskus" style="margin-right: 5px;">
@@ -348,16 +344,17 @@
                   <ion-row>
                     <ion-col size="12">
                       <span class="custom-color">{{p.multiplePromo.BuyLimit}}</span>
-                      <span *ngIf="p.multiplePromo.PromoType == 'Amount'"> Ks </span>
-                      <span *ngIf="p.multiplePromo.PromoType == 'Qty'"> pcs </span>
+                      <span *ngIf="p.multiplePromo.PromoType == 'Amount'"> &nbsp;Ks </span>
+                      <span *ngIf="p.multiplePromo.PromoType == 'Qty'"> &nbsp;pcs </span>
                     </ion-col>
+
                     <ion-col size="12" class="border-top-promo">
                       <span class="tagcontainer">
                         <ion-icon style="transform: rotate(270deg);margin-right: 2px;" name="pricetag-outline">
                         </ion-icon>
                         <span class="custom-color">{{p.multiplePromo.PromoAmount}}</span>
-                        <span *ngIf="p.multiplePromo.PromoType == 'Amount'"> Ks </span>
-                        <span *ngIf="p.multiplePromo.PromoType == 'Qty'"> pcs </span>
+                        <span *ngIf="p.multiplePromo.PromoType == 'Amount'"> &nbsp;Ks </span>
+                        <span *ngIf="p.multiplePromo.PromoType == 'Qty'">&nbsp; pcs </span>
 
                         <!-- between -->
                         <span *ngIf="p.multiplePromo.Operator == 'between'" style="margin: 0 4px 0 4px;"> between
@@ -386,6 +383,8 @@
                     </ion-col>
                   </ion-row>
                 </li>
+
+
               </ul>
             </ion-list>
 

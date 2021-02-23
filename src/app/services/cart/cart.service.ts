@@ -37,6 +37,10 @@ export class CartService {
   amount: any = 1;
 
 
+
+  checkshopping: boolean = true;
+
+
   //checkout order
   orderdata: any;
   returnorderdata: any;
@@ -128,6 +132,7 @@ export class CartService {
 
   getPromotionItmes(shopSyskey) {
     return new Promise(resolve => {
+      this.promotionitems = [];
       const stockPromise = new Promise((resolve32) => {
         this.offlineService.getStocks().then(async (res: any) => {
           this.stockdata = res.data;
@@ -489,32 +494,54 @@ export class CartService {
   getMultipleSKUSPromoByStocksyskey(stockSyskey) {
     return new Promise(resolve => {
       var data = [];
-      this.multiple_skus.map((header, hi) => {
-        console.log(header);
-        header.DetailList.map((detail, di) => {
-          console.log(detail);
-          const rule = detail.rule.filter(el => el.syskey == stockSyskey);
 
-          console.log("Rule:" + JSON.stringify(rule));
+      if (this.multiple_skus.length > 0) {
+        this.multiple_skus.map((header, hi) => {
+          console.log(header);
+          if (header.DetailList.length > 0) {
 
+            header.DetailList.map((detail, di) => {
+              console.log(detail);
+              const rule = detail.rule.filter(el => el.syskey == stockSyskey);
 
-          if (rule.length > 0) {
-            data.push(
-              {
-                "HeaderDesc": header.HeaderDesc,
-                "open": false,
-                "DetailList": detail.rule
+              console.log("Rule:" + JSON.stringify(rule));
+
+              if (rule.length > 0) {
+
+                //Promotion Multiple of can't get => buy rule type = "Each" & endtype = "OR"
+                var checkendtypeORrule = detail.rule.filter(el => el.multiplePromo.EndType == "OR" && el.multiplePromo.RuleType == "Each" && el.multiplePromo.BuyType == "");
+                var checkForshowMultipleof = true;
+                if (checkendtypeORrule.length > 0) {
+                  checkForshowMultipleof = false;
+                }
+
+                data.push(
+                  {
+                    "HeaderDesc": header.HeaderDesc,
+                    "open": false,
+                    "DetailList": detail.rule,
+                    "checkForshowMultipleof": checkForshowMultipleof
+                  }
+                )
               }
-            )
+
+
+              if (hi + 1 == this.multiple_skus.length && di + 1 == header.DetailList.length) {
+                resolve(data);
+              }
+
+            })
           }
-
-
-          if (hi + 1 == this.multiple_skus.length && di + 1 == header.DetailList.length) {
-            resolve(data);
+          else {
+            if (hi + 1 == this.multiple_skus.length) {
+              resolve(data);
+            }
           }
-
         })
-      })
+      }
+      else {
+        resolve(data);
+      }
     });
   }
 
@@ -526,9 +553,9 @@ export class CartService {
   //--Type => "Promo":  for promotion items  And "Stock" : for other types
   getProducts(categoryCode, subCategoryCode, searchterm, typestatus) {
     var category;
+    this.categoryList = [];
 
     if (categoryCode == "allstock" && subCategoryCode == "allstock") {
-      this.categoryList = [];
       category = new Set(this.stockdata.map(item => item.categoryCode))
     }
     else { //search data by code
@@ -856,7 +883,8 @@ export class CartService {
             "promoItems": product.promoItems,
             "gifts": product.gifts,
             "multiplePromo": product.multiplePromo,
-            "HeaderSyskey": product.HeaderSyskey
+            "HeaderSyskey": product.HeaderSyskey,
+            "returnbrandsyskey": "0",
           }
         );
       }
@@ -895,7 +923,8 @@ export class CartService {
               "promoItems": product.promoItems,
               "gifts": product.gifts,
               "multiplePromo": product.multiplePromo,
-              "HeaderSyskey": product.HeaderSyskey
+              "HeaderSyskey": product.HeaderSyskey,
+
             }
           );
         }
@@ -1108,7 +1137,8 @@ export class CartService {
             "amount": product.expqty,
             "qty": product.qty,
             "total": Number(product.price) - Number(product.expqty),
-            "statusqty": 'exp'
+            "statusqty": 'exp',
+            "returnbrandsyskey": "0",
           }
         );
       }
@@ -1219,6 +1249,7 @@ export class CartService {
   }
   updateOrderParam(param) {
     if (param) {
+      this.checkshopping = true;
       sessionStorage.setItem("headersyskey", param.syskey);
       param.stockByBrand.filter(rbobj => {
         this.cart.filter(el => el.brandOwnerSyskey == rbobj.brandOwnerSyskey).map(updateval => {
@@ -1547,12 +1578,22 @@ export class CartService {
   //-----Checkout Section
   updateCartByMultipleSKUsPromotion(cart: any, returnorderdata: any, multipromodata: any) {
     return new Promise(async (resolve) => {
+
+      /*Two Condition  
+        1. order will back with no return transaction 
+        2. order will back with return lvl transaction [Order Confirm]
+      */
+
+      this.checkshopping = false;
+
       this.orderdata = JSON.parse(JSON.stringify(cart));
       this.returnorderdata = JSON.parse(JSON.stringify(returnorderdata));
+
+      console.log(this.returnorderdata);
+
       await this.pricePromotionCheck(multipromodata);
       await this.giftPromotion();
       resolve();
-
     });
   }
 

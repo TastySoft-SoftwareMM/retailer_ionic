@@ -40,9 +40,9 @@ export class IntercomService {
 
 
       /****** QC Server *****/
-      // this.apiurl = "http://52.255.142.115:8084/madbrepository/";
-      // localStorage.setItem("url", "http://52.255.142.115:8084/madbrepository/");
-      // localStorage.setItem("imgurl", "http://52.255.142.115:8084/");
+      this.apiurl = "http://52.255.142.115:8084/madbrepository/";
+      localStorage.setItem("url", "http://52.255.142.115:8084/madbrepository/");
+      localStorage.setItem("imgurl", "http://52.255.142.115:8084/");
 
       // For Customer_Testing
       // this.apiurl = "http://52.253.88.71:8084/madbrepository/";
@@ -51,9 +51,9 @@ export class IntercomService {
 
 
       //--- Go liver server for dec7      
-      this.apiurl = "http://18.136.44.90:8084/madbrepository/";
-      localStorage.setItem("url", "http://18.136.44.90:8084/madbrepository/");
-      localStorage.setItem("imgurl", "http://18.136.44.90:8084/");
+      // this.apiurl = "http://18.136.44.90:8084/madbrepository/";
+      // localStorage.setItem("url", "http://18.136.44.90:8084/madbrepository/");
+      // localStorage.setItem("imgurl", "http://18.136.44.90:8084/");
 
       // http://18.136.44.90:8084/madbrepository/
       /******GO Live Server ***/

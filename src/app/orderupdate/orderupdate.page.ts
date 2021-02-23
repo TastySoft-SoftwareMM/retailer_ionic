@@ -167,6 +167,7 @@ export class OrderupdatePage implements OnInit {
         this.returnedproduct.push({
           'name': obj.name,
           'brandOwnerSyskey': obj.brandOwnerSyskey,
+          'brandSyskey': val[0].brandSyskey,
           'child': val,
           'total': total,
           'open': true

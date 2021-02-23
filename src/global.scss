@@ -533,9 +533,9 @@ ion-item {
   border-radius: 10rem;
 }
 .qty-badge-primary {
-  color: black;
-  border: 1px solid #ccc;
-  background-color: #fdf2f0 !important;
+  color: var(--ion-color-qty-border);
+  border: 1px solid var(--ion-color-qty-border);
+  background-color: var(--ion-qty-color) !important;
 }
 .statuspro {
   height: 20px !important;

@@ -117,14 +117,14 @@
           </div>
 
           <!--Invoice  Promotion gifts-->
-          <ion-item (click)="giftToggleSection(i)" *ngIf="cp.gift" button lines="none"
+          <ion-item (click)="giftToggleSection(i)" *ngIf="cp.gifts.length > 0" button lines="none"
             [ngClass]="!cp.giftopen ? 'custom-border-bottom' : ''" detail="false"
             class="required-stock re-item custom-item fadeIN">
             <ion-label class="headertitle">Invoice Gift</ion-label>
             <ion-icon *ngIf="!cp.giftopen" name="chevron-forward-outline" slot="end"></ion-icon>
             <ion-icon *ngIf="cp.giftopen" name="chevron-down-outline" slot="end"></ion-icon>
           </ion-item>
-          <div *ngIf="cp.gift && cp.giftopen" class="gift-list-bd fadeIN">
+          <div *ngIf="cp.gifts.length > 0 && cp.giftopen" class="gift-list-bd fadeIN">
             <ul class="gift-list">
               <li class="gift-list-item with-padding" *ngFor="let gift of cp.gifts">
                 <span>

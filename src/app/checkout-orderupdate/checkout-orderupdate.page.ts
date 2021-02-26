@@ -361,7 +361,7 @@ export class CheckoutOrderupdatePage implements OnInit {
         //--------part of order [start]---------
         if (orderbrand.length > 0) {
           orderbrand[0].child.map(hrule => {
-            hrule.rule.map(sobj => {
+            hrule.rule.map((sobj, ri) => {
 
               var recordStatus;
               if (sobj.isactive == "no") {
@@ -394,7 +394,7 @@ export class CheckoutOrderupdatePage implements OnInit {
               // Multiple SKUs Promotion
               if (sobj.multigift) {
                 promoDetailSyskey = sobj.multigift.discountDetailSyskey;
-                if (sobj.multiplePromo.EndType == "END") {
+                if (  hrule.rule.length == ri + 1) {
 
                   promotItems.push({
                     syskey: "0",

@@ -420,6 +420,8 @@ export class InventorycheckPage implements OnInit {
           'brandOwnerSyskey': syskey,
         });
       });
+
+
       brandary.filter(bobj => {
         var stockbybrand = [];
         var transDetailsData = [];
@@ -509,6 +511,7 @@ export class InventorycheckPage implements OnInit {
           'brandOwnerSyskey': syskey,
         });
       });
+
       brandary.filter(bobj => {
         var stockbybrand = [];
         var transDetailsData = [];
@@ -659,7 +662,6 @@ export class InventorycheckPage implements OnInit {
       });
     });
   }
-
 
 
   // async openPopover(ev, p) {

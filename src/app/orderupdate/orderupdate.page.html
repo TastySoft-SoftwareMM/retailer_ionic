@@ -110,13 +110,13 @@
           </div>
 
           <!-- Promotion gifts-->
-          <ion-item (click)="giftToggleSection(i)" *ngIf="cp.gift" button lines="none" detail="false"
+          <ion-item (click)="giftToggleSection(i)" *ngIf="cp.gifts.length > 0" button lines="none" detail="false"
             class="required-stock re-item custom-item">
             <ion-label class="headertitle">Invoice Gift</ion-label>
             <ion-icon *ngIf="!cp.giftopen" name="chevron-forward-outline" slot="end"></ion-icon>
             <ion-icon *ngIf="cp.giftopen" name="chevron-down-outline" slot="end"></ion-icon>
           </ion-item>
-          <div *ngIf="cp.gift && cp.giftopen" class="gift-list-bd">
+          <div *ngIf="cp.gifts.length > 0 && cp.giftopen" class="gift-list-bd">
             <ul class="gift-list">
               <li class="gift-list-item with-padding" *ngFor="let gift of cp.gifts">
                 <span>
@@ -243,7 +243,7 @@
     </ion-item>
     <div class="required-stock-inner">
     </div> -->
-<!-- 
+    <!-- 
     <br>
     <ion-item lines="none" style="--background: transparent;--border-width: 1px;">
       <ion-label position="floating" class="headertitle">Remark :</ion-label>

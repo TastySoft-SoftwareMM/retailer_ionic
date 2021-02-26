@@ -906,7 +906,7 @@ export class CartItemPage implements OnInit {
       else {
         const alert = await this.alertCtrl.create({
           header: 'Message',
-          message: 'Do you want to complete vist?',
+          message: 'Do you want to complete visit?',
           buttons: [
             {
               text: 'No',
@@ -988,7 +988,7 @@ export class CartItemPage implements OnInit {
       else {
         const alert = await this.alertCtrl.create({
           header: 'Message',
-          message: 'Do you want to complete vist?',
+          message: 'Do you want to complete visit?',
           buttons: [
             {
               text: 'No',

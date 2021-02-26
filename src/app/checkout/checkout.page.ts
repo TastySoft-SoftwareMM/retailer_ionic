@@ -276,7 +276,7 @@ export class CheckoutPage implements OnInit {
       else {
         const alert = await this.alertCtrl.create({
           header: 'Message',
-          message: 'Do you want to complete vist?',
+          message: 'Do you want to complete visit?',
           buttons: [
             {
               text: 'No',
@@ -358,7 +358,7 @@ export class CheckoutPage implements OnInit {
       else {
         const alert = await this.alertCtrl.create({
           header: 'Message',
-          message: 'Do you want to complete vist?',
+          message: 'Do you want to complete visit?',
           buttons: [
             {
               text: 'No',
@@ -621,7 +621,7 @@ export class CheckoutPage implements OnInit {
         //---- part of order stockData 
         if (orderbrand.length > 0) {
           orderbrand[0].child.map(hrule => {
-            hrule.rule.map(sobj => {
+            hrule.rule.map((sobj,ri) => {
               //---- Promotion Items [gifts] -------
 
               //Single Rule
@@ -641,11 +641,12 @@ export class CheckoutPage implements OnInit {
                   })
                 })
               }
+
               var promoDetailSyskey = "0";
               // Multiple Rule
               if (sobj.multigift) {
                 promoDetailSyskey = sobj.multigift.discountDetailSyskey;
-                if (sobj.multiplePromo.EndType == "END") {
+                if (hrule.rule.length == ri + 1) {
                   promotItems.push({
                     syskey: "0",
                     recordStatus: 1,
@@ -960,7 +961,7 @@ export class CheckoutPage implements OnInit {
 
         if (orderbrand.length > 0) {
           orderbrand[0].child.map(hrule => {
-            hrule.rule.map(sobj => {
+            hrule.rule.map((sobj,ri) => {
               // check stock => 'delete' or 'new / update'
 
               var syskey;
@@ -1005,7 +1006,7 @@ export class CheckoutPage implements OnInit {
               // Multiple Rule
               if (sobj.multigift) {
                 promoDetailSyskey = sobj.multigift.discountDetailSyskey;
-                if (sobj.multiplePromo.EndType == "END") {
+                if (hrule.rule.length == ri + 1) {
                   promotItems.push({
                     syskey: "0",
                     recordStatus: 1,

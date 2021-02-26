@@ -53,6 +53,8 @@ export class CartService {
     private nativeStorage: NativeStorage,
     public utilService: UtilService) {
     this.offlineService.getStocks().then((res: any) => {
+      console.log("GetStocks: " + JSON.stringify(res.data));
+
       this.stockdata = res.data;
       this.stockdata.filter(el => { el.promoItems = []; el.gifts = []; el.giftopen = true; });
     });

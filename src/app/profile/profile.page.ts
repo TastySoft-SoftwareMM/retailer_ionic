@@ -40,6 +40,8 @@ export class ProfilePage implements OnInit {
   curpass: any;
   newpass: any;
   conpass: any;
+
+
   constructor(private navCtrl: NavController, private dummyService: DummyDataService,
     private messageService: MessageService,
     private offlineservice: OfflineService,

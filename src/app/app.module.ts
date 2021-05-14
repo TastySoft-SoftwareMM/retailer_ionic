@@ -51,6 +51,7 @@ import { ProImageViewerPageModule } from './pro-image-viewer/pro-image-viewer.mo
 import { InvoiceDiscountDetailPageModule } from './invoice-discount-detail/invoice-discount-detail.module';
 import { CustomAlertInputPageModule } from './custom-alert-input/custom-alert-input.module';
 import { MultipleSkusPageModule } from './multiple-skus/multiple-skus.module';
+import { GiftchoicePageModule } from './giftchoice/giftchoice.module';
 
 
 //components
@@ -88,7 +89,8 @@ import { MultipleSkusPageModule } from './multiple-skus/multiple-skus.module';
     MerchModalViewPageModule,
     InvoiceDiscountDetailPageModule,
     // MultipleSkusPageModule,
-    CustomAlertInputPageModule
+    CustomAlertInputPageModule,
+    GiftchoicePageModule
   ],
   providers: [
     StatusBar,

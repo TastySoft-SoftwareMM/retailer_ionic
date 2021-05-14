@@ -173,7 +173,11 @@ const routes: Routes = [
   {
     path: 'checkout-orderupdate/:orderno',
     loadChildren: () => import('./checkout-orderupdate/checkout-orderupdate.module').then( m => m.CheckoutOrderupdatePageModule)
+  },  {
+    path: 'giftchoice',
+    loadChildren: () => import('./giftchoice/giftchoice.module').then( m => m.GiftchoicePageModule)
   }
+
 ];
 
 @NgModule({

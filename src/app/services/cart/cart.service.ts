@@ -76,34 +76,33 @@ export class CartService {
       /**
        * Price Zone will use
        */
-      // this.onlineService.getPricezone(param).subscribe(async (res: any) => {
-      //   console.log("Price Zone ---" + JSON.stringify(res));
-      //   if (res.status == "SUCCESS" && res.list.length > 0) {
-      //     res.list.map(item => {
-      //       this.pricezone.push({
-      //         'shopSyskey': shopSyskey,
-      //         "pricezonelist": item.PriceZoneItemList
-      //       });
+      this.onlineService.getPricezone(param).subscribe(async (res: any) => {
+        console.log("Price Zone ---" + JSON.stringify(res));
+        if (res.status == "SUCCESS" && res.list.length > 0) {
+          res.list.map(item => {
+            this.pricezone.push({
+              'shopSyskey': shopSyskey,
+              "pricezonelist": item.PriceZoneItemList
+            });
 
-      //       //inventory stock
-      //       this.inventoryService.pricezone = item.PriceZoneItemList;
-      //     })
-      //   }
-      //   else {
-      //     this.pricezone = [];
-      //   }
+            //inventory stock
+            this.inventoryService.pricezone = item.PriceZoneItemList;
+          })
+        }
+        else {
+          this.pricezone = [];
+        }
 
-      //   resolve();
-      // }, err => {
-      //   resolve();
-      // });
+        resolve();
+      }, err => {
+        resolve();
+      });
 
       /**
        * Price Zone will use
        */
     });
   }
-
 
   updateStockPriceByPriceZone() {
     return new Promise(resolve => {
@@ -136,6 +135,7 @@ export class CartService {
     return new Promise(resolve => {
       this.promotionitems = [];
       const stockPromise = new Promise((resolve32) => {
+
         this.offlineService.getStocks().then(async (res: any) => {
           this.stockdata = res.data;
 
@@ -143,12 +143,12 @@ export class CartService {
           this.cart.map(cart => {
             this.stockdata.filter(el => el.code === cart.code && cart.isactive !== 'no' && cart.statusqty !== "exp").map(val => {
               val.status = "addtocart";
-            })
+            });
           })
 
           // update price zone 
           console.log('.');
-          // const anawait = await this.updateStockPriceByPriceZone();
+          const anawait = await this.updateStockPriceByPriceZone();
           console.log('...');
 
           //updating stock price
@@ -169,6 +169,8 @@ export class CartService {
         };
         this.onlineService.getPromotionItems(promoPrm).subscribe((data_1: any) => {
           console.log("Promotion items == " + JSON.stringify(data_1));
+
+
           if (data_1.list.length > 0) {
             this.promotionitems = data_1.list;
             //---promotion items
@@ -178,6 +180,22 @@ export class CartService {
                 await itemlist.itemList.map(async list => {
                   //Group Detail => Promotion Header
                   await list.HeaderList.map(async header => {
+
+
+                    //Group Discount Item Qty & Get Rule TYpe
+                    header.DetailList.map(detail => {
+                      detail.InkindList.map(inkindList => {
+                        const gift = inkindList.filter(el => el.DiscountItemEndType == "END");
+
+                        if (gift.length > 0) {
+                          detail.discountItemRuleType = gift[0].discountItemRuleType;
+                          detail.DiscountItemQty = gift[0].DiscountItemQty; //total Gift Qty [*TOtal Item Rule]
+                        }
+
+                      })
+                    })
+
+
                     var results = [];
                     var detailuniques = new Set(header.DetailList.map(item => item.PromoItemSyskey));
 
@@ -186,8 +204,11 @@ export class CartService {
                         'PromoItemSyskey': prosyskey,
                         'PromoItemDesc': header.DetailList.find(d => d.PromoItemSyskey == prosyskey).PromoItemDesc,
                         'details': header.DetailList.filter(el => el.PromoItemSyskey == prosyskey)
-                      })
-                    })
+                      });
+                    });
+
+                    console.log("Pro Detail list = " + JSON.stringify(results));
+
                     header.DetailList = results;
                   });
 
@@ -202,13 +223,14 @@ export class CartService {
           else {
             this.promotionitems = [];
           }
+
           resolve("resolved");
           console.log("Stocks == " + JSON.stringify(this.stockdata));
         },
           err => {
             this.messageService.showNetworkToast(err);
             resolve('promodownloaderr');
-          })
+          });
       });
 
     })
@@ -353,7 +375,6 @@ export class CartService {
 
             console.log("mPromoStocks:" + JSON.stringify(mPromoStocks));
 
-
             promoHeaderList.push({
               'HeaderDesc': multipromo.HeaderDesc,
               'HeaderSyskey': multipromo.HeaderSyskey,
@@ -363,6 +384,7 @@ export class CartService {
             });
 
             console.log("Test:" + JSON.stringify(promoHeaderList));
+
 
           }
         });
@@ -393,8 +415,6 @@ export class CartService {
             return (item.desc.toString().toLowerCase().indexOf(searchterm.toString().toLowerCase()) > -1);
           });
 
-
-
         }
       }
       else {
@@ -412,6 +432,7 @@ export class CartService {
 
 
   //-------------------------MultipleSKUs -----------------------
+
   downloadMultipleSKUs(shopsyskey) {
     return new Promise(resolve => {
       this.multiple_skus = [];
@@ -428,7 +449,22 @@ export class CartService {
 
           list.map(detailList => {
             var concatary = [];
+
             detailList.DetailList.map((detail, index) => {
+
+              //Group Discount Item Qty & Get Rule TYpe
+
+              detail.InkindList.map(inkindList => {
+                const gift = inkindList.filter(a => a.DiscountItemEndType == "END");
+
+                if (gift.length > 0) {
+                  detail.discountItemRuleType = gift[0].discountItemRuleType;
+                  detail.DiscountItemQty = gift[0].DiscountItemQty; //total Gift Qty [*TOtal Item Rule]
+                }
+
+              })
+
+
               this.stockdata.filter(el => el.syskey == detail.PromoItemSyskey).map(stock => {
                 stock.multiplePromo = detail;
                 stock.RulePriority = detail.RulePriority;
@@ -440,7 +476,9 @@ export class CartService {
                 if (index + 1 == detailList.DetailList.length) {
                   detailList.DetailList = concatary;
                 }
-              })
+              });
+
+
             })
           });
 
@@ -476,8 +514,10 @@ export class CartService {
                   //--sorting => "End" type sort to last index
                   header.DetailList.map((detailist: any) => {
                     detailist.rule.sort((a, b) => Number(a.multiplePromo.EndType === "END") - 1)
-                  });
 
+
+
+                  });
                 }
               });
             });
@@ -1596,6 +1636,7 @@ export class CartService {
       await this.pricePromotionCheck(multipromodata);
       await this.giftPromotion();
       resolve();
+
     });
   }
 
@@ -1605,19 +1646,74 @@ export class CartService {
       if (this.orderdata.length > 0) {
         this.orderdata.map(async (bo) => {
 
-          //gift
+          /**
+           *  Gift
+           **/
+
           if (multipromodata.giftList) {
             multipromodata.giftList.map(gift => {
-              gift.stockList.map(stockkey => {
+              var total_gift_amount = 0;
+              gift.stockList.map((stockkey, s_index) => {
                 bo.child.filter(el => el.syskey == stockkey).map(val => {
+
                   val.gifts = [];
                   val.multigift = gift;
-                })
-              })
-            })
+
+                  // Auto Selected Gift
+                  val.chosen_multiple_gift = [];
+
+                  var gift_amount_ary = [];
+
+                  const giftInfoList_count = val.multigift.giftInfoList.length;
+                  const end_gift = val.multigift.giftInfoList[giftInfoList_count - 1].filter(el => el.discountItemEndType == "END");
+
+
+                  if (s_index == 0) {
+                    total_gift_amount = end_gift[0].discountItemQty;
+                  }
+
+
+                  console.log("Total Gift Amount -> " + total_gift_amount);
+
+                  val.total_gift_amount = Number(total_gift_amount);
+
+
+                  val.multigift.giftInfoList.map((giftlist, giftlist_index) => {
+                    //get itemendtype ["End"]
+
+                    giftlist.map((gift, index) => {
+
+                      if (end_gift[0].discountItemRuleType == "Total Item" && s_index == 0) {
+
+                        //Calculate Gift Amount
+                        const gift_quotient_amount = Math.floor(total_gift_amount / val.multigift.giftInfoList.length);
+                        const gift_remainder_amount = total_gift_amount % val.multigift.giftInfoList.length;
+
+                        console.log("Quotient ->" + gift_quotient_amount + ', Remainder ->' + gift_remainder_amount + ', Qty ->' + end_gift[0].discountItemQty + ', Length ->' + val.multigift.giftInfoList.length);
+
+                        if (val.multigift.giftInfoList.length == giftlist_index + 1) {
+                          gift.discountItemQty = gift_quotient_amount + gift_remainder_amount;
+                        }
+                        else {
+                          gift.discountItemQty = gift_quotient_amount;
+                        }
+
+                      }
+
+                      if (index == 0) {
+                        val.chosen_multiple_gift.push(gift);
+                      }
+
+                    })
+                  });
+                });
+              });
+            });
           }
 
-          //discount amount
+          /**
+           * discount amount
+           **/
           if (multipromodata.getPromoStockList) {
             multipromodata.getPromoStockList.map(promostock => {
               bo.child.filter(el => el.syskey == promostock.itemSyskey).map(stock => {
@@ -1627,7 +1723,6 @@ export class CartService {
                 }
               })
             });
-
           }
         });
 
@@ -1677,6 +1772,7 @@ export class CartService {
                     detailist.rule.sort((a, b) => Number(a.multiplePromo.EndType === "END") - 1)
                   });
                   resolvei();
+
                 }
               });
             }

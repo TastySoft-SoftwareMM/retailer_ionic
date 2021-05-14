@@ -73,6 +73,13 @@
             </div>
 
             <ul class="gift-list" *ngIf="p.gifts && p.gifts.length > 0">
+              <li class="gift-list-item gift-list-item-buy-get">
+                <ion-row>
+                  <ion-col size="12">
+                    <span style="color: black;">Gift</span>
+                  </ion-col>
+                </ion-row>
+              </li>
               <li class="gift-list-item with-padding" *ngFor="let gift of p.gifts">
                 <span>
                   {{gift.stockName}}

@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChildren, ViewChild } from '@angular/core';
+import { IonContent } from "@ionic/angular";
 import { CartService } from '../services/cart/cart.service';
 import { BehaviorSubject } from 'rxjs';
 import { LoadingService } from '../services/Loadings/loading.service';
@@ -24,6 +25,7 @@ import { ProImageViewerPage } from '../pro-image-viewer/pro-image-viewer.page';
 import { async } from '@angular/core/testing';
 import { InvoiceDiscountDetailPage } from '../invoice-discount-detail/invoice-discount-detail.page';
 import { CustomAlertInputPage } from '../custom-alert-input/custom-alert-input.page';
+import { GiftchoicePage } from '../giftchoice/giftchoice.page';
 declare var cordova: any;
 
 
@@ -76,8 +78,11 @@ export class CheckoutPage implements OnInit {
 
   cartItemCount: BehaviorSubject<number>;
   isLoading: any = false;
+  giftLoad: any = false;
   open: any = false;
   checkreturnform: any = false;
+
+  @ViewChild(IonContent, { static: false }) content: IonContent;
 
 
   constructor(private cartService: CartService, private loadingService: LoadingService,
@@ -189,6 +194,59 @@ export class CheckoutPage implements OnInit {
   }
 
 
+  /**  --------
+     ---------- Choose Your Gift [Promotion]
+                                  ------------
+                                  --------------
+                                                 **/
+
+
+  giftChoice(product, rule) {
+    return new Promise(async (resolve) => {
+      var gifts = [];
+
+      /**
+       * Check Single Rule GIfts (or) Multi Rule Gifts
+       */
+
+      if (rule == 'singlerule') {
+        gifts = product.gifts;
+      }
+      else {
+        gifts = product.multigift.giftInfoList;
+      }
+
+      const modal = await this.modalCtrl.create({
+        component: GiftchoicePage,
+        cssClass: "gift_choice_modal",
+        // backdropDismiss: false,
+        componentProps: {
+          "gifts": gifts,
+          "chosen_multiple_gift": product.chosen_multiple_gift,
+          "total_gift_amount": product.total_gift_amount
+        }
+      });
+
+
+      await modal.present();
+
+
+      const { data } = await modal.onWillDismiss();
+
+      console.log(data);
+      if (data) {
+        this.giftLoad = true;
+        product.chosen_multiple_gift = [];
+        data.gifts.map(gift => {
+          product.chosen_multiple_gift.push(gift);
+        })
+      }
+
+      setTimeout(() => {
+        this.giftLoad = false;
+      }, 200);
+    });
+  }
 
 
   checkSkipOrder() {
@@ -621,13 +679,40 @@ export class CheckoutPage implements OnInit {
         //---- part of order stockData 
         if (orderbrand.length > 0) {
           orderbrand[0].child.map(hrule => {
-            hrule.rule.map((sobj,ri) => {
+            hrule.rule.map((sobj, ri) => {
               //---- Promotion Items [gifts] -------
 
               //Single Rule
               var promotItems = [];
-              if (sobj.gifts.length > 0) {
-                sobj.gifts.map(gift => {
+
+              // Old Function
+
+              // if (sobj.gifts.length > 0) {
+              //   sobj.gifts.map(gift => {
+              //     promotItems.push({
+              //       syskey: "0",
+              //       recordStatus: 1,
+              //       stockCode: '',
+              //       stockName: gift.discountItemDesc,
+              //       stockSyskey: gift.discountStockSyskey == "" || gift.discountStockSyskey == null || gift.discountStockSyskey == undefined ? 0 : gift.discountStockSyskey,
+              //       promoStockSyskey: gift.discountItemSyskey == "" || gift.discountItemSyskey == null || gift.discountItemSyskey == undefined ? 0 : gift.discountItemSyskey,
+              //       qty: Number(gift.discountItemQty),
+              //       promoStockType: gift.discountItemType,
+              //       promoDetailSyskey: '0'
+              //     })
+              //   })
+              // }
+
+              // New Function
+              var promoDetailSyskey = "0";
+
+              if (sobj.chosen_multiple_gift && sobj.chosen_multiple_gift.length > 0) {
+
+                if (sobj.multigift && (hrule.rule.length == ri + 1)) {
+                  promoDetailSyskey = sobj.multigift.discountDetailSyskey;
+                }
+
+                sobj.chosen_multiple_gift.map(gift => {
                   promotItems.push({
                     syskey: "0",
                     recordStatus: 1,
@@ -642,24 +727,45 @@ export class CheckoutPage implements OnInit {
                 })
               }
 
-              var promoDetailSyskey = "0";
               // Multiple Rule
-              if (sobj.multigift) {
-                promoDetailSyskey = sobj.multigift.discountDetailSyskey;
-                if (hrule.rule.length == ri + 1) {
-                  promotItems.push({
-                    syskey: "0",
-                    recordStatus: 1,
-                    stockCode: '',
-                    stockName: sobj.multigift.discountItemDesc,
-                    stockSyskey: sobj.multigift.discountStockSyskey == "" || sobj.multigift.discountStockSyskey == null || sobj.multigift.discountStockSyskey == undefined ? 0 : sobj.multigift.discountStockSyskey,
-                    promoStockSyskey: sobj.multigift.discountItemSyskey == "" || sobj.multigift.discountItemSyskey == null || sobj.multigift.discountItemSyskey == undefined ? 0 : sobj.multigift.discountItemSyskey,
-                    qty: Number(sobj.multigift.discountItemQty),
-                    promoStockType: sobj.multigift.discountItemType,
-                    promoDetailSyskey: sobj.multigift.discountDetailSyskey
-                  })
-                }
-              }
+
+              //Old FUnction
+
+              // if (sobj.multigift) {
+              //   promoDetailSyskey = sobj.multigift.discountDetailSyskey;
+              //   if (hrule.rule.length == ri + 1) {
+              //     promotItems.push({
+              //       syskey: "0",
+              //       recordStatus: 1,
+              //       stockCode: '',
+              //       stockName: sobj.multigift.discountItemDesc,
+              //       stockSyskey: sobj.multigift.discountStockSyskey == "" || sobj.multigift.discountStockSyskey == null || sobj.multigift.discountStockSyskey == undefined ? 0 : sobj.multigift.discountStockSyskey,
+              //       promoStockSyskey: sobj.multigift.discountItemSyskey == "" || sobj.multigift.discountItemSyskey == null || sobj.multigift.discountItemSyskey == undefined ? 0 : sobj.multigift.discountItemSyskey,
+              //       qty: Number(sobj.multigift.discountItemQty),
+              //       promoStockType: sobj.multigift.discountItemType,
+              //       promoDetailSyskey: sobj.multigift.discountDetailSyskey
+              //     })
+              //   }
+              // }
+
+              //New Function
+
+              // if (sobj.multigift && sobj.chosen_multiple_gift.length > 0) {
+              //   promoDetailSyskey = sobj.multigift.discountDetailSyskey;
+              //   if (hrule.rule.length == ri + 1) {
+              //     promotItems.push({
+              //       syskey: "0",
+              //       recordStatus: 1,
+              //       stockCode: '',
+              //       stockName: sobj.multigift.discountItemDesc,
+              //       stockSyskey: sobj.multigift.discountStockSyskey == "" || sobj.multigift.discountStockSyskey == null || sobj.multigift.discountStockSyskey == undefined ? 0 : sobj.multigift.discountStockSyskey,
+              //       promoStockSyskey: sobj.multigift.discountItemSyskey == "" || sobj.multigift.discountItemSyskey == null || sobj.multigift.discountItemSyskey == undefined ? 0 : sobj.multigift.discountItemSyskey,
+              //       qty: Number(sobj.multigift.discountItemQty),
+              //       promoStockType: sobj.multigift.discountItemType,
+              //       promoDetailSyskey: sobj.multigift.discountDetailSyskey
+              //     })
+              //   }
+              // }
 
               //---- Promotion Items [gifts] -------
               let discountAmount = this.util.fixedPoint((Number(sobj.price) * Number(sobj.discountPercent)) / 100);
@@ -737,7 +843,7 @@ export class CheckoutPage implements OnInit {
       });
 
       console.log("Save Order == " + JSON.stringify(this.params));
-      // this.loadingService.loadingDismiss();
+      this.loadingService.loadingDismiss();
 
       setTimeout(() => {
         this.onlineService.saveOrder(this.params).subscribe((res: any) => {
@@ -961,7 +1067,7 @@ export class CheckoutPage implements OnInit {
 
         if (orderbrand.length > 0) {
           orderbrand[0].child.map(hrule => {
-            hrule.rule.map((sobj,ri) => {
+            hrule.rule.map((sobj, ri) => {
               // check stock => 'delete' or 'new / update'
 
               var syskey;
@@ -984,8 +1090,33 @@ export class CheckoutPage implements OnInit {
 
               var promotItems = [];
               // Single Rule
-              if (sobj.gifts.length > 0) {
-                sobj.gifts.map(gift => {
+              // if (sobj.gifts.length > 0) {
+              //   sobj.gifts.map(gift => {
+              //     promotItems.push({
+              //       syskey: "0",
+              //       recordStatus: 1,
+              //       stockCode: '',
+              //       stockName: gift.discountItemDesc,
+              //       stockSyskey: gift.discountStockSyskey == "" || gift.discountStockSyskey == null || gift.discountStockSyskey == undefined ? 0 : gift.discountStockSyskey,
+              //       promoStockSyskey: gift.discountItemSyskey == "" || gift.discountItemSyskey == null || gift.discountItemSyskey == undefined ? 0 : gift.discountItemSyskey,
+              //       qty: Number(gift.discountItemQty),
+              //       promoStockType: gift.discountItemType,
+              //       promoDetailSyskey: '0'
+              //     })
+              //   })
+              // }
+
+
+              // New Function
+              var promoDetailSyskey = "0";
+
+              if (sobj.chosen_multiple_gift && sobj.chosen_multiple_gift.length > 0) {
+
+                if (sobj.multigift && (hrule.rule.length == ri + 1)) {
+                  promoDetailSyskey = sobj.multigift.discountDetailSyskey;
+                }
+
+                sobj.chosen_multiple_gift.map(gift => {
                   promotItems.push({
                     syskey: "0",
                     recordStatus: 1,
@@ -996,30 +1127,30 @@ export class CheckoutPage implements OnInit {
                     qty: Number(gift.discountItemQty),
                     promoStockType: gift.discountItemType,
                     promoDetailSyskey: '0'
-
                   })
                 })
               }
 
 
-              var promoDetailSyskey = "0";
-              // Multiple Rule
-              if (sobj.multigift) {
-                promoDetailSyskey = sobj.multigift.discountDetailSyskey;
-                if (hrule.rule.length == ri + 1) {
-                  promotItems.push({
-                    syskey: "0",
-                    recordStatus: 1,
-                    stockCode: '',
-                    stockName: sobj.multigift.discountItemDesc,
-                    stockSyskey: sobj.multigift.discountStockSyskey == "" || sobj.multigift.discountStockSyskey == null || sobj.multigift.discountStockSyskey == undefined ? 0 : sobj.multigift.discountStockSyskey,
-                    promoStockSyskey: sobj.multigift.discountItemSyskey == "" || sobj.multigift.discountItemSyskey == null || sobj.multigift.discountItemSyskey == undefined ? 0 : sobj.multigift.discountItemSyskey,
-                    qty: Number(sobj.multigift.discountItemQty),
-                    promoStockType: sobj.multigift.discountItemType,
-                    promoDetailSyskey: sobj.multigift.discountDetailSyskey
-                  })
-                }
-              }
+
+              // var promoDetailSyskey = "0";
+              // // Multiple Rule
+              // if (sobj.multigift) {
+              //   promoDetailSyskey = sobj.multigift.discountDetailSyskey;
+              //   if (hrule.rule.length == ri + 1) {
+              //     promotItems.push({
+              //       syskey: "0",
+              //       recordStatus: 1,
+              //       stockCode: '',
+              //       stockName: sobj.multigift.discountItemDesc,
+              //       stockSyskey: sobj.multigift.discountStockSyskey == "" || sobj.multigift.discountStockSyskey == null || sobj.multigift.discountStockSyskey == undefined ? 0 : sobj.multigift.discountStockSyskey,
+              //       promoStockSyskey: sobj.multigift.discountItemSyskey == "" || sobj.multigift.discountItemSyskey == null || sobj.multigift.discountItemSyskey == undefined ? 0 : sobj.multigift.discountItemSyskey,
+              //       qty: Number(sobj.multigift.discountItemQty),
+              //       promoStockType: sobj.multigift.discountItemType,
+              //       promoDetailSyskey: sobj.multigift.discountDetailSyskey
+              //     })
+              //   }
+              // }
 
 
               //---- Promotion Items [gifts] -------
@@ -1172,6 +1303,7 @@ export class CheckoutPage implements OnInit {
     await alert.present();
 
   }
+
   connectPrinter() {
     this.printerService.enableBT().then(() => this.printerService.searchBT()
       .then((devicesList) => {
@@ -1362,6 +1494,7 @@ export class CheckoutPage implements OnInit {
       }
     }, 5000);
   }
+
   removeNative() {
     sessionStorage.removeItem("headersyskey");
     sessionStorage.removeItem("checkvisit");

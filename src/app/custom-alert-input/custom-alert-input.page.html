@@ -5,14 +5,13 @@
   </ion-item>
   <!-- body -->
   <div class="wrapper">
-    <ion-input   [(ngModel)]="qty" value="qty" type="text" placeholder="Enter qty"
-      maxLength="4" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1');">
+    <ion-input [(ngModel)]="qty" value="qty" type="text" placeholder="Enter qty" maxLength="4"
+      oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1');">
     </ion-input>
   </div>
 
-  
-</ion-content>
 
+</ion-content>
 
 <!-- footer -->
 <ion-footer class="ion-no-border">

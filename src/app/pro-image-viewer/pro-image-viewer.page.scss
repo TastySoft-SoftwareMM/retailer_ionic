@@ -10,7 +10,7 @@
 }
 .back-ion-button {
     // border-bottom-right-radius: 50%;
-    background: #7a7a7a26;
+    // background: #7a7a7a26;
     margin: 0 !important;
     // border-radius: 50%;
     border-radius: 8px;
@@ -283,10 +283,40 @@ ion-card {
     color: #c73200;
     border: 1px solid #c73200;
 }
+.getorrule {
+    text-align: center;
+    width: 95%;
+    border-bottom: 1px solid var(--ion-color-border);
+    line-height: 0.1em;
+    font-size: 14px !important;
+    margin: 0 2.5% 0 2.5%;
+    border-bottom-style: dashed;
+    span {
+        background: #fdf2f0;
+        color: #c73200;
+        border: 1px solid #c73200;
+        border-radius: 25px;
+        /* min-width: 300px; */
+        padding: 0px 12px;
+    }
+}
+.getorrule-col {
+    padding: 0.75rem 0.5rem;
+}
+
 .border-top-promo {
     border-top: 1px solid var(--ion-color-border);
+}
+.border-bottom-rule:not(:last-child) {
+    border-bottom: 1px solid var(--ion-color-border);
 }
 .tagcontainer {
     display: flex;
     align-items: center;
+}
+.totaltypecol {
+    border-left: 1px solid var(--ion-color-border);
+    justify-content: center;
+    align-items: center;
+    display: flex;
 }

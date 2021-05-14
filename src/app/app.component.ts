@@ -24,6 +24,7 @@ export class AppComponent {
   database: SQLiteObject;
   keyboard: any;
   modal: any;
+  choosegift: any;
 
 
   constructor(
@@ -51,6 +52,8 @@ export class AppComponent {
       this.domCtrl.read(() => {
         this.keyboard = this.element.nativeElement.querySelectorAll('.keyboard');
         this.modal = this.element.nativeElement.querySelectorAll('.custom-alert-input-modal');
+        this.choosegift = this.element.nativeElement.querySelectorAll('.gift_choice_modal');
+
 
         this.domCtrl.write(() => {
           for (var index = 0; index < this.keyboard.length; index++) {
@@ -62,6 +65,14 @@ export class AppComponent {
               this.renderer.setStyle(this.modal[index], 'transform', `translateY(-${info.keyboardHeight / 2}px`);
             }
           }
+
+          if (this.choosegift != null) {
+            for (var index = 0; index < this.choosegift.length; index++) {
+              this.renderer.setStyle(this.choosegift[index], 'transform', `translateY(-${info.keyboardHeight / 2}px`);
+            }
+          }
+
+
         })
       });
     });
@@ -71,6 +82,8 @@ export class AppComponent {
       this.domCtrl.read(() => {
         this.keyboard = this.element.nativeElement.querySelectorAll('.keyboard');
         this.modal = this.element.nativeElement.querySelectorAll('.custom-alert-input-modal');
+        this.choosegift = this.element.nativeElement.querySelectorAll('.gift_choice_modal');
+
 
         this.domCtrl.write(() => {
 
@@ -81,6 +94,13 @@ export class AppComponent {
           if (this.modal != null) {
             for (var index = 0; index < this.modal.length; index++) {
               this.renderer.setStyle(this.modal[index], 'transform', 'none');
+            }
+          }
+
+
+          if (this.choosegift != null) {
+            for (var index = 0; index < this.choosegift.length; index++) {
+              this.renderer.setStyle(this.choosegift[index], 'transform', 'none');
             }
           }
 
@@ -98,6 +118,17 @@ export class AppComponent {
       this.lottieSplashScreen.hide();
       console.log("initializePlatform");
       this.statusBar.backgroundColorByHexString("#ab000d");
+
+
+      //disable back button
+      this.platform.backButton.subscribeWithPriority(9999, () => {
+        document.addEventListener('backbutton', function (event) {
+          event.preventDefault();
+          event.stopPropagation();
+        }, false);
+      });
+
+
       this.sqlite.create({
         name: 'mPOSretail.db',
         location: 'default'

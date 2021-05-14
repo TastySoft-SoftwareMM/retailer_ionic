@@ -98,25 +98,52 @@
                   </ion-col>
                   <ion-col size="4" class="price secondtitle">
                     <ion-label> {{p.total}}</ion-label>
+
+                    <!--
+                       ----------- Discount Percent 
+                                                ------------>
+
                     <div *ngIf="p.discountPercent != 0 || p.discountPercent != '' " class="cutpercent">
                       <span style="margin-right: 5px;text-decoration-line: line-through;
                     color: grey;">{{p.price * p.amount}}</span>
                       -{{p.discountPercent}}%</div>
+
+
                   </ion-col>
                 </ion-row>
               </div>
             </div>
-            <ul class="gift-list fadeIN" *ngIf="p.gifts && p.gifts.length > 0">
+
+
+            <!--
+              -------- Single Rule Gift 
+              --------                
+                                       --------- -->
+
+
+            <!-- <ul class="gift-list fadeIN" *ngIf="p.gifts && p.gifts.length > 0" style="background-color: white;">
+              <li class="gift-list-item gift-list-item-buy-get">
+                <ion-row>
+                  <ion-col size="12">
+                    <span style="color: black;">Gift</span>
+                  </ion-col>
+                </ion-row>
+              </li>
               <li class="gift-list-item with-padding" *ngFor="let gift of p.gifts">
                 <span>
                   {{gift.discountItemDesc}}
                 </span>
                 <span class="qty-badge qty-badge-primary qty-badge-pill">{{gift.discountItemQty}}</span>
               </li>
-            </ul>
+            </ul> -->
+
           </div>
 
-          <!--Invoice  Promotion gifts-->
+          <!--
+            ---------Invoice  Promotion gifts
+                                      -------
+                                      ------------>
+
           <ion-item (click)="giftToggleSection(i)" *ngIf="cp.gifts.length > 0" button lines="none"
             [ngClass]="!cp.giftopen ? 'custom-border-bottom' : ''" detail="false"
             class="required-stock re-item custom-item fadeIN">
@@ -124,6 +151,7 @@
             <ion-icon *ngIf="!cp.giftopen" name="chevron-forward-outline" slot="end"></ion-icon>
             <ion-icon *ngIf="cp.giftopen" name="chevron-down-outline" slot="end"></ion-icon>
           </ion-item>
+
           <div *ngIf="cp.gifts.length > 0 && cp.giftopen" class="gift-list-bd fadeIN">
             <ul class="gift-list">
               <li class="gift-list-item with-padding" *ngFor="let gift of cp.gifts">
@@ -140,7 +168,6 @@
         <div *ngIf="cp.isLoading" class="spinner-container-cart">
           <ion-spinner></ion-spinner>
         </div>
-
 
         <!-- summary -->
         <ion-grid class="orderbygrid secondtitle fadeIN">
@@ -239,7 +266,7 @@
       </ion-list>
       <ion-grid class="orderbygrid secondtitle">
         <ion-row>
-          <ion-col> Subtotal <span style="float: right"> : </span></ion-col>
+          <ion-col> Total Amount <span style="float: right"> : </span></ion-col>
           <ion-col style="text-align: right;"> {{util.thousand_sperator(returnsubtotal)}}</ion-col>
         </ion-row>
       </ion-grid>

@@ -1756,17 +1756,22 @@ export class MainPage implements OnInit {
     toggleSectionByTeam(index) {
         this.shopbyTeam[index].open = !this.shopbyTeam[index].open;
 
-        var dom = document.getElementById(`measuringWrapperteam-${index}`), height = 0,
-            collapse_team = `collapse-team-${index}`;
+        var dom = document.getElementById(`measuringWrapperteam-${index}`),
+            height = 0,
+            collapse_team = `collapse-team-${index}`,
+            teamheaderel = document.querySelector(`.${`headertitle-${index}`}`),
+            whitespace = "nowrap";
 
         if (this.shopbyTeam[index].open) {
             height = dom.offsetHeight;
+            whitespace = "normal";
         }
 
-        //transform
         this.domCtrl.write(() => {
             const el = document.querySelector(`.${collapse_team}`);
             this.renderer.setStyle(el, 'height', height.toString() + "px");
+
+            this.renderer.setStyle(teamheaderel, 'white-space', whitespace)
         });
     }
 }

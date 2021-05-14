@@ -24,6 +24,7 @@ import { ProImageViewerPage } from '../pro-image-viewer/pro-image-viewer.page';
 import { async } from '@angular/core/testing';
 import { InvoiceDiscountDetailPage } from '../invoice-discount-detail/invoice-discount-detail.page';
 import { CustomAlertInputPage } from '../custom-alert-input/custom-alert-input.page';
+import { GiftchoicePage } from '../giftchoice/giftchoice.page';
 declare var cordova: any;
 
 
@@ -456,19 +457,70 @@ export class CartItemPage implements OnInit {
         "shopSyskey": this.checkinshop.shopsyskey
       }
 
-
-      this.onlineService.calculatePromotionItems(param).subscribe((val: any) => {
+      this.onlineService.calculatePromotionItems(param).subscribe(async (val: any) => {
         console.log("Promo" + JSON.stringify(val));
         if (val.status == "Promotion Available") {
 
-          product.gifts = [];
+          // product.gifts = [];
           product.afterDiscountTotal = val.data.afterDiscountTotal;
           product.discountPercent = val.data.discountPercent;
 
           if (val.data.giftList.length > 0) {
-            val.data.giftList.map(gift => {
-              product.gifts.push(gift);
+
+
+            // val.data.giftList.map(gift => {
+            //   product.gifts.push(gift);
+            // });
+
+            product.gifts = val.data.giftList;
+
+
+            // Auto Selected Gift
+            product.chosen_multiple_gift = [];
+
+
+            var gift_amount_ary = [];
+
+            const gifts_count = product.gifts.length;
+            const end_gift = product.gifts[gifts_count - 1].filter(el => el.discountItemEndType == "END");
+
+
+            const total_gift_amount = end_gift[0].discountItemQty;
+            console.log("Total Gift Amount -> " + total_gift_amount);
+
+
+            product.gifts.map((giftlist, giftlist_index) => {
+
+              giftlist.map((gift, index) => {
+
+                if (end_gift[0].discountItemRuleType == "Total Item") {
+                  product.total_gift_amount = Number(total_gift_amount);
+
+                  //Calculate Gift Amount
+                  const gift_quotient_amount = Math.floor(total_gift_amount / product.gifts.length);
+                  const gift_remainder_amount = total_gift_amount % product.gifts.length;
+
+                  console.log("Quotient ->" + gift_quotient_amount + ', Remainder ->' + gift_remainder_amount + ', Qty ->' + end_gift[0].discountItemQty + ', Length ->' + product.gifts.length);
+
+                  if (product.gifts.length == giftlist_index + 1) {
+                    gift.discountItemQty = gift_quotient_amount + gift_remainder_amount;
+                  }
+                  else {
+                    gift.discountItemQty = gift_quotient_amount;
+                  }
+
+                }
+
+                if (index == 0) {
+                  product.chosen_multiple_gift.push(gift);
+                }
+
+
+              });
+
             });
+
+
           }
           else {
             product.gifts = [];
@@ -481,23 +533,28 @@ export class CartItemPage implements OnInit {
           product.discountPercent = 0;
         }
 
-        //check decimal point 
+        //check decimal point
         product.discountPercent = this.util.checkDecimals(product.discountPercent);
         this.cartService.storeGiftsCache(product);
 
-        //Fixed Point Discount amount value
+        //Fixed Point Discount amount
         var discountamount = this.util.fixedPoint((Number(product.price) * Number(product.amount) * Number(product.discountPercent)) / 100);
         product.total = this.util.fixedPoint((Number(product.price) * Number(product.amount)) - Number(discountamount));
 
+
+        //Calculation Total Amount
+        await this.getOrderSubTotalOnly();
         resolve();
-      }, err => {
+      }, async (err) => {
         product.total = Number(product.price) * Number(product.amount);
         //check decimal point => total
         product.total = this.util.checkDecimals(product.total);
         this.messageService.showNetworkToast(err);
-        resolve();
-      })
 
+        //Calculation Total Amount
+        await this.getOrderSubTotalOnly();
+        resolve();
+      });
     });
   }
 
@@ -654,9 +711,7 @@ export class CartItemPage implements OnInit {
           await this.getOrderSubtotal(bo, p);
           await this.cartService.totalQty();
           this.loadingService.loadingDismiss();
-
         }
-
 
         console.log('Confirm Ok');
       })
@@ -782,7 +837,6 @@ export class CartItemPage implements OnInit {
       console.log("Cal Promo end");
     }
     //--- Calculation Price [Promotion Item]
-
 
     var totalamount = bo.child.reduce((i, j) => i + Number(j.total), 0);
     bo.subtotal = this.util.fixedPoint(totalamount);
@@ -1119,7 +1173,7 @@ export class CartItemPage implements OnInit {
       console.log("Param: " + JSON.stringify(param));
 
       this.onlineService.calculateMultipleSKUs(param).subscribe(async (res: any) => {
-        console.log(res);
+        console.log("MultipleSKUSPromo =  " + JSON.stringify(res));
         await this.cartService.updateCartByMultipleSKUsPromotion(this.cart, this.returnedproduct, res.data);
         this.loadingService.loadingDismiss();
         this.navCtrl.navigateForward(['checkout']);
@@ -1142,6 +1196,8 @@ export class CartItemPage implements OnInit {
       this.orderUpdate();
     }
   }
+
+
   orderInsert() {
     try {
       console.log("allcart ==" + JSON.stringify(this.allcart));

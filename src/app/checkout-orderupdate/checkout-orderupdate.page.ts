@@ -16,6 +16,7 @@ import { ProImageViewerPage } from '../pro-image-viewer/pro-image-viewer.page';
 import { InvoiceDiscountDetailPage } from '../invoice-discount-detail/invoice-discount-detail.page';
 import { CustomAlertInputPage } from '../custom-alert-input/custom-alert-input.page';
 import { async } from '@angular/core/testing';
+import { GiftchoicePage } from '../giftchoice/giftchoice.page';
 @Component({
   selector: 'app-checkout-orderupdate',
   templateUrl: './checkout-orderupdate.page.html',
@@ -95,6 +96,61 @@ export class CheckoutOrderupdatePage implements OnInit {
       console.log(this.order);
     }, 1000);
   }
+
+
+  /**  --------
+      ---------- Choose Your Gift [Promotion]
+                                   ------------
+                                   --------------
+                                                  **/
+
+
+  giftChoice(product, rule) {
+    return new Promise(async (resolve) => {
+
+      var gifts = [];
+
+      /**
+       * Check Single Rule GIfts (or) Multi Rule Gifts
+       */
+
+      if (rule == 'singlerule') {
+        gifts = product.gifts;
+      }
+      else {
+        gifts = product.multigift.giftInfoList;
+      }
+
+      const modal = await this.modalCtrl.create({
+        component: GiftchoicePage,
+        cssClass: "gift_choice_modal",
+        // backdropDismiss: false,
+        componentProps: {
+          "gifts": gifts,
+          "chosen_multiple_gift": product.chosen_multiple_gift,
+          "total_gift_amount": product.total_gift_amount
+        }
+      });
+
+
+      await modal.present();
+
+
+
+      const { data } = await modal.onWillDismiss();
+
+      console.log(data);
+      if (data) {
+        product.chosen_multiple_gift = [];
+        data.gifts.map(gift => {
+          product.chosen_multiple_gift.push(gift);
+        })
+      }
+
+
+    });
+  }
+
   getOrderShopInfo() {
     return new Promise(resolve => {
       this.nativeStorage.getItem("ordershop").then((res: any) => {
@@ -374,9 +430,17 @@ export class CheckoutOrderupdatePage implements OnInit {
               //---- Promotion Items [gifts] -------
               var promotItems = [];
 
-              // Single SKUs Promotion
-              if (sobj.gifts.length > 0) {
-                sobj.gifts.map(gift => {
+
+              // New Function
+              var promoDetailSyskey = "0";
+
+              if (sobj.chosen_multiple_gift && sobj.chosen_multiple_gift.length > 0) {
+
+                if (sobj.multigift && (hrule.rule.length == ri + 1)) {
+                  promoDetailSyskey = sobj.multigift.discountDetailSyskey;
+                }
+
+                sobj.chosen_multiple_gift.map(gift => {
                   promotItems.push({
                     syskey: "0",
                     recordStatus: 1,
@@ -385,31 +449,49 @@ export class CheckoutOrderupdatePage implements OnInit {
                     stockSyskey: gift.discountStockSyskey == "" || gift.discountStockSyskey == null || gift.discountStockSyskey == undefined ? 0 : gift.discountStockSyskey,
                     promoStockSyskey: gift.discountItemSyskey == "" || gift.discountItemSyskey == null || gift.discountItemSyskey == undefined ? 0 : gift.discountItemSyskey,
                     qty: Number(gift.discountItemQty),
-                    promoStockType: gift.discountItemType
+                    promoStockType: gift.discountItemType,
+                    promoDetailSyskey: '0'
                   })
                 })
               }
-              var promoDetailSyskey = "0";
+
+
+              // Single SKUs Promotion
+              // if (sobj.gifts.length > 0) {
+              //   sobj.gifts.map(gift => {
+              //     promotItems.push({
+              //       syskey: "0",
+              //       recordStatus: 1,
+              //       stockCode: '',
+              //       stockName: gift.discountItemDesc,
+              //       stockSyskey: gift.discountStockSyskey == "" || gift.discountStockSyskey == null || gift.discountStockSyskey == undefined ? 0 : gift.discountStockSyskey,
+              //       promoStockSyskey: gift.discountItemSyskey == "" || gift.discountItemSyskey == null || gift.discountItemSyskey == undefined ? 0 : gift.discountItemSyskey,
+              //       qty: Number(gift.discountItemQty),
+              //       promoStockType: gift.discountItemType
+              //     })
+              //   })
+              // }
+              // var promoDetailSyskey = "0";
 
               // Multiple SKUs Promotion
-              if (sobj.multigift) {
-                promoDetailSyskey = sobj.multigift.discountDetailSyskey;
-                if (  hrule.rule.length == ri + 1) {
+              // if (sobj.multigift) {
+              //   promoDetailSyskey = sobj.multigift.discountDetailSyskey;
+              //   if (hrule.rule.length == ri + 1) {
 
-                  promotItems.push({
-                    syskey: "0",
-                    recordStatus: 1,
-                    stockCode: '',
-                    stockName: sobj.multigift.discountItemDesc,
-                    stockSyskey: sobj.multigift.discountStockSyskey == "" || sobj.multigift.discountStockSyskey == null || sobj.multigift.discountStockSyskey == undefined ? 0 : sobj.multigift.discountStockSyskey,
-                    promoStockSyskey: sobj.multigift.discountItemSyskey == "" || sobj.multigift.discountItemSyskey == null || sobj.multigift.discountItemSyskey == undefined ? 0 : sobj.multigift.discountItemSyskey,
-                    qty: Number(sobj.multigift.discountItemQty),
-                    promoStockType: sobj.multigift.discountItemType,
-                    promoDetailSyskey: sobj.multigift.discountDetailSyskey
+              //     promotItems.push({
+              //       syskey: "0",
+              //       recordStatus: 1,
+              //       stockCode: '',
+              //       stockName: sobj.multigift.discountItemDesc,
+              //       stockSyskey: sobj.multigift.discountStockSyskey == "" || sobj.multigift.discountStockSyskey == null || sobj.multigift.discountStockSyskey == undefined ? 0 : sobj.multigift.discountStockSyskey,
+              //       promoStockSyskey: sobj.multigift.discountItemSyskey == "" || sobj.multigift.discountItemSyskey == null || sobj.multigift.discountItemSyskey == undefined ? 0 : sobj.multigift.discountItemSyskey,
+              //       qty: Number(sobj.multigift.discountItemQty),
+              //       promoStockType: sobj.multigift.discountItemType,
+              //       promoDetailSyskey: sobj.multigift.discountDetailSyskey
 
-                  })
-                }
-              }
+              //     })
+              //   }
+              // }
 
 
 

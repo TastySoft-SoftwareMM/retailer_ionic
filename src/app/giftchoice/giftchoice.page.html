@@ -1,0 +1,82 @@
+<ion-content>
+
+  <!-- Loading Controller -->
+  <div *ngIf="isLoading" class="spinner-container">
+    <ion-spinner></ion-spinner>
+  </div>
+
+  <ion-list *ngIf="!isLoading">
+    <ion-list-header>
+      <ion-label> Choose your gift
+        <span *ngIf="check_gift_get_rule_type == 'Total Item'">Gift Qty ({{selected_gift_amount}} /
+          {{total_gift_amount}})</span>
+      </ion-label>
+    </ion-list-header>
+
+    <div *ngFor="let giftlist of gifts" style="border-bottom: 1px solid var(--ion-color-border);">
+      <ion-radio-group [(ngModel)]="giftlist.checkedSyskey" *ngIf=" giftlist.length == 1">
+        <ion-item lines="none" *ngFor="let gift of giftlist">
+          <ion-label class="ion-text-nowrap">{{gift.discountItemDesc}}</ion-label>
+          <ion-radio [value]="gift.discountItemSyskey"></ion-radio>
+        </ion-item>
+      </ion-radio-group>
+
+      <!-- total item && or (rule) -->
+      <ion-list *ngIf="check_gift_get_rule_type == 'Total Item' && giftlist.length > 1 && !giftlist.isLoading ">
+        <div *ngFor="let gift of giftlist">
+
+          <ion-item class="ion-text-nowrap" lines="none">
+            <ion-label>{{gift.discountItemDesc}}</ion-label>
+            <ion-checkbox slot="end" [(ngModel)]="gift.isChecked" (ionChange)="checkEvent($event,giftlist,gift)">
+            </ion-checkbox>
+          </ion-item>
+
+          <ion-row class="row-box">
+            <ion-col (click)="decreaseAmountTotalRule(gift)"
+              class="ion-align-self-center ion-activatable ripple-parent dec-qty">
+              <ion-icon src="assets/minus.svg" class="icoqty"></ion-icon>
+              <ion-ripple-effect></ion-ripple-effect>
+            </ion-col>
+            <ion-col class="ion-align-self-center" style="text-align: center;">
+              <ion-input class="qtyinput secondtitle" value="qty" type="text" placeholder="1" [(ngModel)]="gift.amount"
+                maxLength="4" (ionChange)="inputChange($event)"
+                oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1');">
+              </ion-input>
+            </ion-col>
+            <ion-col (click)=" increaseAmountTotalRule(gift)"
+              class="ion-align-self-center ion-activatable ripple-parent add-qty">
+              <ion-icon src="assets/plus.svg" class="icoqty"></ion-icon>
+              <ion-ripple-effect></ion-ripple-effect>
+            </ion-col>
+          </ion-row>
+        </div>
+
+      </ion-list>
+
+
+      <ion-row class="row-box" *ngIf="check_gift_get_rule_type == 'Total Item' && giftlist.length == 1">
+        <ion-col (click)="decreaseAmount(giftlist)" class="ion-align-self-center ion-activatable ripple-parent dec-qty">
+          <ion-icon src="assets/minus.svg" class="icoqty"></ion-icon>
+          <ion-ripple-effect></ion-ripple-effect>
+        </ion-col>
+        <ion-col class="ion-align-self-center" style="text-align: center;">
+          <ion-input class="qtyinput secondtitle" value="qty" type="text" placeholder="1" [(ngModel)]="giftlist.amount"
+            maxLength="4" (ionChange)="inputChange($event)"
+            oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1');">
+          </ion-input>
+        </ion-col>
+        <ion-col (click)=" increaseAmount(giftlist)"
+          class="ion-align-self-center ion-activatable ripple-parent add-qty">
+          <ion-icon src="assets/plus.svg" class="icoqty"></ion-icon>
+          <ion-ripple-effect></ion-ripple-effect>
+        </ion-col>
+      </ion-row>
+    </div>
+  </ion-list>
+</ion-content>
+
+<ion-footer *ngIf="!isLoading" class="ion-no-border">
+  <ion-button color="custom" (click)="dismiss()">
+    <span style="padding: 10px">OK</span>
+  </ion-button>
+</ion-footer>

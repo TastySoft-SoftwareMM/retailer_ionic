@@ -64,10 +64,13 @@ export class SyncPage implements OnInit {
     private webview: WebView,
     private loadingService: LoadingService
   ) {
+
     this.downloadPercentfun(0, "start");
     this.nativeStorage.getItem("loginData").then(res => {
+      console.log("LoginData ->" + JSON.stringify(res))
       this.loginData = res;
     });
+    
   }
   ngOnInit() {
     this.getStockImages();
@@ -314,8 +317,6 @@ export class SyncPage implements OnInit {
     //------------------------- Shops [end] ---------------
 
 
-
-
     this.downloadPercent = (i / (this.stockall.length)) * 100;
 
     if (result == "resolved") {
@@ -352,9 +353,9 @@ export class SyncPage implements OnInit {
                 ref.downloadPercent = ((i / (ref.stockall.length)) * 100).toFixed();
                 ref.downloadStatus = { 'width': ref.downloadPercent + '%' };
                 console.log("downloadPercent == " + ref.downloadPercent);
-                setTimeout(() => {
-                  innerFun();
-                }, 10);
+                // setTimeout(() => {
+                innerFun();
+                // }, 10);
               }
               if (ref.stockall.length == i) {
                 sessionStorage.removeItem('checkin');
@@ -385,6 +386,7 @@ export class SyncPage implements OnInit {
         "usertype": this.loginData.userType,
         "date": this.util.getTodayDate()
       };
+
       this.onlineService.getShopall(shopParams).subscribe(data_1 => {
         var shopArray: any;
         shopArray = data_1;

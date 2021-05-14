@@ -23,8 +23,6 @@
       </ion-label>
     </ion-col>
   </ion-row>
-
-
 </ion-toolbar>
 <ion-content>
 
@@ -50,43 +48,43 @@
           <ion-icon *ngIf="!cp.open" name="chevron-forward-outline" slot="end"></ion-icon>
           <ion-icon *ngIf="cp.open" name="chevron-down-outline" slot="end"></ion-icon>
         </ion-item>
+
         <div *ngIf="cp.open && !cp.isLoading" class="required_stock_brand_inner">
           <!-- stock card with promotion session -->
           <ion-card class="card-wrapper fadeIN" *ngFor="let h of cp.child;let index = index;">
-            <ion-virtual-scroll approxItemHeight="100px" [items]="h.rule">
-              <ion-list style="padding: 5px 0;width: 100%;" *virtualItem="let p;let i = index;">
-                <!-- stock card item  -->
-                <div class="custom-card fadeIN">
-                  <div class="custom-card-left" (click)="photoViewer(p.syskey)">
-                    <p *ngIf="p.promoItems.length > 0 || p.multiplePromo" class="promotion-status">Pro</p>
-                    <app-image-shell [src]="p?.img" [alt]="'Sample Image'">
-                    </app-image-shell>
-                  </div>
-                  <div class="custom-card-right">
-                    <ion-item lines="none" style="--inner-padding-end: 4px;">
-                      <p class="stockname secondtitle">
-                        {{p.desc}}
-                      </p>
-                    </ion-item>
-                    <ion-row>
-                      <ion-col size="4" style="padding-left: 10px;">
-                        <ion-label>{{p.amount}}</ion-label>
-                      </ion-col>
-                      <ion-col size="4" class="price secondtitle" style="justify-content: center;">
-                        <ion-label> {{p.price}}</ion-label>
-                      </ion-col>
-                      <ion-col size="4" class="price secondtitle">
-                        <ion-label> {{p.total}}</ion-label>
-                        <div *ngIf=" p.discountPercent != 0 || p.discountPercent != '' " class="cutpercent">
-                          <span style="margin-right: 5px;text-decoration-line: line-through;
-                    color: grey;">{{p.price * p.amount}}</span>
-                          -{{p.discountPercent}}%</div>
-                      </ion-col>
-                    </ion-row>
-                  </div>
+            <ion-list style="padding: 5px 0;width: 100%;" *ngFor="let p of h.rule;let i = index;">
+              <!-- stock card item  -->
+              <div class="custom-card fadeIN">
+                <div class="custom-card-left" (click)="photoViewer(p.syskey)">
+                  <p *ngIf="p.promoItems.length > 0 || p.multiplePromo" class="promotion-status">Pro</p>
+                  <app-image-shell [src]="p?.img" [alt]="'Sample Image'">
+                  </app-image-shell>
                 </div>
+                <div class="custom-card-right">
+                  <ion-item lines="none" style="--inner-padding-end: 4px;">
+                    <p class="stockname secondtitle">
+                      {{p.desc}}
+                    </p>
+                  </ion-item>
+                  <ion-row>
+                    <ion-col size="4" style="padding-left: 10px;">
+                      <ion-label>{{p.amount}}</ion-label>
+                    </ion-col>
+                    <ion-col size="4" class="price secondtitle" style="justify-content: center;">
+                      <ion-label> {{p.price}}</ion-label>
+                    </ion-col>
+                    <ion-col size="4" class="price secondtitle">
+                      <ion-label> {{p.total}}</ion-label>
+                      <div *ngIf=" p.discountPercent != 0 || p.discountPercent != '' " class="cutpercent">
+                        <span style="margin-right: 5px;text-decoration-line: line-through;
+                    color: grey;">{{p.price * p.amount}}</span>
+                        -{{p.discountPercent}}%</div>
+                    </ion-col>
+                  </ion-row>
+                </div>
+              </div>
 
-                <!-- <ul class="gift-list fadeIN">
+              <!-- <ul class="gift-list fadeIN">
                   <li class="gift-list-item with-padding">
                     <span>
                       {{gift.discountItemDesc}}
@@ -95,46 +93,98 @@
                   </li>
                 </ul> -->
 
+              <!--
+                  ------------ Single Rule 
+                                         ------------>
 
-                <ul class="gift-list fadeIN" *ngIf="p.gifts && p.gifts.length > 0" style="background-color: white;">
-                  <li class="gift-list-item gift-list-item-buy-get">
-                    <ion-row>
-                      <ion-col size="12">
-                        <span style="color: black;">Gift</span>
-                      </ion-col>
-                    </ion-row>
-                  </li>
-                  <li class="gift-list-item with-padding" *ngFor="let gift of p.gifts">
+              <ul class="gift-list fadeIN" *ngIf="p.gifts && p.gifts.length > 0" style="background-color: white;">
+                <li class="gift-list-item gift-list-item-buy-get">
+                  <ion-row>
+                    <ion-col size="5">
+                      <span style="color: black;">Gift</span>
+                    </ion-col>
+
+                    <ion-col size="7">
+                      <!--
+                      ----------------- Choose your gift 
+                                                        -------------->
+
+                      <div class="ion-activatable choose_gift" (click)="giftChoice(p,'singlerule')">
+                        <span> Choose your gift </span>
+
+                        <ion-icon name="chevron-down-outline" role="img" class="md hydrated"
+                          aria-label="chevron down outline"></ion-icon>
+                        <ion-ripple-effect type="unbounded" class="md hydrated unbounded"></ion-ripple-effect>
+
+                      </div>
+                    </ion-col>
+                  </ion-row>
+                </li>
+
+                <!-- <li class="gift-list-item with-padding" *ngFor="let gift of p.gifts">
                     <span>
                       {{gift.discountItemDesc}}
                     </span>
                     <span class="qty-badge qty-badge-primary qty-badge-pill">{{gift.discountItemQty}}</span>
+                  </li> -->
+
+                <!--
+                      ----------------  Display Gift
+                                                    -------------->
+
+                <li class="gift-list-item with-padding fadeIN" *ngFor="let multigift of p.chosen_multiple_gift">
+                  <span>
+                    {{multigift.discountItemDesc}}
+                  </span>
+                  <span class="qty-badge qty-badge-primary qty-badge-pill">{{multigift.discountItemQty}}</span>
+                </li>
+
+              </ul>
+              <!--
+                  ------------ Multi Rule 
+                                         ------------>
+              <ion-list *ngIf="p.multigift && i+ 1 == h.rule.length" style="padding: 0;">
+                <ul class="gift-list" style="background-color: white;">
+                  <li class="gift-list-item gift-list-item-buy-get">
+                    <ion-row>
+                      <ion-col size="5">
+                        <span style="color: black;">Gift</span>
+                      </ion-col>
+
+                      <!--
+                      ----------------- Choose your gift 
+                                                        -------------->
+                      <ion-col size="7">
+                        <div class="ion-activatable choose_gift" (click)="giftChoice(p,'multirule')">
+                          <span> Choose your gift </span>
+                          <ion-icon name="chevron-down-outline" role="img" aria-label="chevron down outline">
+                          </ion-icon>
+                          <ion-ripple-effect type="unbounded" class="md hydrated unbounded"></ion-ripple-effect>
+                        </div>
+                      </ion-col>
+                    </ion-row>
                   </li>
+
+                  <!--
+                      ----------------  Display Gift
+                                                    -------------->
+                  <li class="gift-list-item with-padding fadeIN" *ngFor="let multigift of p.chosen_multiple_gift">
+                    <span>
+                      {{multigift.discountItemDesc}}
+                    </span>
+                    <span class="qty-badge qty-badge-primary qty-badge-pill">{{multigift.discountItemQty}}</span>
+                  </li>
+
                 </ul>
-
-
-                <ion-list *ngIf="p.multigift && i+ 1 == h.rule.length" style="padding: 0;">
-                  <ul class="gift-list" style="background-color: white;">
-                    <li class="gift-list-item gift-list-item-buy-get">
-                      <ion-row>
-                        <ion-col size="12">
-                          <span style="color: black;">Gift</span>
-                        </ion-col>
-                      </ion-row>
-                    </li>
-                    <li class="gift-list-item with-padding">
-                      <span>
-                        {{p.multigift.discountItemDesc}}
-                      </span>
-                      <span class="qty-badge qty-badge-primary qty-badge-pill">{{p.multigift.discountItemQty}}</span>
-                    </li>
-                  </ul>
-                </ion-list>
               </ion-list>
-            </ion-virtual-scroll>
+
+            </ion-list>
           </ion-card>
 
-          <!--Invoice  Promotion gifts-->
+          <!-- 
+            -----------  Invoice  Promotion gifts
+                                           ------------>
+
           <ion-item (click)="giftToggleSection(i)" *ngIf="cp.gifts.length > 0" button lines="none"
             [ngClass]="!cp.giftopen ? 'custom-border-bottom' : ''" detail="false"
             class="required-stock re-item custom-item fadeIN">
@@ -240,6 +290,7 @@
       </ion-grid>
     </div>
     <!----------------- returned product cart[end] --------------->
+
     <br>
     <ion-item lines="none" style="--background: transparent;--border-width: 1px;">
       <ion-label position="floating" class="headertitle">Remark :</ion-label>

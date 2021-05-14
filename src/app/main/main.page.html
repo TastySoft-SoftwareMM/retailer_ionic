@@ -145,7 +145,8 @@
       <ion-item *ngIf="p.child.length > 0" detail="false" class="required-stock drop-header" button tappable
         (click)="toggleSectionByTeam(i)" [ngClass]="{'section-active' :p.open, 'section' : !p.open}" lines="none"
         detail="false">
-        <ion-label class="headertitle">Other lists ( {{p.username}} ) </ion-label>
+        <ion-label class="headertitle" [ngClass]="'headertitle-' + i">
+          <span style="color: #c13232 !important;margin-right: 5px;">■</span> {{ p.username }} </ion-label>
         <span slot="end" class="count">{{p.shopcountbyteam}}/ {{p.child.length}}</span>
         <ion-icon *ngIf="!p.open" name="chevron-forward-outline" slot="end"></ion-icon>
         <ion-icon *ngIf="p.open" name="chevron-down-outline" slot="end"></ion-icon>

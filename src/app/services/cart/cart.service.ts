@@ -59,6 +59,7 @@ export class CartService {
       this.stockdata.filter(el => { el.promoItems = []; el.gifts = []; el.giftopen = true; });
     });
   }
+
   getInventory() {
     return this.offlineService.getInventory();
   }
@@ -126,7 +127,6 @@ export class CartService {
       }
     })
   }
-
 
 
   //------------------------- Promotion Items By Shop  ----------------
@@ -390,17 +390,15 @@ export class CartService {
         });
       }
 
-
-
       //Promotion Header Data
       this.promotionitemHeader = promoHeaderList;
-
 
       //--------    Searching Data   -------------
       console.log(syskey + '-------' + searchterm);
       var promotionByHeaders = [];
       // var copyPromotionHeader = JSON.parse(JSON.stringify(this.promotionitemHeader));
       var copyPromotionHeader = this.promotionitemHeader;
+
 
       console.log(JSON.stringify(copyPromotionHeader))
       if (syskey != '' && copyPromotionHeader.length > 0) {
@@ -434,6 +432,7 @@ export class CartService {
   //-------------------------MultipleSKUs -----------------------
 
   downloadMultipleSKUs(shopsyskey) {
+
     return new Promise(resolve => {
       this.multiple_skus = [];
 
@@ -531,6 +530,7 @@ export class CartService {
         resolve();
       });
     });
+
   }
 
   getMultipleSKUSPromoByStocksyskey(stockSyskey) {
@@ -735,17 +735,20 @@ export class CartService {
       return val.categoryCode;
     });
   }
+
   getsubCategoryCode(stockcode) {
     return this.stockdata.filter(el => el.code == stockcode).map(val => {
       return val.subCategoryCode;
     });
   }
+
   getStockImg(stockcode) {
     return this.stockdata.filter(el => el.code == stockcode).map(val => {
       console.log("val>>" + JSON.stringify(val));
       return val.img;
     });
   }
+
   async getCart() {
 
     let status = sessionStorage.getItem("checkvisit");
@@ -853,8 +856,6 @@ export class CartService {
     }
     return recommend;
   }
-
-
 
   addToCart(product, recommended) {
     let added = false;
@@ -1018,6 +1019,7 @@ export class CartService {
 
 
   }
+
   increaseProdctCart(product) {
     if (product.amount == "") {
       product.amount = 0;
@@ -1137,7 +1139,6 @@ export class CartService {
     this.stockdata.filter(obj => obj.gifts = []);
   }
 
-
   //return product
   addToCartReturnProduct(product) {
 
@@ -1243,6 +1244,7 @@ export class CartService {
       }
     }
   }
+
   totalQty() {
     this.cartItemCount.next(this.cart.filter(el => el.statusqty == "sim" && el.isactive != "no").reduce((i, j) => i + Number(j.amount), 0));
   }

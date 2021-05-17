@@ -258,6 +258,8 @@ export class MerchanModalPage implements OnInit {
     });
     await actionsheet.present();
   }
+
+
   pathForImage(img) {
     if (img == null) {
       return '';
@@ -267,67 +269,76 @@ export class MerchanModalPage implements OnInit {
       return converted;
     }
   }
+
+
   options: any;
   async pickImage() {
-    this.options = {
-      maximumImagesCount: 30,
-      quality: 60,
-      width: 600,
-      height: 600,
-      outputType: 0,
-    };
-    this.imagePicker.getPictures(this.options).then(async (results) => {
-      var s = 0;
-      if (results.length > 0) {
-        for (var i = 0; i < results.length; i++) {
-          let option = {
-            uri: results[i],
-            folderName: this.file.externalApplicationStorageDirectory + "Merchandizingimages",
-            quality: 60,
-            width: 600,
-            height: 600,
-          } as ImageResizerOptions;
-          this.imageResizer
-            .resize(option)
-            .then(async (filePath: string) => {
-              console.log('FilePath', filePath)
-              this.base64.encodeFile(filePath).then(async (image: string) => {
-                s++;
-                var newFileName = this.util.getTodayDate() + this.util.getCurrentTime() + s + ".jpg";
-                var imageName = newFileName.replace(".jpg", "");
-                var filePath = this.checkinShopdata.shopsyskey + '/' + this.util.getTodayDate() + '/' + this._task.brandId + '/' + this._task.campaign;
-                console.log("Encode Image " + image);
+    try {
+      this.options = {
+        maximumImagesCount: 30,
+        quality: 60,
+        width: 600,
+        height: 600,
+        outputType: 0,
+      };
+      this.imagePicker.getPictures(this.options).then(async (results) => {
+        var s = 0;
+        if (results.length > 0) {
+          for (var i = 0; i < results.length; i++) {
+            let option = {
+              uri: results[i],
+              folderName: this.file.externalApplicationStorageDirectory + "Merchandizingimages",
+              quality: 60,
+              width: 600,
+              height: 600,
+            } as ImageResizerOptions;
+            this.imageResizer
+              .resize(option)
+              .then(async (filePath: string) => {
+                console.log('FilePath', filePath)
+                this.base64.encodeFile(filePath).then(async (image: string) => {
+                  s++;
+                  var newFileName = this.util.getTodayDate() + this.util.getCurrentTime() + s + ".jpg";
+                  var imageName = newFileName.replace(".jpg", "");
+                  var filePath = this.checkinShopdata.shopsyskey + '/' + this.util.getTodayDate() + '/' + this._task.brandId + '/' + this._task.campaign;
+                  console.log("Encode Image " + image);
 
-                const base64Response = await fetch(image);
-                const blob = await base64Response.blob();
+                  const base64Response = await fetch(image);
+                  const blob = await base64Response.blob();
 
-                this.params.push(
-                  {
-                    "path": filePath + newFileName,
+                  this.params.push(
+                    {
+                      "path": filePath + newFileName,
+                      "name": imageName,
+                      "img": image.replace("data:image/*;charset=utf-8;base64,", "data:image/jpeg;base64,"),
+                      "status": "notUpload"
+                    }
+                  );
+                  this.images.push({
+                    "img": URL.createObjectURL(blob),
                     "name": imageName,
-                    "img": image.replace("data:image/*;charset=utf-8;base64,", "data:image/jpeg;base64,"),
                     "status": "notUpload"
-                  }
-                );
-                this.images.push({
-                  "img": URL.createObjectURL(blob),
-                  "name": imageName,
-                  "status": "notUpload"
+                  });
+                  this.file.removeRecursively(this.file.externalApplicationStorageDirectory, "Merchandizingimages").then(entry => {
+                    console.log("Entry Remove Dir ==" + JSON.stringify(entry));
+                  }, err => {
+                    console.log("Err Entry Remove Dir ==" + JSON.stringify(err));
+                  });
                 });
-                this.file.removeRecursively(this.file.externalApplicationStorageDirectory, "Merchandizingimages").then(entry => {
-                  console.log("Entry Remove Dir ==" + JSON.stringify(entry));
-                }, err => {
-                  console.log("Err Entry Remove Dir ==" + JSON.stringify(err));
-                });
-              });
-            })
-            .catch(e => console.log(e));
-          this.createDirectory();
+              })
+              .catch(e => alert(e));
+            this.createDirectory();
+          }
         }
-      }
-    }, (err) => {
-      this.loadingService.loadingDismiss();
-    });
+      }, (err) => {
+        this.loadingService.loadingDismiss();
+        alert(err);
+      });
+    }
+    catch (err) {
+      alert(err);
+    }
+
   }
 
   takePicture(sourceType: PictureSourceType, type) {

@@ -55,13 +55,12 @@ export class GiftchoicePage implements OnInit {
           giftlist.checkedSyskey = gift.discountItemSyskey;
           giftlist.amount = check_chosen_gift_list[0].discountItemQty;
           gift.isChecked = true;
-
-
+          gift.amount = check_chosen_gift_list[0].discountItemQty;
         }
         else {
           gift.isChecked = false;
+          gift.amount = 1;
         }
-
 
         //Get Gift Rule Type
         if (gift.discountItemEndType == "END") {
@@ -69,12 +68,6 @@ export class GiftchoicePage implements OnInit {
         }
 
 
-        if (index == 0) {
-          gift.amount = giftlist.amount;
-        }
-        else {
-          gift.amount = 1;
-        }
 
       });
     });

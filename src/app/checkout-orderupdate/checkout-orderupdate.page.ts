@@ -436,23 +436,27 @@ export class CheckoutOrderupdatePage implements OnInit {
 
               if (sobj.chosen_multiple_gift && sobj.chosen_multiple_gift.length > 0) {
 
-                if (sobj.multigift && (hrule.rule.length == ri + 1)) {
-                  promoDetailSyskey = sobj.multigift.discountDetailSyskey;
+                if ((hrule.rule.length == ri + 1)) {
+                  if (sobj.multigift) {
+                    promoDetailSyskey = sobj.multigift.discountDetailSyskey;
+                  }
+
+                  sobj.chosen_multiple_gift.map(gift => {
+                    promotItems.push({
+                      syskey: "0",
+                      recordStatus: 1,
+                      stockCode: '',
+                      stockName: gift.discountItemDesc,
+                      stockSyskey: gift.discountStockSyskey == "" || gift.discountStockSyskey == null || gift.discountStockSyskey == undefined ? 0 : gift.discountStockSyskey,
+                      promoStockSyskey: gift.discountItemSyskey == "" || gift.discountItemSyskey == null || gift.discountItemSyskey == undefined ? 0 : gift.discountItemSyskey,
+                      qty: Number(gift.discountItemQty),
+                      promoStockType: gift.discountItemType,
+                      promoDetailSyskey: '0'
+                    })
+                  })
                 }
 
-                sobj.chosen_multiple_gift.map(gift => {
-                  promotItems.push({
-                    syskey: "0",
-                    recordStatus: 1,
-                    stockCode: '',
-                    stockName: gift.discountItemDesc,
-                    stockSyskey: gift.discountStockSyskey == "" || gift.discountStockSyskey == null || gift.discountStockSyskey == undefined ? 0 : gift.discountStockSyskey,
-                    promoStockSyskey: gift.discountItemSyskey == "" || gift.discountItemSyskey == null || gift.discountItemSyskey == undefined ? 0 : gift.discountItemSyskey,
-                    qty: Number(gift.discountItemQty),
-                    promoStockType: gift.discountItemType,
-                    promoDetailSyskey: '0'
-                  })
-                })
+
               }
 
 

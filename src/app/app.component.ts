@@ -121,12 +121,12 @@ export class AppComponent {
 
 
       //disable back button
-      this.platform.backButton.subscribeWithPriority(9999, () => {
-        document.addEventListener('backbutton', function (event) {
-          event.preventDefault();
-          event.stopPropagation();
-        }, false);
-      });
+      // this.platform.backButton.subscribeWithPriority(9999, () => {
+      //   document.addEventListener('backbutton', function (event) {
+      //     event.preventDefault();
+      //     event.stopPropagation();
+      //   }, false);
+      // });
 
 
       this.sqlite.create({

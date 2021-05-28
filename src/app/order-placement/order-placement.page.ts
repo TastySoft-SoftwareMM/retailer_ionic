@@ -73,7 +73,6 @@ export class OrderPlacementPage implements OnInit {
   @ViewChild('infinitescroll', { static: false }) infiniteScrollBAI: IonInfiniteScroll;
   @ViewChild('infinitescrollrs', { static: false }) infiniteScrollRS: IonInfiniteScroll;
 
-
   constructor(private cartService: CartService, private navCtrl: NavController,
     private messageService: MessageService,
     private nativeStorage: NativeStorage,
@@ -127,6 +126,8 @@ export class OrderPlacementPage implements OnInit {
       this.loadingService.loadingDismiss();
     }, 800);
   }
+
+
   async getpromotion() {
     // await this.cartService.generatePromotion();
     this.promotionitems = await this.cartService.getPromotion('', this.searchterm);
@@ -136,7 +137,6 @@ export class OrderPlacementPage implements OnInit {
     this.multiple_skus = this.cartService.multiple_skus;
     console.log("Multi:" + JSON.stringify(this.multiple_skus));
   }
-
 
 
 

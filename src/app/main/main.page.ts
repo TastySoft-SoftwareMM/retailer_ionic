@@ -1451,6 +1451,7 @@ export class MainPage implements OnInit {
     }
     uploadData() {
     }
+
     async uploadMerchandizing() {
 
         this.offlineService.getMerchdizing(this.loginData.userId, this.util.getTodayDate(), "shopcompleted").then(async (val: any) => { //get shopcompleted data [only shop data]
@@ -1471,6 +1472,7 @@ export class MainPage implements OnInit {
                         el.present();
                         var count = 0, warningcount = 0, interval = 0;
                         el.message = container + `<span class="wrap"> <p class="warning">⚠️${warningcount} </p> <p> ${count + " / " + val.data.length} </p> </span>`;
+
                         val.data.filter(async (obj, si) => {
                             var merch: any = [];
                             this.merchandizingService.getData(obj.shopsyskey).then(async (merchval: any) => { //Get Merchandizing data from Storage offline
@@ -1572,6 +1574,8 @@ export class MainPage implements OnInit {
             }
         });
     }
+
+
     async uploadMerchandizing1() { // not used yet
         // var container = `
         //  <div class="uploadmsg"> 

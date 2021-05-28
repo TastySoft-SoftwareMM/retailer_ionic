@@ -128,7 +128,6 @@ export class CartService {
     })
   }
 
-
   //------------------------- Promotion Items By Shop  ----------------
 
   getPromotionItmes(shopSyskey) {
@@ -324,9 +323,16 @@ export class CartService {
       console.log("PromoHeaderlist --" + JSON.stringify(promoHeaderList));
       console.log("MultiPleSKUs:" + JSON.stringify(this.multiple_skus));
 
-      // multipleSKUS
+      // 
+
       if (this.multiple_skus.length > 0) {
         this.multiple_skus.map((multipromo, i) => {
+
+          // promoHeaderList.map(proHea => {
+          //   proHea.stocks.map((stock,i) =>{
+
+          //   })
+          // })
 
           var data: any = promoHeaderList.filter(el => el.HeaderSyskey == multipromo.HeaderSyskey);
 
@@ -368,8 +374,34 @@ export class CartService {
             var mPromoStocks = [];
             multipromo.DetailList.map(detail => {
               detail.rule.map(stock => {
+
+                //remove single rule
                 stock.promoItems = [];
-                mPromoStocks.push(stock);
+                this.stockdata.filter(el => el.syskey == stock.syskey).map(p => {
+                  console.log("111 ->" + JSON.stringify(p));
+
+
+                  // promoHeaderList.map((h, i) => {
+                  //   if (p.promoItems.length > 0) {
+                  //     if (h.HeaderSyskey == p.promoItems[0].HeaderSyskey && h.stocks.length == 1) {
+                  //       promoHeaderList.splice(i, 1);
+                  //     }
+                  //     h.stocks.map((stock_d, s_i) => {
+                  //       if (stock_d.syskey == p.syskey) {
+                           
+                  //       }
+                  //     });
+                  //   }
+                  // })
+
+                  p.promoItems = [];
+                });
+
+
+                const checkstock = mPromoStocks.filter(el => el.syskey == stock.syskey);
+                if (checkstock.length == 0) {
+                  mPromoStocks.push(stock);
+                }
               })
             });
 
@@ -384,7 +416,6 @@ export class CartService {
             });
 
             console.log("Test:" + JSON.stringify(promoHeaderList));
-
 
           }
         });
@@ -418,11 +449,14 @@ export class CartService {
       else {
         promotionByHeaders = copyPromotionHeader;
       }
+
       return promotionByHeaders;
     } catch (error) {
       alert(error);
       return [];
     }
+
+
   }
   getPromotionHeaderListForDropDown() {
     return this.promoList;
@@ -460,33 +494,41 @@ export class CartService {
                   detail.discountItemRuleType = gift[0].discountItemRuleType;
                   detail.DiscountItemQty = gift[0].DiscountItemQty; //total Gift Qty [*TOtal Item Rule]
                 }
-
               })
 
 
+              const check_stock = concatary.filter(el => el.syskey == detail.PromoItemSyskey);
+
               this.stockdata.filter(el => el.syskey == detail.PromoItemSyskey).map(stock => {
+                console.log("detail ->" + JSON.stringify(detail))
+
                 stock.multiplePromo = detail;
                 stock.RulePriority = detail.RulePriority;
                 stock.RuleNumber = detail.RuleNumber;
                 stock.HeaderDesc = detailList.HeaderDesc;
                 stock.HeaderSyskey = detailList.HeaderSyskey;
 
-                concatary.push(stock);
-                if (index + 1 == detailList.DetailList.length) {
-                  detailList.DetailList = concatary;
-                }
+                console.log("stock ->" + JSON.stringify(stock));
+                concatary.push(JSON.parse(JSON.stringify(stock)));
+
+                console.log("concatary ->" + JSON.stringify(concatary));
               });
 
+
+
+              if (index + 1 == detailList.DetailList.length) {
+                console.log("concatary1 ->" + JSON.stringify(concatary));
+                detailList.DetailList = concatary;
+              }
 
             })
           });
 
+          console.log("list 21 ->" + JSON.stringify(list));
+
           this.multiple_skus = list;
           this.multiple_skus.map((val, index) => {
             val.open = false;
-            // if (index == 0) {
-            //   val.open = true;
-            // }
           });
 
 
@@ -513,9 +555,6 @@ export class CartService {
                   //--sorting => "End" type sort to last index
                   header.DetailList.map((detailist: any) => {
                     detailist.rule.sort((a, b) => Number(a.multiplePromo.EndType === "END") - 1)
-
-
-
                   });
                 }
               });
@@ -540,7 +579,11 @@ export class CartService {
       if (this.multiple_skus.length > 0) {
         this.multiple_skus.map((header, hi) => {
           console.log(header);
+          var detail_List = [];
+
           if (header.DetailList.length > 0) {
+            console.log("123 ->" + JSON.stringify(header.DetailList));
+
 
             header.DetailList.map((detail, di) => {
               console.log(detail);
@@ -551,20 +594,27 @@ export class CartService {
               if (rule.length > 0) {
 
                 //Promotion Multiple of can't get => buy rule type = "Each" & endtype = "OR"
-                var checkendtypeORrule = detail.rule.filter(el => el.multiplePromo.EndType == "OR" && el.multiplePromo.RuleType == "Each" && el.multiplePromo.BuyType == "");
-                var checkForshowMultipleof = true;
-                if (checkendtypeORrule.length > 0) {
-                  checkForshowMultipleof = false;
-                }
+                // var checkendtypeORrule = detail.rule.filter(el => el.multiplePromo.EndType == "OR" && el.multiplePromo.RuleType == "Each" && el.multiplePromo.BuyType == "");
+                // var checkForshowMultipleof = true;
+                // if (checkendtypeORrule.length > 0) {
+                //   checkForshowMultipleof = false;
+                // }
 
-                data.push(
-                  {
-                    "HeaderDesc": header.HeaderDesc,
-                    "open": false,
-                    "DetailList": detail.rule,
-                    "checkForshowMultipleof": checkForshowMultipleof
-                  }
-                )
+                detail_List.push({
+                  rule: detail.rule
+                })
+
+                if (header.DetailList.length == di + 1) {
+                  data.push(
+                    {
+                      "HeaderDesc": header.HeaderDesc,
+                      "HeaderSyskey": header.HeaderSyskey,
+                      "open": false,
+                      "DetailList": detail_List,
+                      // "checkForshowMultipleof": checkForshowMultipleof
+                    }
+                  )
+                }
               }
 
 
@@ -861,6 +911,10 @@ export class CartService {
     let added = false;
     product.amount = Number(product.amount);
     product.status = "addtocart";
+
+    this.stockdata.filter(el => el.syskey == product.syskey).map(val => {
+      val.status = "addtocart";
+    })
     if (product.amount == "") {
       product.amount = 1;
     }
@@ -1077,6 +1131,11 @@ export class CartService {
         //order placement
         this.stockdata.filter(obj => obj.code == product.code).map(val => val.status = "");
         this.recommendstock.filter(obj => obj.code == product.code).map(val => val.status = "");
+        this.multiple_skus.map(header => {
+          header.DetailList.map(detail => {
+            detail.rule.filter(obj => obj.syskey == product.syskey).map(val => val.status = "");
+          })
+        })
 
         //check stock ["Order Save" or "Order Update"]
         var status = sessionStorage.getItem('checkvisit');
@@ -1699,7 +1758,6 @@ export class CartService {
                         else {
                           gift.discountItemQty = gift_quotient_amount;
                         }
-
                       }
 
                       if (index == 0) {
@@ -1793,7 +1851,6 @@ export class CartService {
               });
             })
           }
-
 
           bo.child = custom_detailList;
           resolve();

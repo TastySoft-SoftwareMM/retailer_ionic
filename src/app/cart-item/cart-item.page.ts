@@ -515,7 +515,6 @@ export class CartItemPage implements OnInit {
                   product.chosen_multiple_gift.push(gift);
                 }
 
-
               });
 
             });
@@ -1115,6 +1114,7 @@ export class CartItemPage implements OnInit {
     }
 
   }
+
   handleImgError(ev: any, item: any) {
 
     let source = ev.srcElement;
@@ -1196,7 +1196,6 @@ export class CartItemPage implements OnInit {
       this.orderUpdate();
     }
   }
-
 
   orderInsert() {
     try {
@@ -1504,6 +1503,7 @@ export class CartItemPage implements OnInit {
     }
 
   }
+
   orderUpdate() {
     try {
       if (this.allcart.length == 0) {
@@ -1803,7 +1803,6 @@ export class CartItemPage implements OnInit {
     }
   }
 
-
   async printQ() {
     const alert = await this.alertCtrl.create({
       header: 'Message',
@@ -1827,6 +1826,7 @@ export class CartItemPage implements OnInit {
     await alert.present();
 
   }
+
   connectPrinter() {
     this.printerService.enableBT().then(() => this.printerService.searchBT()
       .then((devicesList) => {

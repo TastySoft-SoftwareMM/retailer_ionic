@@ -34,33 +34,68 @@ export class ProImageViewerPage implements OnInit {
 
     this.stock = await this.cartService.getStock(this.syskey);
 
-    try {
-      if (this.stock.length > 0) {
-        this.stock = JSON.parse(JSON.stringify(this.stock[0]));
+    console.log("Stock ->" + JSON.stringify(this.stock));
 
-        if (this.stock.multiplePromo) {
-          const data = await this.cartService.getMultipleSKUSPromoByStocksyskey(this.stock.syskey);
-          console.log(data);
-          this.stock.multipleSKUs = data;
-          if (this.stock.multipleSKUs.length > 0) {
-            this.stock.isMultipleskus = true;
-          }
-          else {
-            this.stock.isMultipleskus = false;
-          }
-        }
 
-        this.isLoading = false;
+    // try {
+    if (this.stock.length > 0) {
+      this.stock = JSON.parse(JSON.stringify(this.stock[0]));
+
+      if (this.stock.multiplePromo) {
+        var data;
+        data = await this.cartService.getMultipleSKUSPromoByStocksyskey(this.stock.syskey);
+        console.log("Multi->" + JSON.stringify(data));
+        this.stock.multipleSKUs = data;
+
+        // if (this.stock.multipleSKUs.length > 0) {
+
+        //   // sort by RulePriority and RuleNumber 
+        //   this.stock.multipleSKUs.map(header => {
+
+        //     const uniqueKeys = header.DetailList.filter(
+        //       (temp => a =>
+        //         (k => !temp[k] && (temp[k] = true))(a.multiplePromo.RulePriority + '|' + a.multiplePromo.RuleNumber)
+        //       )(Object.create(null))
+        //     );
+
+        //     console.log("UniqueKyes:" + JSON.stringify(uniqueKeys));
+        //     var promo_rule = [];
+        //     uniqueKeys.map((rule, index) => {
+
+        //       promo_rule.push({
+        //         rule: header.DetailList.filter(el => el.multiplePromo.RulePriority == rule.multiplePromo.RulePriority && el.multiplePromo.RuleNumber == rule.multiplePromo.RuleNumber)
+        //       })
+
+        //       if (uniqueKeys.length == index + 1) {
+        //         header.DetailList = promo_rule;
+        //       }
+        //     });
+
+        //   })
+        // }
+        // else {
+        //   this.stock.isMultipleskus = false;
+        // }
+
       }
-      else {
-        this.stockNotFound();
-      }
 
-      console.log(this.stock);
+      this.stock.isMultipleskus = true;
 
-    } catch (error) {
+    }
+    else {
       this.stockNotFound();
     }
+
+    this.isLoading = false;
+
+    console.log(this.stock);
+
+    // } catch (error) {
+
+    //   console.log("error ->" + JSON.stringify(error));
+
+    // }
+
   }
 
   stockNotFound() {

@@ -70,7 +70,7 @@ export class SyncPage implements OnInit {
       console.log("LoginData ->" + JSON.stringify(res))
       this.loginData = res;
     });
-    
+
   }
   ngOnInit() {
     this.getStockImages();
@@ -123,7 +123,6 @@ export class SyncPage implements OnInit {
               ref.filepath.resolveNativePath(url).then(npath => {
                 ref.offlineService.insertStockImg({ code: code, img: ref.webview.convertFileSrc(npath) })
               });
-
 
               if (interval + 1 == ref.stockall.length) {
                 ref.imgProgress = { 'display': 'none' };
@@ -201,15 +200,11 @@ export class SyncPage implements OnInit {
               ref.startButton = true;
             }, 1000);
           }
-          else {
-
+         else  {
             const fileTransfer = ref.filetransfer.create();
             ref.stockimages.filter(el => el.code == ref.stockall[interval].code).map(val => {
               code = val;
             });
-
-
-
 
             if (!code) { //new stock image
               if (ref.stockall[interval].img != "") {

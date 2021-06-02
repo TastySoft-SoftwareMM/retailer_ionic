@@ -104,27 +104,30 @@ export class GiftchoicePage implements OnInit {
 
   }
 
-  async checkEvent(event, giftlist, gift) {
+  async checkEvent(giftlist, gift) {
 
     giftlist.isLoading = true;
     const count = giftlist.filter(el => el.isChecked == true);
-    console.log(event);
-
-    if (count.length == 0) {
-      event.target.checked = true;
-    }
     console.log(gift);
+
+    gift.isChecked = true;
 
     const awaitval = await this.getSelectedGiftAmountTotalRule();
     this.selected_gift_amount = await this.getSelectedGiftAmount();
 
+    console.log(this.selected_gift_amount + ' / ' + this.total_gift_amount);
+
     if (this.total_gift_amount < this.selected_gift_amount) {
-      event.target.checked = false;
+      giftlist.filter(el => el.isChecked == true && el.discountItemSyskey != gift.discountItemSyskey).map(val => {
+        val.isChecked = false;
+      })
       this.msgService.showToast("Please check your qty! ")
+
+      const awaitval = await this.getSelectedGiftAmountTotalRule();
+      this.selected_gift_amount = await this.getSelectedGiftAmount();
+
     }
-
     giftlist.isLoading = false;
-
   }
   ionInput(event) {
   }

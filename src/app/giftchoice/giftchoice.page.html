@@ -25,10 +25,11 @@
       <ion-list *ngIf="check_gift_get_rule_type == 'Total Item' && giftlist.length > 1 && !giftlist.isLoading ">
         <div *ngFor="let gift of giftlist">
 
-          <ion-item class="ion-text-nowrap" lines="none">
+          <ion-item class="ion-text-nowrap" lines="none" (click)="checkEvent(giftlist,gift)">
             <ion-label>{{gift.discountItemDesc}}</ion-label>
-            <ion-checkbox slot="end" [(ngModel)]="gift.isChecked" (ionChange)="checkEvent($event,giftlist,gift)">
-            </ion-checkbox>
+
+            <span slot="end" [ngClass]="gift.isChecked ? 'checkmark' : 'checkmarknone'"></span>
+
           </ion-item>
 
           <ion-row class="row-box">

@@ -58,3 +58,43 @@ ion-footer {
         margin-bottom: 3%;
     }
 }
+
+.check-container {
+    vertical-align: middle;
+    display: -webkit-inline-box;
+    display: inline-flex;
+    white-space: nowrap;
+    -webkit-box-align: center;
+    align-items: center;
+}
+.check-container .checkmark,
+.check-container .checkmarknone {
+    margin-right: 5px;
+}
+.checkmark {
+    background-color: var(--ion-color-custom);
+}
+.checkmark:after {
+    content: "";
+    position: absolute;
+    display: block;
+    left: 6px;
+    top: 2px;
+    width: 5px;
+    height: 12px;
+    border: solid #fff;
+    border-width: 0 2px 2px 0;
+    -webkit-transform: rotate(45deg);
+    transform: rotate(45deg);
+}
+.checkmark,
+.checkmarknone {
+    position: relative;
+    height: 18px;
+    width: 18px;
+    border-radius: 5px;
+    display: block;
+}
+.checkmarknone {
+    border: 2px solid rgba(0, 0, 0, 0.54);
+}

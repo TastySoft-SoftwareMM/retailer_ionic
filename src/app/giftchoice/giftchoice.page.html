@@ -14,7 +14,8 @@
     </ion-list-header>
 
     <div *ngFor="let giftlist of gifts" style="border-bottom: 1px solid var(--ion-color-border);">
-      <ion-radio-group [(ngModel)]="giftlist.checkedSyskey" *ngIf=" giftlist.length == 1">
+      <ion-radio-group [(ngModel)]="giftlist.checkedSyskey"
+        *ngIf="(giftlist.length == 1 && check_gift_get_rule_type == 'Total Item') || check_gift_get_rule_type != 'Total Item'">
         <ion-item lines="none" *ngFor="let gift of giftlist">
           <ion-label class="ion-text-nowrap">{{gift.discountItemDesc}}</ion-label>
           <ion-radio [value]="gift.discountItemSyskey"></ion-radio>
@@ -72,6 +73,7 @@
           <ion-ripple-effect></ion-ripple-effect>
         </ion-col>
       </ion-row>
+
     </div>
   </ion-list>
 </ion-content>

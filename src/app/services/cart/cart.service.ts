@@ -388,7 +388,7 @@ export class CartService {
                   //     }
                   //     h.stocks.map((stock_d, s_i) => {
                   //       if (stock_d.syskey == p.syskey) {
-                           
+
                   //       }
                   //     });
                   //   }

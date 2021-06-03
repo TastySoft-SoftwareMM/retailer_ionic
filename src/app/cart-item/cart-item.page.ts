@@ -335,6 +335,7 @@ export class CartItemPage implements OnInit {
         //Invoice Await
         const invoiceData = new Promise(async (resolvei) => {
           await this.getInvDiscount();
+
           this.cart.map(async (bo, index) => {
             console.log(bo.checkavailableInvList);
 

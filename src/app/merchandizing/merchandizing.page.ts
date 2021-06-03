@@ -198,7 +198,7 @@ export class MerchandizingPage implements OnInit {
               't1': taskobj.remark,
               't2': taskobj.taskCode,
               't3': taskobj.taskName,
-              'picturmaineData': []
+              'pictureData': []
             });
             var merchimgs = images.filter(el => el.taskId == taskobj.taskId);
             console.log("merchimgs" + JSON.stringify(merchimgs));
